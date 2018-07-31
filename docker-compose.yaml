@@ -3,6 +3,8 @@ services:
   homeassistant:
     container_name: hass
     image: homeassistant/home-assistant:0.74.2
+    env_file:
+      - .env
     volumes:
       - ./config:/config
       - /etc/localtime:/etc/localtime:ro
@@ -11,23 +13,41 @@ services:
     #  - /dev/ttyUSB1:/dev/ttyUSB1
     #  - /dev/ttyACM0:/dev/ttyACM0
     restart: always
-    #network_mode: host
     ports:
       - "80:8123"
     networks:
       - hass
+
   mqtt:
     container_name: mqtt
     image: eclipse-mosquitto:1.4.12
     restart: always
     volumes:
       - ./mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf
-      - mosquitto_data:/data
+      - mosquitto_data:/mosquitto/data
     ports:
       - "1883:1883"
     networks:
       - hass
+
+  samba:
+    container_name: samba
+    image: dperson/samba
+    networks:
+      - samba
+    volumes:
+      - .:/share
+    restart: always
+    ports:
+      - "139:139"
+      - "445:445"
+    command: -s "config;/share;no;no;no;${SMB_USER}" -u "${SMB_USER};${SMB_PASSWORD}"
+    environment:
+      - USERID=101
+      - GROUPID=1001
+
 volumes:
   mosquitto_data:
 networks:
   hass:
+  samba:

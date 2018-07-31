@@ -1,6 +1,6 @@
 homeassistant:
-  latitude: 64.8639181
-  longitude: 25.4638713
+  latitude: !env_var HOME_LAT
+  longitude: !env_var HOME_LONG
   elevation: 1
   unit_system: metric
   time_zone: Europe/Helsinki
@@ -20,7 +20,7 @@ homeassistant:
 frontend:
 
 mqtt:
-  broker: "mqtt"
+  broker: mqtt
   port: 1883
   client_id: hass
 

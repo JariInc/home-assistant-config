@@ -1,0 +1,13 @@
+title: poyta16
+views:
+- name: Home
+  type: vertical-stack
+  cards:
+  - type: entities
+    title: Sensorit
+    entities:
+      - sensor.ruuvitag_indoor_temperature
+      - sensor.ruuvitag_outdoor_temperature
+      - sensor.ruuvitag_oven_temperature
+      - sensor.ruuvitag_indoor_humidity
+      - sensor.ruuvitag_outdoor_humidity
