@@ -1,0 +1,12 @@
+sensor.ruuvitag_indoor_temperature:
+  friendly_name: Sisälämpötila
+sensor.ruuvitag_outdoor_temperature:
+  friendly_name: Ulkolämpötila
+sensor.ruuvitag_oven_temperature:
+  friendly_name: Uunin lämpötila
+sensor.ruuvitag_indoor_humidity:
+  friendly_name: Sisäilmankosteus
+  icon: mdi:water-percent
+sensor.ruuvitag_outdoor_humidity:
+  friendly_name: Ulkoilmankosteus
+  icon: mdi:water-percent

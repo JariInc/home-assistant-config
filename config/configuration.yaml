@@ -5,18 +5,8 @@ homeassistant:
   unit_system: metric
   time_zone: Europe/Helsinki
   name: poyta16
-  customize:
-    sensor.ruuvitag_indoor_temperature:
-      friendly_name: Sisälämpötila
-    sensor.ruuvitag_outdoor_temperature:
-      friendly_name: Ulkolämpötila
-    sensor.ruuvitag_oven_temperature:
-      friendly_name: Uunin lämpötila
-    sensor.ruuvitag_indoor_humidity:
-      friendly_name: Sisäilmankosteus
-    sensor.ruuvitag_outdoor_humidity:
-      friendly_name: Ulkoilmankosteus
-
+  customize: !include customize.yaml
+  
 frontend:
 
 mqtt:
@@ -24,25 +14,4 @@ mqtt:
   port: 1883
   client_id: hass
 
-sensor:
-  - platform: mqtt
-    state_topic: "ruuvitag/C316F66C57EB/temperature"
-    name: ruuvitag_indoor_temperature
-    unit_of_measurement: "°C"
-  - platform: mqtt
-    state_topic: "ruuvitag/DC136ADEF844/temperature"
-    name: ruuvitag_outdoor_temperature
-    unit_of_measurement: "°C"
-  - platform: mqtt
-    state_topic: "ruuvitag/F53C10BAF234/temperature"
-    name: ruuvitag_oven_temperature
-    unit_of_measurement: "°C"
-
-  - platform: mqtt
-    state_topic: "ruuvitag/C316F66C57EB/humidity"
-    name: ruuvitag_indoor_humidity
-    unit_of_measurement: "%"
-  - platform: mqtt
-    state_topic: "ruuvitag/DC136ADEF844/humidity"
-    name: ruuvitag_outdoor_humidity
-    unit_of_measurement: "%"
+sensor: !include sensors.yaml
