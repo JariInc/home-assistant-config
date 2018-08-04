@@ -46,6 +46,12 @@ services:
       - USERID=101
       - GROUPID=1001
 
+  duckdns:
+    container_name: duckdns
+    image: meltwater/duckdns:latest
+    env_file:
+      - .env
+
 volumes:
   mosquitto_data:
 networks:
