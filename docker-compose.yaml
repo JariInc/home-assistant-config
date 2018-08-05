@@ -24,7 +24,7 @@ services:
     restart: always
     volumes:
       - ./mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf
-      - mosquitto_data:/mosquitto/data
+      - ./mosquitto/data:/mosquitto/data
     ports:
       - "1883:1883"
     networks:
@@ -52,8 +52,19 @@ services:
     env_file:
       - .env
 
-volumes:
-  mosquitto_data:
+  duplicity:
+    container_name: duplicity
+    image: wernight/duplicity:latest
+    env_file:
+      - .env
+    environment: 
+      - AWS_ACCESS_KEY_ID=${AWS_BACKUP_KEY}
+      - AWS_SECRET_ACCESS_KEY=${AWS_BACKUP_SECRET}
+      - S3_USE_SIGV4=true
+    volumes:
+      - .:/data:ro
+    command: ["duplicity", "--full-if-older-than=1W", "--no-encryption", "--allow-source-mismatch", "--s3-use-rrs", "--s3-use-multiprocessing", "/data", "s3://s3.eu-central-1.amazonaws.com/p16-hass-backup/hass"]
+
 networks:
   hass:
   samba:
