@@ -1,0 +1,26 @@
+- platform: mqtt
+  state_topic: "ruuvitag/C316F66C57EB"
+  name: ruuvitag_indoor_temperature
+  unit_of_measurement: "°C"
+  value_template: '{{ value_json.temperature }}'
+- platform: mqtt
+  state_topic: "ruuvitag/DC136ADEF844"
+  name: ruuvitag_outdoor_temperature
+  unit_of_measurement: "°C"
+  value_template: '{{ value_json.temperature }}'
+- platform: mqtt
+  state_topic: "ruuvitag/F53C10BAF234"
+  name: ruuvitag_oven_temperature
+  unit_of_measurement: "°C"
+  value_template: '{{ value_json.temperature }}'
+
+- platform: mqtt
+  state_topic: "ruuvitag/C316F66C57EB"
+  name: ruuvitag_indoor_humidity
+  unit_of_measurement: "%"
+  value_template: '{{ value_json.humidity }}'
+- platform: mqtt
+  state_topic: "ruuvitag/DC136ADEF844"
+  name: ruuvitag_outdoor_humidity
+  unit_of_measurement: "%"
+  value_template: '{{ value_json.humidity }}'

@@ -11,3 +11,8 @@ views:
       - sensor.ruuvitag_oven_temperature
       - sensor.ruuvitag_indoor_humidity
       - sensor.ruuvitag_outdoor_humidity
+  - type: entities
+    title: Ilmalämpöpumppu
+    show_header_toggle: false
+    entities:
+      - climate.toshiba

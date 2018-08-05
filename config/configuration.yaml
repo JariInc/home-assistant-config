@@ -14,4 +14,6 @@ mqtt:
   port: 1883
   client_id: hass
 
-sensor: !include sensors.yaml
+sensor: !include sensor.yaml
+switch: !include switch.yaml
+climate: !include climate.yaml

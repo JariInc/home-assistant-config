@@ -1,0 +1,8 @@
+- platform: mqtt
+  name: toshiba
+  modes:
+    - off
+    - on
+  mode_command_topic: "study/ac/mode/set"
+  mode_state_topic: "study/ac/mode/state"
+  mode_state_template: "{{ value_json }}"
