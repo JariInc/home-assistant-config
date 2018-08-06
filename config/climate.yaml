@@ -1,8 +1,26 @@
 - platform: mqtt
-  name: toshiba
+  name: Toshiba Arctic 25
+  initial: 21
+  min_temp: 17
+  max_temp: 30
+  send_if_off: false
   modes:
-    - off
-    - on
-  mode_command_topic: "study/ac/mode/set"
-  mode_state_topic: "study/ac/mode/state"
-  mode_state_template: "{{ value_json }}"
+    - 'heat'
+    - 'cool'
+    - 'manual_heat'
+    - 'manual_cool'
+  fan_modes:
+    - '1'
+    - '2'
+    - '3'
+    - '4'
+    - '5'
+  current_temperature_topic: "hvac/toshiba-63200289/pid/measured_temperature"
+  mode_command_topic: "hvac/toshiba-63200289/pid/mode/set"
+  mode_state_topic: "hvac/toshiba-63200289/pid/mode/state"
+  temperature_command_topic: "hvac/toshiba-63200289/pid/temperature/set"
+  temperature_state_topic: "hvac/toshiba-63200289/pid/temperature/state"
+  power_command_topic: "hvac/toshiba-63200289/pid/power/set"
+  power_state_topic: "hvac/toshiba-63200289/pid/power/state"
+  fan_command_topic: "hvac/toshiba-63200289/pid/fan/set"
+  fan_state_topic: "hvac/toshiba-63200289/pid/fan/state"

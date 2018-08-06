@@ -17,3 +17,4 @@ mqtt:
 sensor: !include sensor.yaml
 switch: !include switch.yaml
 climate: !include climate.yaml
+zwave: !include zwave.yaml

@@ -10,3 +10,11 @@ sensor.ruuvitag_indoor_humidity:
 sensor.ruuvitag_outdoor_humidity:
   friendly_name: Ulkoilmankosteus
   icon: mdi:water-percent
+sensor.philio_technology_corporation_pan11_smart_energy_plug_in_switch_power:
+  friendly_name: Teho
+sensor.philio_technology_corporation_pan11_smart_energy_plug_in_switch_current:
+  friendly_name: Virta
+sensor.philio_technology_corporation_pan11_smart_energy_plug_in_switch_energy:
+  friendly_name: Energia
+switch.philio_technology_corporation_pan11_smart_energy_plug_in_switch_switch:
+  friendly_name: Kytkin

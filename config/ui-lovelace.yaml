@@ -13,6 +13,12 @@ views:
       - sensor.ruuvitag_outdoor_humidity
   - type: entities
     title: Ilmalämpöpumppu
-    show_header_toggle: false
     entities:
-      - climate.toshiba
+      - climate.toshiba_arctic_25
+  - type: entities
+    title: Kahvinkeitin
+    entities:
+      - sensor.philio_technology_corporation_pan11_smart_energy_plug_in_switch_power
+      - sensor.philio_technology_corporation_pan11_smart_energy_plug_in_switch_current
+      - sensor.philio_technology_corporation_pan11_smart_energy_plug_in_switch_energy
+      - switch.philio_technology_corporation_pan11_smart_energy_plug_in_switch_switch

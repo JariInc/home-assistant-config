@@ -2,16 +2,14 @@ version: '3'
 services:
   homeassistant:
     container_name: hass
-    image: homeassistant/home-assistant:0.74.2
+    image: homeassistant/home-assistant:0.75.2
     env_file:
       - .env
     volumes:
       - ./config:/config
       - /etc/localtime:/etc/localtime:ro
-    #devices:
-    #  - /dev/ttyUSB0:/dev/ttyUSB0
-    #  - /dev/ttyUSB1:/dev/ttyUSB1
-    #  - /dev/ttyACM0:/dev/ttyACM0
+    devices:
+      - /dev/ttyACM0:/dev/ttyACM0
     restart: always
     ports:
       - "80:8123"
@@ -51,6 +49,7 @@ services:
     image: meltwater/duckdns:latest
     env_file:
       - .env
+    restart: always
 
   duplicity:
     container_name: duplicity
@@ -70,6 +69,27 @@ services:
     build: ./hvac-pid
     env_file:
      - .env
+    networks:
+      - hass
+    restart: always
+
+  influxdb:
+    container_name: influxdb
+    image: influxdb:1.5.4-alpine
+    volumes:
+      - ./influxdb/data:/var/lib/influxdb
+    networks:
+      - hass
+    restart: always
+
+  # telegraf:
+  #   image: telegraf:1.5.3-alpine
+  #   container_name: telegraf
+  #   links:
+  #     - influxdb
+  #   volumes:
+  #     - ./telegraf.conf:/etc/telegraf/telegraf.conf:ro
+
 
 networks:
   hass:

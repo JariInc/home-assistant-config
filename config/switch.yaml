@@ -1,8 +1,0 @@
-- platform: rest
-  name: hvac_manual_override
-  resource: https://jsonplaceholder.typicode.com/posts/1
-  body_on: '{"active": "true"}'
-  body_off: '{"active": "false"}'
-  is_on_template: '{{ value_json.userId }}'
-  headers:
-    Content-Type: application/json

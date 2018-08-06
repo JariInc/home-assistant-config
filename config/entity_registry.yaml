@@ -1,0 +1,65 @@
+zwave.zwaveme_zme_uzb1_usb_stick:
+  config_entry_id:
+  name:
+  platform: zwave
+  unique_id: node-1
+sensor.philio_technology_corporation_pan11_smart_energy_plug_in_switch_power:
+  config_entry_id:
+  name:
+  platform: zwave
+  unique_id: 3-72057594093273218
+sensor.philio_technology_corporation_pan11_smart_energy_plug_in_switch_voltage:
+  config_entry_id:
+  name:
+  platform: zwave
+  unique_id: 3-72057594093273346
+sensor.philio_technology_corporation_pan11_smart_energy_plug_in_switch_current:
+  config_entry_id:
+  name:
+  platform: zwave
+  unique_id: 3-72057594093273410
+sensor.philio_technology_corporation_pan11_smart_energy_plug_in_switch_power_factor:
+  config_entry_id:
+  name:
+  platform: zwave
+  unique_id: 3-72057594093273474
+sensor.philio_technology_corporation_pan11_smart_energy_plug_in_switch_exporting:
+  config_entry_id:
+  name:
+  platform: zwave
+  unique_id: 3-72057594093273600
+zwave.philio_technology_corporation_pan11_smart_energy_plug_in_switch:
+  config_entry_id:
+  name:
+  platform: zwave
+  unique_id: node-3
+switch.philio_technology_corporation_pan11_smart_energy_plug_in_switch_switch:
+  config_entry_id:
+  name:
+  platform: zwave
+  unique_id: 3-72057594093060096
+sensor.philio_technology_corporation_pan11_smart_energy_plug_in_switch_energy:
+  config_entry_id:
+  name:
+  platform: zwave
+  unique_id: 3-72057594093273090
+sensor.philio_technology_corporation_pan11_smart_energy_plug_in_switch_alarm_type:
+  config_entry_id:
+  name:
+  platform: zwave
+  unique_id: 3-72057594094305281
+sensor.philio_technology_corporation_pan11_smart_energy_plug_in_switch_alarm_level:
+  config_entry_id:
+  name:
+  platform: zwave
+  unique_id: 3-72057594094305297
+sensor.philio_technology_corporation_pan11_smart_energy_plug_in_switch_previous_reading:
+  config_entry_id:
+  name:
+  platform: zwave
+  unique_id: 3-72057594093273106
+sensor.philio_technology_corporation_pan11_smart_energy_plug_in_switch_interval:
+  config_entry_id:
+  name:
+  platform: zwave
+  unique_id: 3-72057594093273123
