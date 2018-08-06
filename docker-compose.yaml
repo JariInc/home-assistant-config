@@ -65,6 +65,12 @@ services:
       - .:/data:ro
     command: ["duplicity", "--full-if-older-than=1W", "--no-encryption", "--allow-source-mismatch", "--s3-use-rrs", "--s3-use-multiprocessing", "/data", "s3://${AWS_BACKUP_BUCKET}"]
 
+  hvac-pid:
+    container_name: hvac_pid
+    build: ./hvac-pid
+    env_file:
+     - .env
+
 networks:
   hass:
   samba:
