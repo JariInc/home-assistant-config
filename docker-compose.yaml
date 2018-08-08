@@ -100,6 +100,18 @@ services:
       - hass
     restart: always
     
+  grafana:
+    container_name: grafana
+    image: grafana/grafana:5.2.2
+    env_file: ./grafana.env
+    ports: 
+      - "3000:3000"
+    volumes:
+      - ./grafana/data:/var/lib/grafana
+    networks:
+      - hass
+    restart: always
+
 networks:
   hass:
   samba:

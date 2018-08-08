@@ -1,0 +1,5 @@
+.HA_VERSION
+*.log
+*.txt
+*.xml
+*.sqlite
