@@ -4,12 +4,15 @@
   min_temp: 17
   max_temp: 30
   send_if_off: false
+  retain: True
+  target_temp_step: 0.1
   modes:
+    - 'off'
+    - 'manual'
     - 'heat'
     - 'cool'
-    - 'manual_heat'
-    - 'manual_cool'
   fan_modes:
+    - 'auto'
     - '1'
     - '2'
     - '3'
@@ -22,5 +25,5 @@
   temperature_state_topic: "hvac/toshiba-63200289/pid/temperature/state"
   power_command_topic: "hvac/toshiba-63200289/pid/power/set"
   power_state_topic: "hvac/toshiba-63200289/pid/power/state"
-  fan_command_topic: "hvac/toshiba-63200289/pid/fan/set"
-  fan_state_topic: "hvac/toshiba-63200289/pid/fan/state"
+  fan_mode_command_topic: "hvac/toshiba-63200289/pid/fan/set"
+  fan_mode_state_topic: "hvac/toshiba-63200289/pid/fan/state"

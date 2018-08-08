@@ -6,6 +6,7 @@ class PID(object):
 
 	previous_error = 0
 	integral = 0
+	integral_max = 0
 	iteration_ts = 0
 	Kp = 1
 	Ki = 1
@@ -20,7 +21,15 @@ class PID(object):
 
 		self.logger.info("Initialized with Kp=%g, Ki=%g, Kd=%g", self.Kp, self.Ki, self.Kd)
 
+		# allow integral to control at max 2 degrees
+		self.integral_max = 2 / self.Ki
 		self.iteration_ts = monotonic()
+		
+	def reset(self):
+		self.previous_error = 0
+		self.integral = 0
+		self.iteration_ts = monotonic()
+		self.logger.info("PID reseted")
 
 	def iterate(self, set_point, measurement):
 		ts = monotonic()
@@ -32,7 +41,11 @@ class PID(object):
 		self.logger.debug("error: %g - %g = %g", set_point, measurement, error)
 		
 		new_integral = self.integral + (error * dt)
-		self.logger.debug("integral: %g + (%g * %g) = %g", self.integral, error, dt, new_integral)		
+		self.logger.debug("integral: %g + (%g * %g) = %g", self.integral, error, dt, new_integral)
+
+		if abs(new_integral) > self.integral_max:
+			new_integral = 	(new_integral / abs(new_integral)) * self.integral_max
+			self.logger.info("integral clamped to: %g", new_integral)	
 		
 		derivative = (error - self.previous_error) / dt
 		self.logger.debug("derivative: (%g - %g) / %g = %g", error, self.previous_error, dt, derivative)		
