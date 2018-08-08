@@ -22,7 +22,7 @@ services:
     restart: always
     volumes:
       - ./mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf
-      - ./mosquitto/data:/mosquitto/data
+      - ./mosquitto/data:/data
     ports:
       - "1883:1883"
     networks:
@@ -81,6 +81,8 @@ services:
     networks:
       - hass
     restart: always
+    ports:
+      - "8086:8086"
 
   # telegraf:
   #   image: telegraf:1.5.3-alpine
@@ -90,7 +92,14 @@ services:
   #   volumes:
   #     - ./telegraf.conf:/etc/telegraf/telegraf.conf:ro
 
-
+  mqtt-influxdb:
+    container_name: mqtt-influxdb
+    build: ./mqtt-influxdb
+    env_file: ./mqtt-influxdb.env
+    networks:
+      - hass
+    restart: always
+    
 networks:
   hass:
   samba:

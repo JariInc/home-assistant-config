@@ -1,7 +1,5 @@
 .ash_history
-config/.HA_VERSION
-config/home-assistant.log
-.env
+*.env
 .ssh
 .gitconfig
 .recycle
