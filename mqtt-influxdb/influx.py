@@ -1,5 +1,6 @@
 import logging
 from influxdb import InfluxDBClient
+from influxdb.exceptions import InfluxDBClientError
 
 class Influx(object):
 	logger = None
@@ -17,5 +18,11 @@ class Influx(object):
 			"fields": fields,
 		}
 
+		self.logger.debug("Saving data %s", data)
+
 		self.client.switch_database(database)
-		self.client.write_points([data])
+
+		try:
+			self.client.write_points([data])
+		except InfluxDBClientError as e:
+			self.logger.error('InfluxDB error: %s', str(e))

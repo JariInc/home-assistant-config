@@ -50,7 +50,7 @@ class MQTTInfluxDBBridge(object):
 		self.logger.info('MQTT connected')
 
 	def hvac_callback(self, client, userdata, message):
-		payload = json.loads(message.payload.decode('utf-8'))
+		payload = json.loads(message.payload.decode('utf-8'), parse_int=float)
 		now = datetime.datetime.now()
 		self.influx.write(
 			'hvac', 
@@ -61,7 +61,7 @@ class MQTTInfluxDBBridge(object):
 		)
 
 	def ruuvitag_callback(self, client, userdata, message):
-		payload = json.loads(message.payload.decode('utf-8'))
+		payload = json.loads(message.payload.decode('utf-8'), parse_int=float)
 		topic_parts = message.topic.split('/')
 		mac = topic_parts[1]
 		now = datetime.datetime.now()

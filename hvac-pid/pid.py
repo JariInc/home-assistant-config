@@ -11,8 +11,9 @@ class PID(object):
 	Kp = 1
 	Ki = 1
 	Kd = 1
+	output = 0
 
-	def __init__(self, Kp, Ki, Kd):
+	def __init__(self, Kp, Ki, Kd, integral_max_effect):
 		self.logger = logging.getLogger('hvac-pid.pid')
 
 		self.Kp = Kp
@@ -21,8 +22,8 @@ class PID(object):
 
 		self.logger.info("Initialized with Kp=%g, Ki=%g, Kd=%g", self.Kp, self.Ki, self.Kd)
 
-		# allow integral to control at max 2 degrees
-		self.integral_max = 2 / self.Ki
+		# allow integral to control at max integral_max_effect degrees
+		self.integral_max = integral_max_effect / self.Ki
 		self.iteration_ts = monotonic()
 		
 	def reset(self):
@@ -34,8 +35,8 @@ class PID(object):
 	def iterate(self, set_point, measurement):
 		ts = monotonic()
 
-		dt = ts - self.iteration_ts
-		self.logger.debug("dt: %g", dt)
+		dt = (ts - self.iteration_ts) / 60
+		self.logger.debug("dt: %g min", dt)
 		
 		error = set_point - measurement
 		self.logger.debug("error: %g - %g = %g", set_point, measurement, error)
@@ -57,4 +58,6 @@ class PID(object):
 		self.iteration_ts = ts
 		self.previous_error = error
 
-		return set_point + output
+		self.output = set_point + output
+
+		return self.output

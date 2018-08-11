@@ -7,4 +7,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-CMD [ "python", "./hvac-pid.py" ]
+CMD [ "python", "-u", "./hvac-pid.py" ]
