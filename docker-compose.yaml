@@ -4,7 +4,7 @@ services:
     container_name: hass
     image: homeassistant/home-assistant:0.75.2
     env_file:
-      - .env
+      - hass.env
     volumes:
       - ./config:/config
       - /etc/localtime:/etc/localtime:ro
@@ -42,26 +42,23 @@ services:
       - "139:139"
       - "445:445"
     command: -s "config;/share;no;no;no;${SMB_USER}" -u "${SMB_USER};${SMB_PASSWORD}"
-    environment:
-      - USERID=101
-      - GROUPID=1001
+    env_file:
+      - samba.env
 
   duckdns:
     container_name: duckdns
     image: meltwater/duckdns:latest
     env_file:
-      - .env
+      - duckdns.env
     restart: always
 
   duplicity:
     container_name: duplicity
     image: wernight/duplicity:latest
     env_file:
-      - .env
+      - duplicity.env
     environment: 
-      - AWS_ACCESS_KEY_ID=${AWS_BACKUP_KEY}
-      - AWS_SECRET_ACCESS_KEY=${AWS_BACKUP_SECRET}
-      - S3_USE_SIGV4=true
+      - 
     volumes:
       - .:/data:ro
     command: ["duplicity", "--full-if-older-than=1W", "--no-encryption", "--allow-source-mismatch", "--s3-use-rrs", "--s3-use-multiprocessing", "/data", "s3://${AWS_BACKUP_BUCKET}"]
@@ -70,7 +67,7 @@ services:
     container_name: hvac_pid
     build: ./hvac-pid
     env_file:
-     - .env
+     - hvac-pid.env
     networks:
       - hass
     restart: always
@@ -88,6 +85,8 @@ services:
     restart: always
     ports:
       - "8086:8086"
+    env_file:
+     - influxdb.env
 
   # telegraf:
   #   image: telegraf:1.5.3-alpine
