@@ -3,8 +3,7 @@ services:
   homeassistant:
     container_name: hass
     image: homeassistant/home-assistant:0.75.2
-    env_file:
-      - hass.env
+    env_file: hass.env
     volumes:
       - ./config:/config
       - /etc/localtime:/etc/localtime:ro
@@ -32,7 +31,7 @@ services:
 
   samba:
     container_name: samba
-    image: dperson/samba
+    image: dperson/samba:latest
     networks:
       - samba
     volumes:
@@ -41,33 +40,26 @@ services:
     ports:
       - "139:139"
       - "445:445"
-    command: -s "config;/share;no;no;no;${SMB_USER}" -u "${SMB_USER};${SMB_PASSWORD}"
-    env_file:
-      - samba.env
+    env_file: samba.env
 
   duckdns:
     container_name: duckdns
     image: meltwater/duckdns:latest
-    env_file:
-      - duckdns.env
+    env_file: duckdns.env
     restart: always
 
   duplicity:
     container_name: duplicity
     image: wernight/duplicity:latest
-    env_file:
-      - duplicity.env
-    environment: 
-      - 
+    env_file: duplicity.env
     volumes:
       - .:/data:ro
-    command: ["duplicity", "--full-if-older-than=1W", "--no-encryption", "--allow-source-mismatch", "--s3-use-rrs", "--s3-use-multiprocessing", "/data", "s3://${AWS_BACKUP_BUCKET}"]
+    command: ["duplicity", "--full-if-older-than=1W", "--no-encryption", "--allow-source-mismatch", "--s3-use-rrs", "--s3-use-multiprocessing", "/data", "s3://s3.eu-central-1.amazonaws.com/p16-hass-backup/hass"]
 
   hvac-pid:
     container_name: hvac_pid
     build: ./hvac-pid
-    env_file:
-     - hvac-pid.env
+    env_file: hvac-pid.env
     networks:
       - hass
     restart: always
@@ -85,16 +77,17 @@ services:
     restart: always
     ports:
       - "8086:8086"
-    env_file:
-     - influxdb.env
+    env_file: influxdb.env
 
-  # telegraf:
-  #   image: telegraf:1.5.3-alpine
-  #   container_name: telegraf
-  #   links:
-  #     - influxdb
-  #   volumes:
-  #     - ./telegraf.conf:/etc/telegraf/telegraf.conf:ro
+  telegraf:
+    image: telegraf:1.7.3-alpine
+    container_name: telegraf
+    env_file: ./telegraf.env
+    networks:
+      - hass
+    volumes:
+      - ./telegraf/telegraf.conf:/etc/telegraf/telegraf.conf:ro
+      - /var/run/docker.sock:/var/run/docker.sock
 
   mqtt-influxdb:
     container_name: mqtt-influxdb
@@ -122,7 +115,6 @@ services:
       - influxdb
 
   keberos-cam1:
-    # rtsp://admin:asdfasdf12@192.168.1.141/Streaming/channels/1/
     container_name: keberos-cam1
     image: kerberos/kerberos:latest
     ports:
@@ -133,6 +125,18 @@ services:
     networks:
       - hass
 
+  portainer:
+    image: portainer/portainer:1.19.1
+    container_name: portainer
+    networks:
+      - portainer
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./portainer/data:/data
+    ports:
+      - "9000:9000"
+
 networks:
   hass:
   samba:
+  portainer:

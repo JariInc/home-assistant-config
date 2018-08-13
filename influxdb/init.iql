@@ -1,5 +1,6 @@
 CREATE DATABASE ruuvitag
 CREATE DATABASE hvac
+CREATE DATABASE telegraf
 
 CREATE USER mqtt WITH PASSWORD 'xxxxxx'
 GRANT WRITE ON ruuvitag TO mqtt
@@ -8,3 +9,7 @@ GRANT WRITE ON hvac TO mqtt
 CREATE USER grafana WITH PASSWORD 'xxxxxx'
 GRANT READ ON ruuvitag TO grafana
 GRANT READ ON hvac TO grafana
+GRANT READ ON telegraf TO grafana
+
+CREATE USER telegraf WITH PASSWORD 'xxxxxx'
+GRANT WRITE ON telegraf TO telegraf
