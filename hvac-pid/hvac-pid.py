@@ -89,10 +89,8 @@ class HVACPIDController(object):
 		error_abs = abs(error)
 		is_heat = self.mode == 'heat'
 
-		if not self.power:
-			self.fan_set = 0
 		# if overshoot over 2/1 degrees, set fan to 1
-		elif (is_heat and error < 1.0) or (not is_heat and error > 1.0):
+		if (is_heat and error < 1.0) or (not is_heat and error > 1.0):
 			self.fan_set = 1
 		# if overshoot over 0.5 degrees, set fan to 2
 		elif (is_heat and error < 1.0) or (not is_heat and error > 0.5):
@@ -196,6 +194,8 @@ class HVACPIDController(object):
 				mode = 'off'
 			else:
 				mode = 'manual'
+		elif self.mode == 'auto':
+			mode = 'manual'
 		else:
 			mode = self.mode
 
@@ -243,7 +243,7 @@ class HVACPIDController(object):
 			'temperature_set': float(self.temp_set),
 			'temperature_measure': float(self.temp_measure),
 			'temperature_error': float(self.pid.previous_error),
-			'fan': int(self.fan_set),
+			'fan': int(self.fan_set if self.power else 0),
 			'power': self.power,
 			'Kp': float(self.pid.Kp),
 			'Ki': float(self.pid.Ki),
