@@ -25,13 +25,6 @@ class HVACPIDController(object):
 
 	def __init__(self):
 		self.logger = logging.getLogger('hvac-pid')
-		self.logger.setLevel(logging.DEBUG)
-		ch = logging.StreamHandler()
-		ch.setLevel(logging.DEBUG)
-		formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-		ch.setFormatter(formatter)
-		self.logger.addHandler(ch)
-		self.logger.propagate = False
 		self.logger.info('Starting hvac-pid')
 
 		# PID
@@ -39,7 +32,7 @@ class HVACPIDController(object):
 			float(os.getenv('PID_KP')), 
 			float(os.getenv('PID_KI')), 
 			float(os.getenv('PID_KD')),
-			float(os.getenv('PID_INTEGRAL_MAX_EFFECT'))	
+			float(os.getenv('PID_INTEGRAL_MAX_EFFECT'))
 		)
 
 		# MQTT
@@ -89,11 +82,11 @@ class HVACPIDController(object):
 		error_abs = abs(error)
 		is_heat = self.mode == 'heat'
 
-		# if overshoot over 2/1 degrees, set fan to 1
-		if (is_heat and error < 1.0) or (not is_heat and error > 1.0):
+		# if overshoot over 3/1 degrees, set fan to 1
+		if (is_heat and error > 3.0) or (not is_heat and error > 1.0):
 			self.fan_set = 1
 		# if overshoot over 0.5 degrees, set fan to 2
-		elif (is_heat and error < 1.0) or (not is_heat and error > 0.5):
+		elif (is_heat and error > 2.0) or (not is_heat and error > 0.5):
 			self.fan_set = 2
 		elif error_abs < 1.0:
 			self.fan_set = 3
@@ -121,6 +114,7 @@ class HVACPIDController(object):
 			self.logger.info('Manual mode, skipping PID iteration')
 			self.temp_set = self.temp_request
 		else:
+			self.logger.info('PID iteration')
 			self._temp_set()
 			self._fan_set()
 			self._power_set()
@@ -130,9 +124,6 @@ class HVACPIDController(object):
 		payload_json = json.loads(message.payload.decode('utf-8'))
 		self.logger.info('Received temperature measurement %s', payload_json['temperature'])
 		self.temp_measure = payload_json['temperature']
-		self.logger.info('PID iteration')
-		self.iterate()
-		self.publish_temp()
 
 	def hvac_callback(self, client, userdata, message):
 		payload_json = json.loads(message.payload.decode('utf-8'))
@@ -149,7 +140,11 @@ class HVACPIDController(object):
 				'fan': self.fan_set,
 			}
 
-			if self.hvac_state != new_state:
+			is_state_changed = (new_state['power'] and self.hvac_state != new_state)
+			is_power_state_changed = (self.hvac_state and new_state['power'] != self.hvac_state['power'])
+			old_state_doesnt_exists = (not self.hvac_state)
+
+			if is_state_changed or is_power_state_changed or old_state_doesnt_exists:
 				message = json.dumps(new_state)
 
 				self.logger.debug('Controlling HVAC with command %s', message)
@@ -185,6 +180,7 @@ class HVACPIDController(object):
 
 		self.publish_mode()
 		self.iterate()
+		self.setHVAC()
 
 	def publish_mode(self):
 		topic = self.topic_prefix + '/mode/state'
@@ -209,7 +205,7 @@ class HVACPIDController(object):
 			self.logger.info('Set temperature request to %s', self.temp_request)
 			self.publish_temp()
 			self.iterate()
-
+			self.setHVAC()
 
 	def publish_temp(self):
 		self.mqtt.publish(self.topic_prefix + '/temperature/state', self.temp_request, 1, True)
@@ -223,6 +219,7 @@ class HVACPIDController(object):
 			self.logger.info('Set fan to %s', self.fan_set)
 			self.publish_fan()
 			self.iterate()
+			self.setHVAC()
 
 	def publish_fan(self):
 		topic = self.topic_prefix + '/fan/state'
@@ -255,11 +252,25 @@ class HVACPIDController(object):
 		self.mqtt.publish(topic, message, 1)
 
 if __name__ == '__main__':
+	logger = logging.getLogger('hvac-pid')
+	logger.setLevel(logging.DEBUG)
+	logger.propagate = False
+
+	formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+
+	ch = logging.StreamHandler()
+	ch.setLevel(logging.DEBUG)
+	ch.setFormatter(formatter)
+
+	logger.addHandler(ch)
+
 	ctrl = HVACPIDController()
+	interval = int(os.getenv('PID_INTERVAL'))
 
 	while True:
-		time.sleep(60)
+		time.sleep(interval)
+		ctrl.iterate()
+		ctrl.setHVAC()
 		ctrl.publish_temp()
 		ctrl.publish_mode()
 		ctrl.publish_fan()
-		ctrl.setHVAC()
