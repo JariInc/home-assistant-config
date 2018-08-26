@@ -6,8 +6,14 @@ homeassistant:
   time_zone: Europe/Helsinki
   name: poyta16
   customize: !include customize.yaml
-  
+
 frontend:
+
+http:
+  api_password: !env_var HA_PASSWORD
+  base_url: !env_var HA_BASE_URL
+  use_x_forwarded_for: true
+  trusted_proxies: "172.0.0.0/8"
 
 mqtt:
   broker: mqtt

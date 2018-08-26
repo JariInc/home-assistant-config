@@ -2,7 +2,7 @@ version: '3'
 services:
   homeassistant:
     container_name: hass
-    image: homeassistant/home-assistant:0.75.2
+    image: homeassistant/home-assistant:0.76.2
     env_file: hass.env
     volumes:
       - ./config:/config
@@ -11,7 +11,7 @@ services:
       - /dev/ttyACM0:/dev/ttyACM0
     restart: always
     ports:
-      - "80:8123"
+      - "8123:8123"
     networks:
       - hass
     depends_on:
@@ -22,7 +22,7 @@ services:
     image: eclipse-mosquitto:1.4.12
     restart: always
     volumes:
-      - ./mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf
+      - ./mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
       - ./mosquitto/data:/data
     ports:
       - "1883:1883"
@@ -79,15 +79,16 @@ services:
       - "8086:8086"
     env_file: influxdb.env
 
-  telegraf:
-    image: telegraf:1.7.3-alpine
-    container_name: telegraf
-    env_file: ./telegraf.env
-    networks:
-      - hass
-    volumes:
-      - ./telegraf/telegraf.conf:/etc/telegraf/telegraf.conf:ro
-      - /var/run/docker.sock:/var/run/docker.sock
+  # telegraf:
+  #   image: telegraf:1.7.3-alpine
+  #   container_name: telegraf
+  #   env_file: ./telegraf.env
+  #   networks:
+  #     - hass
+  #   volumes:
+  #     - ./telegraf/telegraf.conf:/etc/telegraf/telegraf.conf:ro
+  #     - /var/run/docker.sock:/var/run/docker.sock
+  #     - /var/run/utmp:/var/run/utmp
 
   mqtt-influxdb:
     container_name: mqtt-influxdb
@@ -114,16 +115,19 @@ services:
     depends_on:
       - influxdb
 
-  keberos-cam1:
-    container_name: keberos-cam1
-    image: kerberos/kerberos:latest
-    ports:
-      - "8000:80"
-      - "8889:8889"
-    volumes:
-      - ./keberos/cam1:/environments
-    networks:
-      - hass
+  # keberos-cam1:
+  #   container_name: keberos-cam1
+  #   image: kerberos/kerberos:latest
+  #   ports:
+  #     - "8000:80"
+  #     - "8889:8889"
+  #   volumes:
+  #     - ./keberos/cam1/config:/etc/opt/kerberosio/config
+  #     - ./keberos/cam1/capture:/etc/opt/kerberosio/capture
+  #     - ./keberos/cam1/logs:/etc/opt/kerberosio/logs
+  #     - ./keberos/cam1/web/config:/var/www/web/config
+  #   networks:
+  #     - hass
 
   portainer:
     image: portainer/portainer:1.19.1
@@ -136,7 +140,31 @@ services:
     ports:
       - "9000:9000"
 
+  letsencrypt:
+    image: adferrand/letsencrypt-dns:2.5.2
+    container_name: letsencrypt
+    networks:
+      - public
+    volumes:
+      - ./letsencrypt/domains.conf:/etc/letsencrypt/domains.conf:ro
+      - ./letsencrypt/data:/etc/letsencrypt
+    env_file: ./letsencrypt.env
+
+  nginx:
+    container_name: nginx
+    image: nginx:1.15.2-alpine
+    networks:
+      - public
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+      - ./nginx/dhparam.pem:/etc/ssl/dhparam.pem:ro
+      - ./letsencrypt/data:/etc/letsencrypt:ro
+    ports:
+      - "80:80"
+      - "443:443"
+
 networks:
   hass:
   samba:
   portainer:
+  public:
