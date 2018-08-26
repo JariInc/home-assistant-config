@@ -44,8 +44,10 @@ class MQTTInfluxDBBridge(object):
 		# HVAC
 		self.mqtt.subscribe('hvac/toshiba-63200289/pid/state', 0, self.hvac_callback)
 
-		# subscribe
-		#self.mqtt.subscribe(self.topic_prefix + '/fan/set', 0, self.set_fan)
+		# BME280
+		bme280_ids =  os.getenv('BME280_IDS').split(',')
+		for bme280_id in bme280_ids:
+			self.mqtt.subscribe('bme280/' + bme280_id, 0, self.bme280_callback)
 
 		self.logger.info('MQTT connected')
 
@@ -70,6 +72,20 @@ class MQTTInfluxDBBridge(object):
 			'ruuvitag', 
 			'environment', 
 			{'sensor': mac},
+			payload,
+			now
+		)
+
+	def bme280_callback(self, client, userdata, message):
+		payload = json.loads(message.payload.decode('utf-8'), parse_int=float)
+		topic_parts = message.topic.split('/')
+		bme280_id = topic_parts[1]
+		now = datetime.datetime.now()
+
+		self.influx.write(
+			'bme280', 
+			'environment', 
+			{'sensor': bme280_id},
 			payload,
 			now
 		)
