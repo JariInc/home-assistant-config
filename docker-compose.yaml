@@ -129,16 +129,16 @@ services:
   #   networks:
   #     - hass
 
-  portainer:
-    image: portainer/portainer:1.19.1
-    container_name: portainer
-    networks:
-      - portainer
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - ./portainer/data:/data
-    ports:
-      - "9000:9000"
+  # portainer:
+  #   image: portainer/portainer:1.19.1
+  #   container_name: portainer
+  #   networks:
+  #     - portainer
+  #   volumes:
+  #     - /var/run/docker.sock:/var/run/docker.sock
+  #     - ./portainer/data:/data
+  #   ports:
+  #     - "9000:9000"
 
   letsencrypt:
     image: adferrand/letsencrypt-dns:2.5.2
@@ -163,8 +163,34 @@ services:
       - "80:80"
       - "443:443"
 
+  unifi-video:
+    container_name: unifi-video
+    image: pducharme/unifi-video-controller:3.9.7
+    ports:
+      - "1935:1935"
+      - "6666:6666"
+      - "7080:7080"
+      - "7442:7442"
+      - "7443:7443"
+      - "7444:7444"
+      - "7445:7445"
+      - "7446:7446"
+      - "7447:7447"
+      - "10001:10001"
+    volumes:
+      - ./unifi-video/data:/var/lib/unifi-video
+      - ./unifi-video/videos:/var/lib/unifi-video/videos
+    environment:
+      - TZ=Europe/Helsinki
+      - PUID=101
+      - PGID=1001
+      - DEBUG=0
+    cap_add:
+      - SYS_ADMIN
+      - DAC_READ_SEARCH
+
 networks:
   hass:
   samba:
-  portainer:
+  #portainer:
   public:
