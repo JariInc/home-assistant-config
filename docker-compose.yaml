@@ -2,7 +2,7 @@ version: '3'
 services:
   homeassistant:
     container_name: hass
-    image: homeassistant/home-assistant:0.76.2
+    image: homeassistant/home-assistant:0.77.3
     env_file: hass.env
     volumes:
       - ./config:/config
@@ -103,7 +103,7 @@ services:
     
   grafana:
     container_name: grafana
-    image: grafana/grafana:5.2.2
+    image: grafana/grafana:5.2.3
     env_file: ./grafana.env
     ports: 
       - "3000:3000"
@@ -141,7 +141,7 @@ services:
   #     - "9000:9000"
 
   letsencrypt:
-    image: adferrand/letsencrypt-dns:2.5.2
+    image: adferrand/letsencrypt-dns:2.5.3
     container_name: letsencrypt
     networks:
       - public
@@ -152,7 +152,7 @@ services:
 
   nginx:
     container_name: nginx
-    image: nginx:1.15.2-alpine
+    image: nginx:1.15.3-alpine
     networks:
       - public
     volumes:
@@ -165,7 +165,7 @@ services:
 
   unifi-video:
     container_name: unifi-video
-    image: pducharme/unifi-video-controller:3.9.7
+    image: pducharme/unifi-video-controller:3.9.8
     ports:
       - "1935:1935"
       - "6666:6666"
