@@ -141,7 +141,7 @@ services:
   #     - "9000:9000"
 
   letsencrypt:
-    image: adferrand/letsencrypt-dns:2.5.3
+    image: adferrand/letsencrypt-dns:2.5.2
     container_name: letsencrypt
     networks:
       - public
@@ -179,15 +179,16 @@ services:
       - "10001:10001"
     volumes:
       - ./unifi-video/data:/var/lib/unifi-video
-      - ./unifi-video/videos:/var/lib/unifi-video/videos
     environment:
       - TZ=Europe/Helsinki
-      - PUID=101
-      - PGID=1001
+      - PUID=99
+      - PGID=100
       - DEBUG=0
     cap_add:
       - SYS_ADMIN
       - DAC_READ_SEARCH
+    networks:
+      - hass
 
 networks:
   hass:
