@@ -22,3 +22,29 @@ views:
       - sensor.philio_technology_corporation_pan11_smart_energy_plug_in_switch_current
       - sensor.philio_technology_corporation_pan11_smart_energy_plug_in_switch_energy
       - switch.philio_technology_corporation_pan11_smart_energy_plug_in_switch_switch
+  - type: picture-entity
+    entity: camera.parkki
+    camera_image: camera.parkki
+    show_state: false
+  - type: picture-entity
+    entity: camera.talo
+    camera_image: camera.talo
+    show_state: false
+  - type: entities
+    title: Katos
+    show_header_toggle: false
+    entities:
+      - switch.car_heater_side
+      - sensor.garage_side_socket_power
+      - input_boolean.car_heater_side_armed
+      - input_datetime.car_heater_side_departure
+  - type: entities
+    title: Talli
+    show_header_toggle: false
+    entities:
+      - switch.car_heater_front
+      - sensor.garage_front_socket_power
+      - input_boolean.car_heater_front_armed
+      - input_datetime.car_heater_front_departure
+  - type: weather-forecast
+    entity: weather.darksky

@@ -1,0 +1,8 @@
+car_heater_front_armed:
+  name: Lämmitin ajastettu
+  initial: off
+  icon: mdi:calendar-check
+car_heater_side_armed:
+  name: Lämmitin ajastettu
+  initial: off
+  icon: mdi:calendar-check

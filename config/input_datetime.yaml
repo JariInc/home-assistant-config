@@ -1,0 +1,10 @@
+car_heater_front_departure:
+  name: Lähtöaika
+  has_date: false
+  has_time: true
+  initial: 07:00
+car_heater_side_departure:
+  name: Lähtöaika
+  has_date: false
+  has_time: true
+  initial: 07:00

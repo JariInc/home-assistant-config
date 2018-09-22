@@ -1,0 +1,25 @@
+- platform: mqtt
+  name: car_heater_side
+  icon: mdi:power-socket-eu
+  state_topic: "stat/garage-side-socket/POWER"
+  command_topic: "cmnd/garage-side-socket/POWER"
+  availability_topic: "tele/garage-side-socket/LWT"
+  qos: 1
+  payload_on: "ON"
+  payload_off: "OFF"
+  payload_available: "Online"
+  payload_not_available: "Offline"
+  retain: false
+
+- platform: mqtt
+  name: car_heater_front
+  icon: mdi:power-socket-eu
+  state_topic: "stat/garage-front-socket/POWER"
+  command_topic: "cmnd/garage-front-socket/POWER"
+  availability_topic: "tele/garage-front-socket/LWT"
+  qos: 1
+  payload_on: "ON"
+  payload_off: "OFF"
+  payload_available: "Online"
+  payload_not_available: "Offline"
+  retain: false

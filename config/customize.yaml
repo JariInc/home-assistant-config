@@ -12,9 +12,28 @@ sensor.ruuvitag_outdoor_humidity:
   icon: mdi:water-percent
 sensor.philio_technology_corporation_pan11_smart_energy_plug_in_switch_power:
   friendly_name: Teho
+  icon: mdi:speedometer
 sensor.philio_technology_corporation_pan11_smart_energy_plug_in_switch_current:
   friendly_name: Virta
 sensor.philio_technology_corporation_pan11_smart_energy_plug_in_switch_energy:
   friendly_name: Energia
 switch.philio_technology_corporation_pan11_smart_energy_plug_in_switch_switch:
   friendly_name: Kytkin
+switch.car_heater_front:
+  friendly_name: Lämmityspistoke
+switch.car_heater_side:
+  friendly_name: Lämmityspistoke
+sensor.garage_side_socket_power:
+  friendly_name: Teho
+  icon: mdi:speedometer
+sensor.garage_front_socket_power:
+  friendly_name: Teho
+  icon: mdi:speedometer
+input_datetime.car_heater_front_departure:
+  icon: mdi:alarm
+input_datetime.car_heater_side_departure:
+  icon: mdi:alarm
+climate.toshiba_arctic_25:
+  icon: mdi:fan
+weather.darksky:
+  friendly_name: Sää

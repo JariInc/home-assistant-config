@@ -1,0 +1,4 @@
+- platform: uvc
+  nvr: unifi-video
+  key: !env_var UNIFI_API_KEY
+  password: !env_var UNIFI_CAMERA_PASSWORD

@@ -24,3 +24,16 @@
   name: ruuvitag_outdoor_humidity
   unit_of_measurement: "%"
   value_template: '{{ value_json.humidity }}'
+
+# tasmota
+- platform: mqtt
+  name: garage_side_socket_power
+  state_topic: "tele/garage-side-socket/SENSOR"
+  value_template: '{{ value_json["ENERGY"]["Power"] }}'
+  unit_of_measurement: "W"
+
+- platform: mqtt
+  name: garage_front_socket_power
+  state_topic: "tele/garage-front-socket/SENSOR"
+  value_template: '{{ value_json["ENERGY"]["Power"] }}'
+  unit_of_measurement: "W"
