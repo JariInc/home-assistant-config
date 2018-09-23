@@ -79,17 +79,6 @@ services:
       - "8086:8086"
     env_file: influxdb.env
 
-  # telegraf:
-  #   image: telegraf:1.7.3-alpine
-  #   container_name: telegraf
-  #   env_file: ./telegraf.env
-  #   networks:
-  #     - hass
-  #   volumes:
-  #     - ./telegraf/telegraf.conf:/etc/telegraf/telegraf.conf:ro
-  #     - /var/run/docker.sock:/var/run/docker.sock
-  #     - /var/run/utmp:/var/run/utmp
-
   mqtt-influxdb:
     container_name: mqtt-influxdb
     build: ./mqtt-influxdb
@@ -114,31 +103,6 @@ services:
     restart: always
     depends_on:
       - influxdb
-
-  # keberos-cam1:
-  #   container_name: keberos-cam1
-  #   image: kerberos/kerberos:latest
-  #   ports:
-  #     - "8000:80"
-  #     - "8889:8889"
-  #   volumes:
-  #     - ./keberos/cam1/config:/etc/opt/kerberosio/config
-  #     - ./keberos/cam1/capture:/etc/opt/kerberosio/capture
-  #     - ./keberos/cam1/logs:/etc/opt/kerberosio/logs
-  #     - ./keberos/cam1/web/config:/var/www/web/config
-  #   networks:
-  #     - hass
-
-  # portainer:
-  #   image: portainer/portainer:1.19.1
-  #   container_name: portainer
-  #   networks:
-  #     - portainer
-  #   volumes:
-  #     - /var/run/docker.sock:/var/run/docker.sock
-  #     - ./portainer/data:/data
-  #   ports:
-  #     - "9000:9000"
 
   letsencrypt:
     image: adferrand/letsencrypt-dns:2.5.2
@@ -190,8 +154,17 @@ services:
     networks:
       - hass
 
+  car-heater-timer:
+    container_name: car-heater-timer
+    build: ./car-heater-timer
+    env_file: ./car-heater-timer.env
+    networks:
+      - hass
+    restart: always
+    depends_on:
+      - homeassistant
+
 networks:
   hass:
   samba:
-  #portainer:
   public:
