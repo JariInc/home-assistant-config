@@ -1,6 +1,7 @@
 import logging
 import os
 from datetime import date, time, datetime, timedelta
+from pytz import timezone
 from time import sleep
 from hass import Hass
 from dotenv import load_dotenv
@@ -10,11 +11,13 @@ load_dotenv()
 class CarHeaterTimer(object):
 	hass = None 
 	logger = None
+	tz = None
 
 	def __init__(self, base_url, api_key):
 		self.logger = logging.getLogger('car-heater-timer')
 		self.logger.info('Starting car heater controller')
 
+		self.tz = timezone('Europe/Helsinki')
 		self.hass = Hass(base_url, api_key)
 
 	def check(self, entity):
@@ -25,7 +28,7 @@ class CarHeaterTimer(object):
 			self.logger.info('%s is heating', entity)
 			
 			turnOffDateTime = self.turnOffDateTime(entity)
-			timeToTurnOff =  turnOffDateTime - datetime.now()
+			timeToTurnOff =  turnOffDateTime - datetime.now(self.tz)
 
 			self.logger.info('%s turn off at %s (%s minutes)', entity, turnOffDateTime.isoformat(), round(timeToTurnOff.total_seconds() / 60))
 
@@ -45,12 +48,12 @@ class CarHeaterTimer(object):
 			heatingTime = self.heatingTime(temp)
 			self.logger.info('Heating for %s minutes in %sC', heatingTime, temp)
 
+			now = datetime.now(self.tz)
+			timeToDeparture = (departureDateTime - now).total_seconds()
+
+			self.logger.info('%s minutes to departure', round(timeToDeparture / 60))
+
 			if heatingTime > 0:
-				now = datetime.now()
-				timeToDeparture = (departureDateTime - now).total_seconds()
-
-				self.logger.info('%s minutes to departure', round(timeToDeparture / 60))
-
 				if timeToDeparture < heatingTime * 60:
 					self.logger.info('Turning on heating %s', entity)
 					isHeating = self.setHeating(entity, True)
@@ -76,7 +79,7 @@ class CarHeaterTimer(object):
 		return time(hour, minute, second)
 
 	def departureDateTime(self, entity): 
-		now = datetime.now()
+		now = datetime.now(self.tz)
 		current_time = now.timetz()
 		departure_date = now.date()
 		departure_time = self.departureTime(entity)
@@ -86,7 +89,7 @@ class CarHeaterTimer(object):
 
 		departure_datetime = datetime.combine(departure_date, departure_time)
 
-		return departure_datetime
+		return self.tz.localize(departure_datetime)
 
 	def turnOffDateTime(self, entity):
 		departure_time = self.departureTime(entity)
@@ -94,7 +97,7 @@ class CarHeaterTimer(object):
 		departure_datetime = datetime.combine(current_date, departure_time)
 		turnoff_datetime = departure_datetime + timedelta(minutes=30)
 
-		return turnoff_datetime
+		return self.tz.localize(turnoff_datetime)
 
 	def outsideTemperature(self):
 		entity = os.getenv('TEMP_ENTITY')
