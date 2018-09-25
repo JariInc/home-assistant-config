@@ -54,7 +54,7 @@ services:
     env_file: duplicity.env
     volumes:
       - .:/data:ro
-    command: ["duplicity", "--full-if-older-than=1W", "--no-encryption", "--allow-source-mismatch", "--s3-use-rrs", "--s3-use-multiprocessing", "/data", "s3://s3.eu-central-1.amazonaws.com/p16-hass-backup/hass"]
+    command: ["duplicity", "--full-if-older-than=1W", "--no-encryption", "--allow-source-mismatch", "--s3-use-rrs", "--s3-use-multiprocessing", "--exclude", "/data/unifi-video/data", "/data", "s3://s3.eu-central-1.amazonaws.com/p16-hass-backup/hass"]
 
   hvac-pid:
     container_name: hvac_pid
@@ -69,7 +69,7 @@ services:
 
   influxdb:
     container_name: influxdb
-    image: influxdb:1.5.4-alpine
+    image: influxdb:1.6.3-alpine
     volumes:
       - ./influxdb/data:/var/lib/influxdb
     networks:
@@ -92,7 +92,7 @@ services:
     
   grafana:
     container_name: grafana
-    image: grafana/grafana:5.2.3
+    image: grafana/grafana:5.2.4
     env_file: ./grafana.env
     ports: 
       - "3000:3000"
