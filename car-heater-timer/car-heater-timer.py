@@ -9,148 +9,156 @@ from dotenv import load_dotenv
 load_dotenv()
 
 class CarHeaterTimer(object):
-	hass = None 
-	logger = None
-	tz = None
+    hass = None
+    logger = None
+    tz = None
 
-	def __init__(self, base_url, api_key):
-		self.logger = logging.getLogger('car-heater-timer')
-		self.logger.info('Starting car heater controller')
+    def __init__(self, base_url, api_key):
+        self.logger = logging.getLogger('car-heater-timer')
+        self.logger.info('Starting car heater controller')
 
-		self.tz = timezone('Europe/Helsinki')
-		self.hass = Hass(base_url, api_key)
+        self.tz = timezone('Europe/Helsinki')
+        self.hass = Hass(base_url, api_key)
 
-	def check(self, entity):
-		isArmed = self.isArmed(entity)
-		isHeating = self.isHeating(entity)
+    def check(self, entity):
+        isArmed = self.isArmed(entity)
+        isHeating = self.isHeating(entity)
 
-		if isHeating and isArmed:
-			self.logger.info('%s is heating', entity)
-			
-			turnOffDateTime = self.turnOffDateTime(entity)
-			timeToTurnOff =  turnOffDateTime - datetime.now(self.tz)
+        if isHeating and isArmed:
+            self.logger.info('%s is heating', entity)
 
-			self.logger.info('%s turn off at %s (%s minutes)', entity, turnOffDateTime.isoformat(), round(timeToTurnOff.total_seconds() / 60))
+            turnOffDateTime = self.turnOffDateTime(entity)
+            now = datetime.now(self.tz)
 
-			if timeToTurnOff.total_seconds() < 0:
-				self.logger.info('Turning off heating %s', entity)
-				isHeating = self.setHeating(entity, False)
-				self.logger.info('Disarming %s', entity)
-				isHeating = self.setArming(entity, False)
+            timeToTurnOff =  turnOffDateTime - now
 
-		elif isArmed:
-			self.logger.info('%s is armed', entity)
+            self.logger.info('%s turn off at %s (%s minutes)', entity, turnOffDateTime.isoformat(), round(timeToTurnOff.total_seconds() / 60))
 
-			departureDateTime = self.departureDateTime(entity)
-			self.logger.info('%s departure at %s', entity, departureDateTime.isoformat())
+            self.logger.debug('turnOffDateTime %s (%s) now %s (%s)', turnOffDateTime, turnOffDateTime.tzinfo, now, now.tzinfo)
 
-			temp = self.outsideTemperature()
-			heatingTime = self.heatingTime(temp)
-			self.logger.info('Heating for %s minutes in %sC', heatingTime, temp)
+            if timeToTurnOff.total_seconds() < 0:
+                self.logger.info('Turning off heating %s', entity)
+                isHeating = self.setHeating(entity, False)
+                self.logger.info('Disarming %s', entity)
+                isHeating = self.setArming(entity, False)
 
-			now = datetime.now(self.tz)
-			timeToDeparture = (departureDateTime - now).total_seconds()
+        elif isArmed:
+            self.logger.info('%s is armed', entity)
 
-			self.logger.info('%s minutes to departure', round(timeToDeparture / 60))
+            departureDateTime = self.departureDateTime(entity)
+            self.logger.info('%s departure at %s', entity, departureDateTime.isoformat())
 
-			if heatingTime > 0:
-				if timeToDeparture < heatingTime * 60:
-					self.logger.info('Turning on heating %s', entity)
-					isHeating = self.setHeating(entity, True)
+            temp = self.outsideTemperature()
+            heatingTime = self.heatingTime(temp)
+            self.logger.info('Heating for %s minutes in %sC', heatingTime, temp)
+
+            now = datetime.now(self.tz)
+            timeToDeparture = (departureDateTime - now).total_seconds()
+
+            self.logger.info('%s minutes to departure', round(timeToDeparture / 60))
+
+            self.logger.debug('departureDateTime %s (%s) now %s (%s)', departureDateTime, departureDateTime.tzinfo, now, now.tzinfo)
+
+            if heatingTime > 0:
+                if timeToDeparture < heatingTime * 60:
+                    self.logger.info('Turning on heating %s', entity)
+                    isHeating = self.setHeating(entity, True)
 
 
-	def isArmed(self, entity):
-		state = self.hass.getState('input_boolean.' + entity + '_armed')
+    def isArmed(self, entity):
+        state = self.hass.getState('input_boolean.' + entity + '_armed')
 
-		return state['state'] == 'on'
+        return state['state'] == 'on'
 
-	def isHeating(self, entity):
-		state = self.hass.getState('switch.' + entity)
+    def isHeating(self, entity):
+        state = self.hass.getState('switch.' + entity)
 
-		return state['state'] == 'on'
+        return state['state'] == 'on'
 
-	def departureTime(self, entity):
-		state = self.hass.getState('input_datetime.' + entity + '_departure')
+    def departureTime(self, entity):
+        state = self.hass.getState('input_datetime.' + entity + '_departure')
 
-		hour = state['attributes']['hour']
-		minute = state['attributes']['minute']
-		second = state['attributes']['second']
-		
-		return time(hour, minute, second)
+        hour = state['attributes']['hour']
+        minute = state['attributes']['minute']
+        second = state['attributes']['second']
 
-	def departureDateTime(self, entity): 
-		now = datetime.now(self.tz)
-		current_time = now.timetz()
-		departure_date = now.date()
-		departure_time = self.departureTime(entity)
+        return time(hour, minute, second, tzinfo=self.tz)
 
-		if(current_time > departure_time):
-			departure_date += timedelta(days=1)
+    def departureDateTime(self, entity):
+        now = datetime.now(self.tz)
+        current_time = now.timetz()
+        departure_date = now.date()
+        departure_time = self.departureTime(entity)
 
-		departure_datetime = datetime.combine(departure_date, departure_time)
+        self.logger.debug('current_time %s (%s) departure_time %s (%s)', current_time, current_time.tzinfo, departure_time, departure_time.tzinfo)
 
-		return self.tz.localize(departure_datetime)
+        if(current_time > departure_time):
+            departure_date += timedelta(days=1)
 
-	def turnOffDateTime(self, entity):
-		departure_time = self.departureTime(entity)
-		current_date = date.today()
-		departure_datetime = datetime.combine(current_date, departure_time)
-		turnoff_datetime = departure_datetime + timedelta(minutes=30)
+        departure_datetime = datetime.combine(departure_date, departure_time, tzinfo=None)
 
-		return self.tz.localize(turnoff_datetime)
+        return self.tz.localize(departure_datetime)
 
-	def outsideTemperature(self):
-		entity = os.getenv('TEMP_ENTITY')
-		state = self.hass.getState(entity)
+    def turnOffDateTime(self, entity):
+        departure_time = self.departureTime(entity)
+        current_date = date.today()
+        departure_datetime = datetime.combine(current_date, departure_time, tzinfo=None)
+        turnoff_datetime = departure_datetime + timedelta(minutes=30)
 
-		return float(state['state'])
+        return self.tz.localize(turnoff_datetime)
 
-	def heatingTime(self, temp_C):
-		temp_0m_C = 5
-		temp_120m_C = -15
+    def outsideTemperature(self):
+        entity = os.getenv('TEMP_ENTITY')
+        state = self.hass.getState(entity)
 
-		temp_0m_K = temp_0m_C + 273.15
-		temp_120m_K = temp_120m_C + 273.15
-		temp_K = temp_C + 273.15
+        return float(state['state'])
 
-		delta = -120 / (temp_0m_K - temp_120m_K)
-		offset = -delta * temp_0m_K
-		heating_time = (delta * temp_K) + offset
+    def heatingTime(self, temp_C):
+        temp_0m_C = 5
+        temp_120m_C = -15
 
-		return max(min(heating_time, 180), 0)
+        temp_0m_K = temp_0m_C + 273.15
+        temp_120m_K = temp_120m_C + 273.15
+        temp_K = temp_C + 273.15
 
-	def setHeating(self, entity, enabled):
-		if enabled:
-			self.hass.callService('switch', 'turn_on', 'switch.' + entity)
-		else:
-			self.hass.callService('switch', 'turn_off', 'switch.' + entity)
+        delta = -120 / (temp_0m_K - temp_120m_K)
+        offset = -delta * temp_0m_K
+        heating_time = (delta * temp_K) + offset
 
-	def setArming(self, entity, enabled):
-		if enabled:
-			self.hass.callService('input_boolean', 'turn_on', 'input_boolean.' + entity + '_armed')
-		else:
-			self.hass.callService('input_boolean', 'turn_off', 'input_boolean.' + entity + '_armed')
+        return max(min(heating_time, 180), 0)
+
+    def setHeating(self, entity, enabled):
+        if enabled:
+            self.hass.callService('switch', 'turn_on', 'switch.' + entity)
+        else:
+            self.hass.callService('switch', 'turn_off', 'switch.' + entity)
+
+    def setArming(self, entity, enabled):
+        if enabled:
+            self.hass.callService('input_boolean', 'turn_on', 'input_boolean.' + entity + '_armed')
+        else:
+            self.hass.callService('input_boolean', 'turn_off', 'input_boolean.' + entity + '_armed')
 
 if __name__ == '__main__':
-	logger = logging.getLogger('car-heater-timer')
-	logger.setLevel(logging.DEBUG)
-	logger.propagate = False
+    logger = logging.getLogger('car-heater-timer')
+    logger.setLevel(logging.DEBUG)
+    logger.propagate = False
 
-	formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
-	ch = logging.StreamHandler()
-	ch.setLevel(logging.DEBUG)
-	ch.setFormatter(formatter)
+    ch = logging.StreamHandler()
+    ch.setLevel(logging.DEBUG)
+    ch.setFormatter(formatter)
 
-	logger.addHandler(ch)
+    logger.addHandler(ch)
 
-	base_url = os.getenv('BASE_URL')
-	api_key = os.getenv('API_KEY')
-	entities = os.getenv('ENTITIES').split(',')
+    base_url = os.getenv('BASE_URL')
+    api_key = os.getenv('API_KEY')
+    entities = os.getenv('ENTITIES').split(',')
 
-	timer = CarHeaterTimer(base_url, api_key)
+    timer = CarHeaterTimer(base_url, api_key)
 
-	while True:
-		for entity in entities:
-			timer.check(entity)
-		sleep(60)
+    while True:
+        for entity in entities:
+            timer.check(entity)
+        sleep(60)
