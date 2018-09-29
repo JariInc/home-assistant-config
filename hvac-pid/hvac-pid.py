@@ -3,7 +3,7 @@ import time
 import os
 import json
 from mqtt import MQTTClient
-from pid import PID
+from temp import Temp
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -11,11 +11,8 @@ load_dotenv()
 class HVACPIDController(object):
 	logger = None
 	mqtt = None
-	pid = None
+	temp = None
 
-	temp_request = 21
-	temp_measure = 21
-	temp_set = 21
 	fan_set = 3
 	mode = 'auto'
 	power = True
@@ -27,13 +24,16 @@ class HVACPIDController(object):
 		self.logger = logging.getLogger('hvac-pid')
 		self.logger.info('Starting hvac-pid')
 
-		# PID
-		self.pid = PID(
-			float(os.getenv('PID_KP')), 
-			float(os.getenv('PID_KI')), 
-			float(os.getenv('PID_KD')),
-			float(os.getenv('PID_INTEGRAL_MAX_EFFECT'))
-		)
+		# PID options
+		pid_options = {
+			'Kp': float(os.getenv('PID_KP')), 
+			'Ki': float(os.getenv('PID_KI')), 
+			'Kd': float(os.getenv('PID_KD')),
+			'integral_max_effect': float(os.getenv('PID_INTEGRAL_MAX_EFFECT'))
+		}
+
+		# Temp
+		self.temp = Temp(**pid_options)
 
 		# MQTT
 		self.topic_prefix = os.getenv('MQTT_PID_TOPIC_PREFIX')
@@ -56,11 +56,6 @@ class HVACPIDController(object):
 		# wait a bit before enabling control
 		time.sleep(3)
 		self.control_enable = True
-
-	def _temp_set(self):
-		pid_output = self.pid.iterate(self.temp_request, self.temp_measure)
-		self.temp_set = int(round(min(30, max(17, pid_output))))
-		self.logger.info('Set temperature from PID to %s', self.temp_set)
 
 	def _hysteresis(self, threshold, value, hysteresis, crossed_threshold, direction):
 		lower_threshold = threshold - (hysteresis / 2)
@@ -102,28 +97,26 @@ class HVACPIDController(object):
 
 		if is_heat:
 			threshold = self.temp_request + 1.0
-			self.power = not self._hysteresis(threshold, self.temp_measure, 0.5, not self.power, True)
+			self.power = not self._hysteresis(threshold, self.temp.temp_measure, 0.5, not self.power, True)
 		else:
 			threshold = self.temp_request - 1.0
-			self.power = not self._hysteresis(threshold, self.temp_measure, 0.5, not self.power, False)
+			self.power = not self._hysteresis(threshold, self.temp.temp_measure, 0.5, not self.power, False)
 
 		self.logger.info('Set power to %s', self.power)
 
 	def iterate(self):
 		if self.manual:
 			self.logger.info('Manual mode, skipping PID iteration')
-			self.temp_set = self.temp_request
-		else:
-			self.logger.info('PID iteration')
-			self._temp_set()
+			self.temp.temp_set = self.temp.temp_request
+		else:c
+			self.temp.iteratePID()
 			self._fan_set()
 			self._power_set()
 			self.publish_state()
 		
 	def temp_update_callback(self, client, userdata, message):
 		payload_json = json.loads(message.payload.decode('utf-8'))
-		self.logger.info('Received temperature measurement %s', payload_json['temperature'])
-		self.temp_measure = payload_json['temperature']
+		self.temp.setMeasurement(payload_json['temperature'])
 
 	def hvac_callback(self, client, userdata, message):
 		payload_json = json.loads(message.payload.decode('utf-8'))
@@ -136,7 +129,7 @@ class HVACPIDController(object):
 			new_state = {
 				'power': self.power,
 				'mode': self.mode.upper(),
-				'temperature': self.temp_set,
+				'temperature': self.temp.temp_set,
 				'fan': self.fan_set,
 			}
 
@@ -201,15 +194,14 @@ class HVACPIDController(object):
 		temp = float(message.payload.decode('utf-8'))
 
 		if temp >= 17 and temp <= 30:
-			self.temp_request = temp
-			self.logger.info('Set temperature request to %s', self.temp_request)
+			self.temp.setRequest(temp)
 			self.publish_temp()
 			self.iterate()
 			self.setHVAC()
 
 	def publish_temp(self):
-		self.mqtt.publish(self.topic_prefix + '/temperature/state', self.temp_request, 1, True)
-		self.mqtt.publish(self.topic_prefix + '/measured_temperature', self.temp_measure, 1, True)
+		self.mqtt.publish(self.topic_prefix + '/temperature/state', self.temp.temp_request, 1, True)
+		self.mqtt.publish(self.topic_prefix + '/measured_temperature', self.temp.temp_measure, 1, True)
 
 	def set_fan(self, client, userdata, message):
 		fan = int(message.payload.decode('utf-8'))
@@ -236,18 +228,18 @@ class HVACPIDController(object):
 		message = json.dumps({
 			'mode': self.mode,
 			'manual': self.manual,
-			'temperature_request': float(self.temp_request),
-			'temperature_set': float(self.temp_set),
-			'temperature_measure': float(self.temp_measure),
-			'temperature_error': float(self.pid.previous_error),
+			'temperature_request': float(self.temp.temp_request),
+			'temperature_set': float(self.temp.temp_set),
+			'temperature_measure': float(self.temp.temp_measure),
+			'temperature_error': float(self.temp.pid.previous_error),
 			'fan': int(self.fan_set if self.power else 0),
 			'power': self.power,
-			'Kp': float(self.pid.Kp),
-			'Ki': float(self.pid.Ki),
-			'Kd': float(self.pid.Kd),
-			'integral': float(self.pid.integral),
-			'integral_max': float(self.pid.integral_max),
-			'pid_output': float(self.pid.output)
+			'Kp': float(self.temp.pid.Kp),
+			'Ki': float(self.temp.pid.Ki),
+			'Kd': float(self.temp.pid.Kd),
+			'integral': float(self.temp.pid.integral),
+			'integral_max': float(self.temp.pid.integral_max),
+			'pid_output': float(self.temp.pid.output)
 		})
 		self.mqtt.publish(topic, message, 1)
 
