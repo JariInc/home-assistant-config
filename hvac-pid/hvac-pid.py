@@ -4,6 +4,7 @@ import os
 import json
 from mqtt import MQTTClient
 from temp import Temp
+from fan import Fan
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -12,6 +13,7 @@ class HVACPIDController(object):
 	logger = None
 	mqtt = None
 	temp = None
+	fan = None
 
 	fan_set = 3
 	mode = 'auto'
@@ -34,6 +36,9 @@ class HVACPIDController(object):
 
 		# Temp
 		self.temp = Temp(**pid_options)
+
+		# Fan
+		self.fan = Fan()
 
 		# MQTT
 		self.topic_prefix = os.getenv('MQTT_PID_TOPIC_PREFIX')
@@ -72,26 +77,6 @@ class HVACPIDController(object):
 			else:
 				return (value < lower_threshold)
 
-	def _fan_set(self):
-		error = self.pid.previous_error
-		error_abs = abs(error)
-		is_heat = self.mode == 'heat'
-
-		# if overshoot over 3/1 degrees, set fan to 1
-		if (is_heat and error > 3.0) or (not is_heat and error > 1.0):
-			self.fan_set = 1
-		# if overshoot over 0.5 degrees, set fan to 2
-		elif (is_heat and error > 2.0) or (not is_heat and error > 0.5):
-			self.fan_set = 2
-		elif error_abs < 1.0:
-			self.fan_set = 3
-		elif error_abs < 2.0:
-			self.fan_set = 4
-		else:
-			self.fan_set = 5
-
-		self.logger.info('Set fan %s', self.fan_set)
-
 	def _power_set(self):
 		is_heat = self.mode == 'heat'
 
@@ -110,7 +95,7 @@ class HVACPIDController(object):
 			self.temp.temp_set = self.temp.temp_request
 		else:c
 			self.temp.iteratePID()
-			self._fan_set()
+			self.fan.calculate(self.temp.pid.previous_error, self.mode)
 			self._power_set()
 			self.publish_state()
 		
@@ -130,7 +115,7 @@ class HVACPIDController(object):
 				'power': self.power,
 				'mode': self.mode.upper(),
 				'temperature': self.temp.temp_set,
-				'fan': self.fan_set,
+				'fan': self.fan.speed,
 			}
 
 			is_state_changed = (new_state['power'] and self.hvac_state != new_state)
@@ -206,18 +191,17 @@ class HVACPIDController(object):
 	def set_fan(self, client, userdata, message):
 		fan = int(message.payload.decode('utf-8'))
 
-		if fan >= 1 and fan <= 5:
-			self.fan_set = fan
-			self.logger.info('Set fan to %s', self.fan_set)
+		if self.manual and fan >= 1 and fan <= 5:
+			self.logger.info('Manually set fan speed to %s/5', self.fan.speed)
+			self.fan.speed = fan
 			self.publish_fan()
-			self.iterate()
 			self.setHVAC()
 
 	def publish_fan(self):
 		topic = self.topic_prefix + '/fan/state'
 		
 		if self.manual:
-			fan = self.fan_set
+			fan = self.fan.speed
 		else:
 			fan = 'auto'
 
