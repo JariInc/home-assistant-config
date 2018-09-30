@@ -8,7 +8,6 @@ class Fan(object):
 		self.logger = logging.getLogger('hvac-pid.fan')
 
 	def calculate(self, temp_error, mode):
-		error_abs = abs(temp_error)
 		is_heat = mode == 'heat'
 
 		if is_heat:
