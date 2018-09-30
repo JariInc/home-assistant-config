@@ -15,7 +15,6 @@ class HVACPIDController(object):
 	temp = None
 	fan = None
 
-	fan_set = 3
 	mode = 'auto'
 	power = True
 	manual = False
@@ -216,7 +215,7 @@ class HVACPIDController(object):
 			'temperature_set': float(self.temp.temp_set),
 			'temperature_measure': float(self.temp.temp_measure),
 			'temperature_error': float(self.temp.pid.previous_error),
-			'fan': int(self.fan_set if self.power else 0),
+			'fan': int(self.fan.speed if self.power else 0),
 			'power': self.power,
 			'Kp': float(self.temp.pid.Kp),
 			'Ki': float(self.temp.pid.Ki),
