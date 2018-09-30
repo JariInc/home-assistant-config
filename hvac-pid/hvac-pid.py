@@ -5,6 +5,7 @@ import json
 from mqtt import MQTTClient
 from temp import Temp
 from fan import Fan
+from power import Power
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -14,9 +15,9 @@ class HVACPIDController(object):
 	mqtt = None
 	temp = None
 	fan = None
+	power = None
 
 	mode = 'auto'
-	power = True
 	manual = False
 	control_enable = False
 	hvac_state = {}
@@ -38,6 +39,9 @@ class HVACPIDController(object):
 
 		# Fan
 		self.fan = Fan()
+		
+		# Power
+		self.power = Power()
 
 		# MQTT
 		self.topic_prefix = os.getenv('MQTT_PID_TOPIC_PREFIX')
@@ -61,33 +65,6 @@ class HVACPIDController(object):
 		time.sleep(3)
 		self.control_enable = True
 
-	def _hysteresis(self, threshold, value, hysteresis, crossed_threshold, direction):
-		lower_threshold = threshold - (hysteresis / 2)
-		upper_threshold = threshold + (hysteresis / 2)
-
-		if direction:
-			if crossed_threshold:
-				return (value > lower_threshold)
-			else:
-				return (value > upper_threshold)
-		else:
-			if crossed_threshold:
-				return (value < upper_threshold)
-			else:
-				return (value < lower_threshold)
-
-	def _power_set(self):
-		is_heat = self.mode == 'heat'
-
-		if is_heat:
-			threshold = self.temp_request + 1.0
-			self.power = not self._hysteresis(threshold, self.temp.temp_measure, 0.5, not self.power, True)
-		else:
-			threshold = self.temp_request - 1.0
-			self.power = not self._hysteresis(threshold, self.temp.temp_measure, 0.5, not self.power, False)
-
-		self.logger.info('Set power to %s', self.power)
-
 	def iterate(self):
 		if self.manual:
 			self.logger.info('Manual mode, skipping PID iteration')
@@ -95,7 +72,7 @@ class HVACPIDController(object):
 		else:c
 			self.temp.iteratePID()
 			self.fan.calculate(self.temp.pid.previous_error, self.mode)
-			self._power_set()
+			self.power.calculate()
 			self.publish_state()
 		
 	def temp_update_callback(self, client, userdata, message):
@@ -111,7 +88,7 @@ class HVACPIDController(object):
 		if self.control_enable:
 			topic = os.getenv('MQTT_HVAC_TOPIC')
 			new_state = {
-				'power': self.power,
+				'power': self.power.state,
 				'mode': self.mode.upper(),
 				'temperature': self.temp.temp_set,
 				'fan': self.fan.speed,
@@ -138,11 +115,11 @@ class HVACPIDController(object):
 		if mode == 'off':
 			self.manual = True
 			self.mode = 'auto'
-			self.power = False
+			self.power.state = False
 			self.logger.info('Set mode to off')
 		if mode == 'manual':
 			self.manual = True
-			self.power = True
+			self.power.state = True
 			self.mode = 'auto'
 			self.logger.info('Set mode to manual')
 		elif mode in ['heat', 'cool']:
@@ -163,7 +140,7 @@ class HVACPIDController(object):
 		topic = self.topic_prefix + '/mode/state'
 		
 		if self.manual:
-			if self.power == False:
+			if self.power.state == False:
 				mode = 'off'
 			else:
 				mode = 'manual'
@@ -215,8 +192,8 @@ class HVACPIDController(object):
 			'temperature_set': float(self.temp.temp_set),
 			'temperature_measure': float(self.temp.temp_measure),
 			'temperature_error': float(self.temp.pid.previous_error),
-			'fan': int(self.fan.speed if self.power else 0),
-			'power': self.power,
+			'fan': int(self.fan.speed if self.power.state else 0),
+			'power': self.power.state,
 			'Kp': float(self.temp.pid.Kp),
 			'Ki': float(self.temp.pid.Ki),
 			'Kd': float(self.temp.pid.Kd),
