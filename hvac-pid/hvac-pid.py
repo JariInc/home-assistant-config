@@ -3,274 +3,226 @@ import time
 import os
 import json
 from mqtt import MQTTClient
-from pid import PID
+from temp import Temp
+from fan import Fan
+from power import Power
 from dotenv import load_dotenv
 
 load_dotenv()
 
 class HVACPIDController(object):
-	logger = None
-	mqtt = None
-	pid = None
+    logger = None
+    mqtt = None
+    temp = None
+    fan = None
+    power = None
 
-	temp_request = 21
-	temp_measure = 21
-	temp_set = 21
-	fan_set = 3
-	mode = 'auto'
-	power = True
-	manual = False
-	control_enable = False
-	hvac_state = {}
+    mode = 'auto'
+    manual = False
+    control_enable = False
+    hvac_state = {}
 
-	def __init__(self):
-		self.logger = logging.getLogger('hvac-pid')
-		self.logger.info('Starting hvac-pid')
+    def __init__(self):
+        self.logger = logging.getLogger('hvac-pid')
+        self.logger.info('Starting hvac-pid')
 
-		# PID
-		self.pid = PID(
-			float(os.getenv('PID_KP')), 
-			float(os.getenv('PID_KI')), 
-			float(os.getenv('PID_KD')),
-			float(os.getenv('PID_INTEGRAL_MAX_EFFECT'))
-		)
+        # PID options
+        pid_options = {
+            'Kp': float(os.getenv('PID_KP')), 
+            'Ki': float(os.getenv('PID_KI')), 
+            'Kd': float(os.getenv('PID_KD')),
+            'integral_max_effect': float(os.getenv('PID_INTEGRAL_MAX_EFFECT'))
+        }
 
-		# MQTT
-		self.topic_prefix = os.getenv('MQTT_PID_TOPIC_PREFIX')
-		self.mqtt = MQTTClient(os.getenv('MQTT_CLIENT_ID'), os.getenv('MQTT_BROKER_HOST'))
-		self.mqtt.connect()
+        # Temp
+        self.temp = Temp(**pid_options)
 
-		# subscribe
-		self.mqtt.subscribe(os.getenv('MQTT_TEMP_TOPIC'), 0, self.temp_update_callback)
-		self.mqtt.subscribe(os.getenv('MQTT_HVAC_STATE_TOPIC'), 0, self.hvac_callback)
-		self.mqtt.subscribe(self.topic_prefix + '/mode/set', 0, self.set_mode)
-		self.mqtt.subscribe(self.topic_prefix + '/temperature/set', 0, self.set_temp)
-		self.mqtt.subscribe(self.topic_prefix + '/fan/set', 0, self.set_fan)
+        # Fan
+        self.fan = Fan()
+        
+        # Power
+        self.power = Power()
 
-		self.logger.info('MQTT connected')
+        # MQTT
+        self.topic_prefix = os.getenv('MQTT_PID_TOPIC_PREFIX')
+        self.mqtt = MQTTClient(os.getenv('MQTT_CLIENT_ID'), os.getenv('MQTT_BROKER_HOST'))
+        self.mqtt.connect()
 
-		self.publish_temp()
-		self.publish_mode()
-		self.publish_fan()
+        # subscribe
+        self.mqtt.subscribe(os.getenv('MQTT_TEMP_TOPIC'), 0, self.temp_update_callback)
+        self.mqtt.subscribe(os.getenv('MQTT_HVAC_STATE_TOPIC'), 0, self.hvac_callback)
+        self.mqtt.subscribe(self.topic_prefix + '/mode/set', 0, self.set_mode)
+        self.mqtt.subscribe(self.topic_prefix + '/temperature/set', 0, self.set_temp)
+        self.mqtt.subscribe(self.topic_prefix + '/fan/set', 0, self.set_fan)
 
-		# wait a bit before enabling control
-		time.sleep(3)
-		self.control_enable = True
+        self.logger.info('MQTT connected')
 
-	def _temp_set(self):
-		pid_output = self.pid.iterate(self.temp_request, self.temp_measure)
-		self.temp_set = int(round(min(30, max(17, pid_output))))
-		self.logger.info('Set temperature from PID to %s', self.temp_set)
+        self.publish_temp()
+        self.publish_mode()
+        self.publish_fan()
 
-	def _hysteresis(self, threshold, value, hysteresis, crossed_threshold, direction):
-		lower_threshold = threshold - (hysteresis / 2)
-		upper_threshold = threshold + (hysteresis / 2)
+        # wait a bit before enabling control
+        time.sleep(3)
+        self.control_enable = True
 
-		if direction:
-			if crossed_threshold:
-				return (value > lower_threshold)
-			else:
-				return (value > upper_threshold)
-		else:
-			if crossed_threshold:
-				return (value < upper_threshold)
-			else:
-				return (value < lower_threshold)
+    def iterate(self):
+        if self.manual:
+            self.logger.info('Manual mode, skipping PID iteration')
+            self.temp.temp_set = self.temp.temp_request
+        else:
+            self.temp.iteratePID()
+            self.fan.calculate(self.temp.pid.previous_error, self.mode)
+            self.power.calculate(self.temp.temp_request, self.temp.temp_measure, self.mode)
+            self.publish_state()
+        
+    def temp_update_callback(self, client, userdata, message):
+        payload_json = json.loads(message.payload.decode('utf-8'))
+        self.temp.setMeasurement(payload_json['temperature'])
 
-	def _fan_set(self):
-		error = self.pid.previous_error
-		error_abs = abs(error)
-		is_heat = self.mode == 'heat'
+    def hvac_callback(self, client, userdata, message):
+        payload_json = json.loads(message.payload.decode('utf-8'))
+        self.logger.info('Received hvac state change %s', payload_json)
+        self.hvac_state = payload_json
 
-		# if overshoot over 3/1 degrees, set fan to 1
-		if (is_heat and error > 3.0) or (not is_heat and error > 1.0):
-			self.fan_set = 1
-		# if overshoot over 0.5 degrees, set fan to 2
-		elif (is_heat and error > 2.0) or (not is_heat and error > 0.5):
-			self.fan_set = 2
-		elif error_abs < 1.0:
-			self.fan_set = 3
-		elif error_abs < 2.0:
-			self.fan_set = 4
-		else:
-			self.fan_set = 5
+    def setHVAC(self):
+        if self.control_enable:
+            topic = os.getenv('MQTT_HVAC_TOPIC')
+            new_state = {
+                'power': self.power.state,
+                'mode': self.mode.upper(),
+                'temperature': self.temp.temp_set,
+                'fan': self.fan.speed,
+            }
 
-		self.logger.info('Set fan %s', self.fan_set)
+            is_state_changed = (new_state['power'] and self.hvac_state != new_state)
+            is_power_state_changed = (self.hvac_state and new_state['power'] != self.hvac_state['power'])
+            old_state_doesnt_exists = (not self.hvac_state)
 
-	def _power_set(self):
-		is_heat = self.mode == 'heat'
+            if is_state_changed or is_power_state_changed or old_state_doesnt_exists:
+                message = json.dumps(new_state)
 
-		if is_heat:
-			threshold = self.temp_request + 1.0
-			self.power = not self._hysteresis(threshold, self.temp_measure, 0.5, not self.power, True)
-		else:
-			threshold = self.temp_request - 1.0
-			self.power = not self._hysteresis(threshold, self.temp_measure, 0.5, not self.power, False)
+                self.logger.debug('Controlling HVAC with command %s', message)
+                self.mqtt.publish(topic, message, 1)
+            else:
+                self.logger.debug('HVAC state unchanged %s', self.hvac_state)
+        else:
+            self.logger.debug('Controlling HVAC disabled')
 
-		self.logger.info('Set power to %s', self.power)
+    def set_mode(self, client, userdata, message):
+        mode = message.payload.decode('utf-8')
+        previous_is_manual = self.manual
 
-	def iterate(self):
-		if self.manual:
-			self.logger.info('Manual mode, skipping PID iteration')
-			self.temp_set = self.temp_request
-		else:
-			self.logger.info('PID iteration')
-			self._temp_set()
-			self._fan_set()
-			self._power_set()
-			self.publish_state()
-		
-	def temp_update_callback(self, client, userdata, message):
-		payload_json = json.loads(message.payload.decode('utf-8'))
-		self.logger.info('Received temperature measurement %s', payload_json['temperature'])
-		self.temp_measure = payload_json['temperature']
+        if mode == 'off':
+            self.manual = True
+            self.mode = 'auto'
+            self.power.state = False
+            self.logger.info('Set mode to off')
+        if mode == 'manual':
+            self.manual = True
+            self.power.state = True
+            self.mode = 'auto'
+            self.logger.info('Set mode to manual')
+        elif mode in ['heat', 'cool']:
+            self.manual = False
+            self.mode = mode
 
-	def hvac_callback(self, client, userdata, message):
-		payload_json = json.loads(message.payload.decode('utf-8'))
-		self.logger.info('Received hvac state change %s', payload_json)
-		self.hvac_state = payload_json
+            self.logger.info('Set mode to %s', self.mode)
 
-	def setHVAC(self):
-		if self.control_enable:
-			topic = os.getenv('MQTT_HVAC_TOPIC')
-			new_state = {
-				'power': self.power,
-				'mode': self.mode.upper(),
-				'temperature': self.temp_set,
-				'fan': self.fan_set,
-			}
+            # reset PID if switching between manual and pid modes
+            if previous_is_manual != self.manual:
+                self.pid.reset()
 
-			is_state_changed = (new_state['power'] and self.hvac_state != new_state)
-			is_power_state_changed = (self.hvac_state and new_state['power'] != self.hvac_state['power'])
-			old_state_doesnt_exists = (not self.hvac_state)
+        self.publish_mode()
+        self.iterate()
+        self.setHVAC()
 
-			if is_state_changed or is_power_state_changed or old_state_doesnt_exists:
-				message = json.dumps(new_state)
+    def publish_mode(self):
+        topic = self.topic_prefix + '/mode/state'
+        
+        if self.manual:
+            if self.power.state == False:
+                mode = 'off'
+            else:
+                mode = 'manual'
+        elif self.mode == 'auto':
+            mode = 'manual'
+        else:
+            mode = self.mode
 
-				self.logger.debug('Controlling HVAC with command %s', message)
-				self.mqtt.publish(topic, message, 1)
-			else:
-				self.logger.debug('HVAC state unchanged %s', self.hvac_state)
-		else:
-			self.logger.debug('Controlling HVAC disabled')
+        self.mqtt.publish(topic, mode, 1, True)
 
-	def set_mode(self, client, userdata, message):
-		mode = message.payload.decode('utf-8')
-		previous_is_manual = self.manual
+    def set_temp(self, client, userdata, message):
+        temp = float(message.payload.decode('utf-8'))
 
-		if mode == 'off':
-			self.manual = True
-			self.mode = 'auto'
-			self.power = False
-			self.logger.info('Set mode to off')
-		if mode == 'manual':
-			self.manual = True
-			self.power = True
-			self.mode = 'auto'
-			self.logger.info('Set mode to manual')
-		elif mode in ['heat', 'cool']:
-			self.manual = False
-			self.mode = mode
+        if temp >= 17 and temp <= 30:
+            self.temp.setRequest(temp)
+            self.publish_temp()
+            self.iterate()
+            self.setHVAC()
 
-			self.logger.info('Set mode to %s', self.mode)
+    def publish_temp(self):
+        self.mqtt.publish(self.topic_prefix + '/temperature/state', self.temp.temp_request, 1, True)
+        self.mqtt.publish(self.topic_prefix + '/measured_temperature', self.temp.temp_measure, 1, True)
 
-			# reset PID if switching between manual and pid modes
-			if previous_is_manual != self.manual:
-				self.pid.reset()
+    def set_fan(self, client, userdata, message):
+        fan = int(message.payload.decode('utf-8'))
 
-		self.publish_mode()
-		self.iterate()
-		self.setHVAC()
+        if self.manual and fan >= 1 and fan <= 5:
+            self.logger.info('Manually set fan speed to %s/5', self.fan.speed)
+            self.fan.speed = fan
+            self.publish_fan()
+            self.setHVAC()
 
-	def publish_mode(self):
-		topic = self.topic_prefix + '/mode/state'
-		
-		if self.manual:
-			if self.power == False:
-				mode = 'off'
-			else:
-				mode = 'manual'
-		elif self.mode == 'auto':
-			mode = 'manual'
-		else:
-			mode = self.mode
+    def publish_fan(self):
+        topic = self.topic_prefix + '/fan/state'
+        
+        if self.manual:
+            fan = self.fan.speed
+        else:
+            fan = 'auto'
 
-		self.mqtt.publish(topic, mode, 1, True)
+        self.mqtt.publish(topic, fan, 1, True)
 
-	def set_temp(self, client, userdata, message):
-		temp = float(message.payload.decode('utf-8'))
-
-		if temp >= 17 and temp <= 30:
-			self.temp_request = temp
-			self.logger.info('Set temperature request to %s', self.temp_request)
-			self.publish_temp()
-			self.iterate()
-			self.setHVAC()
-
-	def publish_temp(self):
-		self.mqtt.publish(self.topic_prefix + '/temperature/state', self.temp_request, 1, True)
-		self.mqtt.publish(self.topic_prefix + '/measured_temperature', self.temp_measure, 1, True)
-
-	def set_fan(self, client, userdata, message):
-		fan = int(message.payload.decode('utf-8'))
-
-		if fan >= 1 and fan <= 5:
-			self.fan_set = fan
-			self.logger.info('Set fan to %s', self.fan_set)
-			self.publish_fan()
-			self.iterate()
-			self.setHVAC()
-
-	def publish_fan(self):
-		topic = self.topic_prefix + '/fan/state'
-		
-		if self.manual:
-			fan = self.fan_set
-		else:
-			fan = 'auto'
-
-		self.mqtt.publish(topic, fan, 1, True)
-
-	def publish_state(self):
-		topic = os.getenv('MQTT_PID_TOPIC_PREFIX') + '/state'
-		message = json.dumps({
-			'mode': self.mode,
-			'manual': self.manual,
-			'temperature_request': float(self.temp_request),
-			'temperature_set': float(self.temp_set),
-			'temperature_measure': float(self.temp_measure),
-			'temperature_error': float(self.pid.previous_error),
-			'fan': int(self.fan_set if self.power else 0),
-			'power': self.power,
-			'Kp': float(self.pid.Kp),
-			'Ki': float(self.pid.Ki),
-			'Kd': float(self.pid.Kd),
-			'integral': float(self.pid.integral),
-			'integral_max': float(self.pid.integral_max),
-			'pid_output': float(self.pid.output)
-		})
-		self.mqtt.publish(topic, message, 1)
+    def publish_state(self):
+        topic = os.getenv('MQTT_PID_TOPIC_PREFIX') + '/state'
+        message = json.dumps({
+            'mode': self.mode,
+            'manual': self.manual,
+            'temperature_request': float(self.temp.temp_request),
+            'temperature_set': float(self.temp.temp_set),
+            'temperature_measure': float(self.temp.temp_measure),
+            'temperature_error': float(self.temp.pid.previous_error),
+            'fan': int(self.fan.speed if self.power.state else 0),
+            'power': self.power.state,
+            'Kp': float(self.temp.pid.Kp),
+            'Ki': float(self.temp.pid.Ki),
+            'Kd': float(self.temp.pid.Kd),
+            'integral': float(self.temp.pid.integral),
+            'integral_max': float(self.temp.pid.integral_max),
+            'pid_output': float(self.temp.pid.output)
+        })
+        self.mqtt.publish(topic, message, 1)
 
 if __name__ == '__main__':
-	logger = logging.getLogger('hvac-pid')
-	logger.setLevel(logging.DEBUG)
-	logger.propagate = False
+    logger = logging.getLogger('hvac-pid')
+    logger.setLevel(logging.DEBUG)
+    logger.propagate = False
 
-	formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
-	ch = logging.StreamHandler()
-	ch.setLevel(logging.DEBUG)
-	ch.setFormatter(formatter)
+    ch = logging.StreamHandler()
+    ch.setLevel(logging.DEBUG)
+    ch.setFormatter(formatter)
 
-	logger.addHandler(ch)
+    logger.addHandler(ch)
 
-	ctrl = HVACPIDController()
-	interval = int(os.getenv('PID_INTERVAL'))
+    ctrl = HVACPIDController()
+    interval = int(os.getenv('PID_INTERVAL'))
 
-	while True:
-		time.sleep(interval)
-		ctrl.iterate()
-		ctrl.setHVAC()
-		ctrl.publish_temp()
-		ctrl.publish_mode()
-		ctrl.publish_fan()
+    while True:
+        time.sleep(interval)
+        ctrl.iterate()
+        ctrl.setHVAC()
+        ctrl.publish_temp()
+        ctrl.publish_mode()
+        ctrl.publish_fan()
