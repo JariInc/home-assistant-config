@@ -30,3 +30,5 @@ camera: !include camera.yaml
 input_datetime: !include input_datetime.yaml
 input_boolean: !include input_boolean.yaml
 weather: !include weather.yaml
+tradfri:
+  host:  !env_var TRADFRI_HOST

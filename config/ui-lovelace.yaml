@@ -48,3 +48,7 @@ views:
       - input_datetime.car_heater_front_departure
   - type: weather-forecast
     entity: weather.darksky
+  - type: entities
+    title: Kodinhoitohuone
+    entities:
+      - light.tradfri_group
