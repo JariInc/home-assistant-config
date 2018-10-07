@@ -2,7 +2,7 @@ version: '3'
 services:
   homeassistant:
     container_name: hass
-    image: homeassistant/home-assistant:0.78.2
+    image: homeassistant/home-assistant:0.79.3
     env_file: hass.env
     volumes:
       - ./config:/config
@@ -52,9 +52,23 @@ services:
     container_name: duplicity
     image: wernight/duplicity:latest
     env_file: duplicity.env
+    user: root
     volumes:
       - .:/data:ro
-    command: ["duplicity", "--full-if-older-than=1W", "--no-encryption", "--allow-source-mismatch", "--s3-use-rrs", "--s3-use-multiprocessing", "--exclude", "/data/unifi-video/data", "/data", "s3://s3.eu-central-1.amazonaws.com/p16-hass-backup/hass"]
+      - ./duplicity/cache:/home/duplicity/.cache/duplicity
+    command: 
+      - "duplicity"
+      - "--full-if-older-than=1M"
+      - "--no-encryption"
+      - "--allow-source-mismatch"
+      - "--s3-use-rrs"
+      - "--s3-use-multiprocessing"
+      - "--exclude"
+      - "/data/unifi-video/data"
+      - "--exclude"
+      - "/data/duplicity/cache"
+      - "/data"
+      - "s3://s3.eu-central-1.amazonaws.com/p16-hass-backup/hass"
 
   hvac-pid:
     container_name: hvac_pid
@@ -116,7 +130,7 @@ services:
 
   nginx:
     container_name: nginx
-    image: nginx:1.15.3-alpine
+    image: nginx:1.15.5-alpine
     networks:
       - public
     volumes:
@@ -129,7 +143,7 @@ services:
 
   unifi-video:
     container_name: unifi-video
-    image: pducharme/unifi-video-controller:3.9.8
+    image: pducharme/unifi-video-controller:3.9.9
     ports:
       - "1935:1935"
       - "6666:6666"
