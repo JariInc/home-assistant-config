@@ -4,7 +4,7 @@ services:
     image: homeassistant/home-assistant:0.79.3
     env_file: hass.env
     volumes:
-      - ./config:/config
+      - ./hass:/config
       - /etc/localtime:/etc/localtime:ro
     devices:
       - /dev/ttyACM0:/dev/ttyACM0
