@@ -137,6 +137,9 @@ class HVACPIDController(object):
         self.setHVAC()
 
     def publish_mode(self):
+        if not self.control_enable:
+            return 
+
         topic = self.topic_prefix + '/mode/state'
         
         if self.manual:
@@ -161,6 +164,9 @@ class HVACPIDController(object):
             self.setHVAC()
 
     def publish_temp(self):
+        if not self.control_enable:
+            return
+
         self.mqtt.publish(self.topic_prefix + '/temperature/state', self.temp.temp_request, 1, True)
         self.mqtt.publish(self.topic_prefix + '/measured_temperature', self.temp.temp_measure, 1, True)
 
@@ -174,6 +180,9 @@ class HVACPIDController(object):
             self.setHVAC()
 
     def publish_fan(self):
+        if not self.control_enable:
+            return
+
         topic = self.topic_prefix + '/fan/state'
         
         if self.manual:
@@ -184,6 +193,9 @@ class HVACPIDController(object):
         self.mqtt.publish(topic, fan, 1, True)
 
     def publish_state(self):
+        if not self.control_enable:
+            return
+
         topic = os.getenv('MQTT_PID_TOPIC_PREFIX') + '/state'
         message = json.dumps({
             'mode': self.mode,

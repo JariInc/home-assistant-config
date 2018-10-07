@@ -10,9 +10,9 @@ class Temp(object):
     temp_measure = 21
     temp_set = 21
 
-    def __init__(self, Kp, Kd, Ki, integral_max_effect):
+    def __init__(self, **pid_options):
         self.logger = logging.getLogger('hvac-pid.temp')
-        self.pid = PID(Kp, Kd, Ki, integral_max_effect);
+        self.pid = PID(**pid_options);
 
     def setMeasurement(self, temp_measure):
         self.temp_measure = temp_measure
