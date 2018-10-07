@@ -34,8 +34,6 @@ class CarHeaterTimer(object):
 
             self.logger.info('%s turn off at %s (%s minutes)', entity, turnOffDateTime.isoformat(), round(timeToTurnOff.total_seconds() / 60))
 
-            self.logger.debug('turnOffDateTime %s (%s) now %s (%s)', turnOffDateTime, turnOffDateTime.tzinfo, now, now.tzinfo)
-
             if timeToTurnOff.total_seconds() < 0:
                 self.logger.info('Turning off heating %s', entity)
                 isHeating = self.setHeating(entity, False)
@@ -56,8 +54,6 @@ class CarHeaterTimer(object):
             timeToDeparture = (departureDateTime - now).total_seconds()
 
             self.logger.info('%s minutes to departure', round(timeToDeparture / 60))
-
-            self.logger.debug('departureDateTime %s (%s) now %s (%s)', departureDateTime, departureDateTime.tzinfo, now, now.tzinfo)
 
             if heatingTime > 0:
                 if timeToDeparture < heatingTime * 60:
@@ -89,8 +85,6 @@ class CarHeaterTimer(object):
         current_time = now.timetz()
         departure_date = now.date()
         departure_time = self.departureTime(entity)
-
-        self.logger.debug('current_time %s (%s) departure_time %s (%s)', current_time, current_time.tzinfo, departure_time, departure_time.tzinfo)
 
         if(current_time > departure_time):
             departure_date += timedelta(days=1)
