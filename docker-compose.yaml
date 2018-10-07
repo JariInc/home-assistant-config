@@ -1,7 +1,6 @@
 version: '3'
 services:
-  homeassistant:
-    container_name: hass
+  hass:
     image: homeassistant/home-assistant:0.79.3
     env_file: hass.env
     volumes:
@@ -18,7 +17,6 @@ services:
       - mqtt
 
   mqtt:
-    container_name: mqtt
     image: eclipse-mosquitto:1.4.12
     restart: always
     volumes:
@@ -30,7 +28,6 @@ services:
       - hass
 
   samba:
-    container_name: samba
     image: dperson/samba:latest
     networks:
       - samba
@@ -43,13 +40,11 @@ services:
     env_file: samba.env
 
   duckdns:
-    container_name: duckdns
     image: meltwater/duckdns:latest
     env_file: duckdns.env
     restart: always
 
   duplicity:
-    container_name: duplicity
     image: wernight/duplicity:latest
     env_file: duplicity.env
     user: root
@@ -71,7 +66,6 @@ services:
       - "s3://s3.eu-central-1.amazonaws.com/p16-hass-backup/hass"
 
   hvac-pid:
-    container_name: hvac_pid
     build: ./hvac-pid
     env_file: hvac-pid.env
     networks:
@@ -79,10 +73,9 @@ services:
     restart: always
     depends_on:
       - mqtt
-      - homeassistant
+      - hass
 
   influxdb:
-    container_name: influxdb
     image: influxdb:1.6.3-alpine
     volumes:
       - ./influxdb/data:/var/lib/influxdb
@@ -94,7 +87,6 @@ services:
     env_file: influxdb.env
 
   mqtt-influxdb:
-    container_name: mqtt-influxdb
     build: ./mqtt-influxdb
     env_file: ./mqtt-influxdb.env
     networks:
@@ -105,7 +97,6 @@ services:
       - influxdb
     
   grafana:
-    container_name: grafana
     image: grafana/grafana:5.2.4
     env_file: ./grafana.env
     ports: 
@@ -120,7 +111,6 @@ services:
 
   letsencrypt:
     image: adferrand/letsencrypt-dns:2.5.2
-    container_name: letsencrypt
     networks:
       - public
     volumes:
@@ -129,7 +119,6 @@ services:
     env_file: ./letsencrypt.env
 
   nginx:
-    container_name: nginx
     image: nginx:1.15.5-alpine
     networks:
       - public
@@ -142,7 +131,6 @@ services:
       - "443:443"
 
   unifi-video:
-    container_name: unifi-video
     image: pducharme/unifi-video-controller:3.9.9
     ports:
       - "1935:1935"
@@ -169,14 +157,13 @@ services:
       - hass
 
   car-heater-timer:
-    container_name: car-heater-timer
     build: ./car-heater-timer
     env_file: ./car-heater-timer.env
     networks:
       - hass
     restart: always
     depends_on:
-      - homeassistant
+      - hass
 
 networks:
   hass:
