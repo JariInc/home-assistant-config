@@ -8,8 +8,10 @@ homeassistant:
   customize: !include customize.yaml
 
 api:
-
 frontend:
+history:
+logbook:
+sun:
 
 http:
   api_password: !env_var HA_PASSWORD
@@ -22,6 +24,15 @@ mqtt:
   port: 1883
   client_id: hass
 
+tradfri:
+  host: !env_var TRADFRI_HOST
+
+influxdb:
+  host: influxdb
+  username: !env_var INFLUXDB_USERNAME
+  password : !env_var INFLUXDB_PASSWORD
+  database : !env_var INFLUXDB_DATABASE
+
 sensor: !include sensor.yaml
 switch: !include switch.yaml
 climate: !include climate.yaml
@@ -30,5 +41,3 @@ camera: !include camera.yaml
 input_datetime: !include input_datetime.yaml
 input_boolean: !include input_boolean.yaml
 weather: !include weather.yaml
-tradfri:
-  host:  !env_var TRADFRI_HOST
