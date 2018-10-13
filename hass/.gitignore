@@ -5,3 +5,5 @@
 *.sqlite
 .storage
 .tradfri_psk.conf
+*.db
+webostv.conf

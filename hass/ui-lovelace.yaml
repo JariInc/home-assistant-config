@@ -1,16 +1,22 @@
-title: poyta16
+title: Älytönkoti
 views:
-- name: Home
+- title: Olohuone
   type: vertical-stack
   cards:
+
   - type: entities
-    title: Sensorit
+    title: Sisäilma
     entities:
       - sensor.ruuvitag_indoor_temperature
-      - sensor.ruuvitag_outdoor_temperature
-      - sensor.ruuvitag_oven_temperature
       - sensor.ruuvitag_indoor_humidity
-      - sensor.ruuvitag_outdoor_humidity
+  - type: media-control
+    entity: media_player.lg_webos_smart_tv
+  - type: media-control
+    entity: media_player.televisio
+
+- title: Keittiö
+  type: vertical-stack
+  cards:
   - type: entities
     title: Ilmalämpöpumppu
     entities:
@@ -19,9 +25,25 @@ views:
     title: Kahvinkeitin
     entities:
       - sensor.philio_technology_corporation_pan11_smart_energy_plug_in_switch_power
-      - sensor.philio_technology_corporation_pan11_smart_energy_plug_in_switch_current
       - sensor.philio_technology_corporation_pan11_smart_energy_plug_in_switch_energy
       - switch.philio_technology_corporation_pan11_smart_energy_plug_in_switch_switch
+  - type: entities
+    title: Uuni
+    entities:
+      - sensor.ruuvitag_oven_temperature
+
+- title: Kodinhoitohuone
+  type: vertical-stack
+  cards:
+  - type: entities
+    title: Valaistus
+    show_header_toggle: false
+    entities:
+      - light.kattovalaisin
+
+- title: Piha
+  type: vertical-stack
+  cards:
   - type: picture-entity
     entity: camera.parkki
     camera_image: camera.parkki
@@ -30,6 +52,11 @@ views:
     entity: camera.talo
     camera_image: camera.talo
     show_state: false
+  - type: entities
+    title: Sensorit
+    entities:
+      - sensor.ruuvitag_outdoor_temperature
+      - sensor.ruuvitag_outdoor_humidity
   - type: entities
     title: Katos
     show_header_toggle: false
@@ -48,7 +75,3 @@ views:
       - input_datetime.car_heater_front_departure
   - type: weather-forecast
     entity: weather.darksky
-  - type: entities
-    title: Kodinhoitohuone
-    entities:
-      - light.tradfri_group

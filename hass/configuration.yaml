@@ -27,6 +27,14 @@ mqtt:
 tradfri:
   host: !env_var TRADFRI_HOST
 
+cast:
+  media_player:
+  - host: !env_var CHROMECAST_IP
+
+media_player:
+  - platform: webostv
+    host: !env_var LG_TV_IP
+
 influxdb:
   host: influxdb
   username: !env_var INFLUXDB_USERNAME
