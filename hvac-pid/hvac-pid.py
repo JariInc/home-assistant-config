@@ -130,7 +130,7 @@ class HVACPIDController(object):
 
             # reset PID if switching between manual and pid modes
             if previous_is_manual != self.manual:
-                self.pid.reset()
+                self.temp.pid.reset()
 
         self.publish_mode()
         self.iterate()
