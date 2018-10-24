@@ -1,9 +1,42 @@
 title: Älytönkoti
 views:
+- title: Yleisnäkymä
+  type: horizontal-stack
+  cards:
+  - type: sensor
+    entity: sensor.ruuvitag_indoor_temperature
+    name: Sisälämpötila
+    line_width: 2
+    line_color: "#f44141"
+    accuracy: 1000
+    hours_to_show: 24
+  - type: sensor
+    entity: sensor.ruuvitag_outdoor_temperature
+    name: Ulkolämpötila
+    line_width: 2
+    line_color: "#4259f4"
+    accuracy: 1000
+    hours_to_show: 24
+  - type: entities
+    title: Ilmalämpöpumppu
+    entities:
+    - climate.toshiba_arctic_25
+  - type: entities
+    title: Auton lämmitys (katos)
+    show_header_toggle: false
+    entities:
+      - input_boolean.car_heater_side_armed
+      - input_datetime.car_heater_side_departure
+  - type: entities
+    title: Auton lämmitys (talli)
+    show_header_toggle: false
+    entities:
+      - input_boolean.car_heater_front_armed
+      - input_datetime.car_heater_front_departure
+
 - title: Olohuone
   type: vertical-stack
   cards:
-
   - type: entities
     title: Sisäilma
     entities:
