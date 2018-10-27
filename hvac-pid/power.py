@@ -17,6 +17,7 @@ class Power(object):
 
         if is_heat:
             threshold = temp_request + self._threshold(temp_outdoors, self.threshold_params)
+            self.logger.debug('Power off threshold is %g before hysteresis', threshold)
             self.state = not self._hysteresis(threshold, temp_measure, not self.state, True)
         else:
             threshold = temp_request - self.threshold
