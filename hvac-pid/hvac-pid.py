@@ -17,6 +17,8 @@ class HVACPIDController(object):
     fan = None
     power = None
 
+    temp_outdoors = 0
+
     mode = 'auto'
     manual = False
     control_enable = False
@@ -50,6 +52,7 @@ class HVACPIDController(object):
 
         # subscribe
         self.mqtt.subscribe(os.getenv('MQTT_TEMP_TOPIC'), 0, self.temp_update_callback)
+        self.mqtt.subscribe(os.getenv('MQTT_TEMP_OUTDOORS_TOPIC'), 0, self.temp_outdoors_update_callback)
         self.mqtt.subscribe(os.getenv('MQTT_HVAC_STATE_TOPIC'), 0, self.hvac_callback)
         self.mqtt.subscribe(self.topic_prefix + '/mode/set', 0, self.set_mode)
         self.mqtt.subscribe(self.topic_prefix + '/temperature/set', 0, self.set_temp)
@@ -72,12 +75,16 @@ class HVACPIDController(object):
         else:
             self.temp.iteratePID()
             self.fan.calculate(self.temp.pid.previous_error, self.mode)
-            self.power.calculate(self.temp.temp_request, self.temp.temp_measure, self.mode)
+            self.power.calculate(self.temp.temp_request, self.temp.temp_measure, self.mode, self.temp_outdoors)
             self.publish_state()
         
     def temp_update_callback(self, client, userdata, message):
         payload_json = json.loads(message.payload.decode('utf-8'))
         self.temp.setMeasurement(payload_json['temperature'])
+
+    def temp_outdoors_update_callback(self, client, userdata, message):
+        payload_json = json.loads(message.payload.decode('utf-8'))
+        self.temp_outdoors = float(payload_json['temperature'])
 
     def hvac_callback(self, client, userdata, message):
         payload_json = json.loads(message.payload.decode('utf-8'))
