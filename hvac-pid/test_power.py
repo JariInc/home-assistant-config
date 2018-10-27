@@ -92,3 +92,14 @@ def test_cooling_power_off():
     power.state = state
     power.calculate(request, request - (threshold / 2), 'cool')
     assert power.state == True
+
+
+def test_threshold():
+    power = Power(0, 0)
+    params = {'a': 0.01, 'b': 0, 'c': 1}
+    
+    assert power._threshold(+1.0, params) == 1.0
+    assert power._threshold(+0.0, params) == 1.0
+    assert power._threshold(-1.0, params) == 1.01
+    assert power._threshold(-10.0, params) == 2
+    assert power._threshold(-20.0, params) == 5
