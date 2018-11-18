@@ -1,110 +1,135 @@
 title: Älytönkoti
 views:
-- title: Yleisnäkymä
-  type: horizontal-stack
-  cards:
-  - type: sensor
-    entity: sensor.ruuvitag_indoor_temperature
-    name: Sisälämpötila
-    line_width: 2
-    line_color: "#f44141"
-    accuracy: 1000
-    hours_to_show: 24
-  - type: sensor
-    entity: sensor.ruuvitag_outdoor_temperature
-    name: Ulkolämpötila
-    line_width: 2
-    line_color: "#4259f4"
-    accuracy: 1000
-    hours_to_show: 24
-  - type: entities
-    title: Ilmalämpöpumppu
-    entities:
-    - climate.toshiba_arctic_25
-  - type: entities
-    title: Auton lämmitys (katos)
-    show_header_toggle: false
-    entities:
-      - input_boolean.car_heater_side_armed
-      - input_datetime.car_heater_side_departure
-  - type: entities
-    title: Auton lämmitys (talli)
-    show_header_toggle: false
-    entities:
-      - input_boolean.car_heater_front_armed
-      - input_datetime.car_heater_front_departure
+  - id: 0  # Automatically created id
+    title: Yleisnäkymä
+    type: horizontal-stack
+    cards:
+      - id: 53df2ff7c41a4c38bc14429c34a1372f  # Automatically created id
+        type: sensor
+        entity: sensor.ruuvitag_indoor_temperature
+        name: Sisälämpötila
+        line_width: 2
+        line_color: '#f44141'
+        accuracy: 1000
+        hours_to_show: 24
+      - id: 2aa1f7dae28b4c3e93439c1c6308e2f4  # Automatically created id
+        type: sensor
+        entity: sensor.ruuvitag_outdoor_temperature
+        name: Ulkolämpötila
+        line_width: 2
+        line_color: '#4259f4'
+        accuracy: 1000
+        hours_to_show: 24
+      - id: 98b65816120241278d23ab4da355fba6  # Automatically created id
+        type: entities
+        title: Ilmalämpöpumppu
+        entities:
+          - climate.toshiba_arctic_25
+      - id: f354c9aed2b94f1884cda099bbec4a5f  # Automatically created id
+        type: entities
+        title: Auton lämmitys (katos)
+        show_header_toggle: false
+        entities:
+          - input_boolean.car_heater_side_armed
+          - input_datetime.car_heater_side_departure
+      - id: 5f139e5577ed4f198f1512e2975096dc  # Automatically created id
+        type: entities
+        title: Auton lämmitys (talli)
+        show_header_toggle: false
+        entities:
+          - input_boolean.car_heater_front_armed
+          - input_datetime.car_heater_front_departure
 
-- title: Olohuone
-  type: vertical-stack
-  cards:
-  - type: entities
-    title: Sisäilma
-    entities:
-      - sensor.ruuvitag_indoor_temperature
-      - sensor.ruuvitag_indoor_humidity
-  - type: media-control
-    entity: media_player.lg_webos_smart_tv
-  - type: media-control
-    entity: media_player.televisio
+  - id: 1  # Automatically created id
+    title: Olohuone
+    type: vertical-stack
+    cards:
+      - id: 42a847cb69ef4a2faf15942309522c0f  # Automatically created id
+        type: entities
+        title: Sisäilma
+        entities:
+          - sensor.ruuvitag_indoor_temperature
+          - sensor.ruuvitag_indoor_humidity
+      - id: 47bee9e503b74553b1307101c129ddaf  # Automatically created id
+        type: media-control
+        entity: media_player.lg_webos_smart_tv
+      - id: 5b260acfb42141d0aaa3d81f98c811d9  # Automatically created id
+        type: media-control
+        entity: media_player.televisio
 
-- title: Keittiö
-  type: vertical-stack
-  cards:
-  - type: entities
-    title: Ilmalämpöpumppu
-    entities:
-      - climate.toshiba_arctic_25
-  - type: entities
-    title: Kahvinkeitin
-    entities:
-      - sensor.philio_technology_corporation_pan11_smart_energy_plug_in_switch_power
-      - sensor.philio_technology_corporation_pan11_smart_energy_plug_in_switch_energy
-      - switch.philio_technology_corporation_pan11_smart_energy_plug_in_switch_switch
-  - type: entities
-    title: Uuni
-    entities:
-      - sensor.ruuvitag_oven_temperature
+  - id: 2  # Automatically created id
+    title: Keittiö
+    type: vertical-stack
+    cards:
+      - id: 0101005e8a7c412b83b1b00e4736a8a9  # Automatically created id
+        type: entities
+        title: Ilmalämpöpumppu
+        entities:
+          - climate.toshiba_arctic_25
+      - id: d5dcc8cf85d741f19d29e64562bbc5b9  # Automatically created id
+        type: entities
+        title: Kahvinkeitin
+        entities:
+          - sensor.philio_technology_corporation_pan11_smart_energy_plug_in_switch_power
+          - sensor.philio_technology_corporation_pan11_smart_energy_plug_in_switch_energy
+          - switch.philio_technology_corporation_pan11_smart_energy_plug_in_switch_switch
+      - id: fcb460d001534433b44e076429b8d81a  # Automatically created id
+        type: entities
+        title: Uuni
+        entities:
+          - sensor.ruuvitag_oven_temperature
+      # - id: 2e8e396edcb14e66a440608fc74a9087  # Automatically created id
+      #   type: thermostat
+      #   entity: climate.toshiba_arctic_25
+  - id: 3  # Automatically created id
+    title: Kodinhoitohuone
+    type: vertical-stack
+    cards:
+      - id: 77be66c01b144689a3b8a71b195c6204  # Automatically created id
+        type: entities
+        title: Valaistus
+        show_header_toggle: false
+        entities:
+          - light.kattovalaisin
 
-- title: Kodinhoitohuone
-  type: vertical-stack
-  cards:
-  - type: entities
-    title: Valaistus
-    show_header_toggle: false
-    entities:
-      - light.kattovalaisin
-
-- title: Piha
-  type: vertical-stack
-  cards:
-  - type: picture-entity
-    entity: camera.parkki
-    camera_image: camera.parkki
-    show_state: false
-  - type: picture-entity
-    entity: camera.talo
-    camera_image: camera.talo
-    show_state: false
-  - type: entities
-    title: Sensorit
-    entities:
-      - sensor.ruuvitag_outdoor_temperature
-      - sensor.ruuvitag_outdoor_humidity
-  - type: entities
-    title: Katos
-    show_header_toggle: false
-    entities:
-      - switch.car_heater_side
-      - sensor.garage_side_socket_power
-      - input_boolean.car_heater_side_armed
-      - input_datetime.car_heater_side_departure
-  - type: entities
-    title: Talli
-    show_header_toggle: false
-    entities:
-      - switch.car_heater_front
-      - sensor.garage_front_socket_power
-      - input_boolean.car_heater_front_armed
-      - input_datetime.car_heater_front_departure
-  - type: weather-forecast
-    entity: weather.darksky
+  - id: 4  # Automatically created id
+    title: Piha
+    type: vertical-stack
+    cards:
+      - id: 43406de7cd1f4f129ad6a89ab083cdb3  # Automatically created id
+        type: picture-entity
+        entity: camera.parkki
+        camera_image: camera.parkki
+        show_state: false
+      - id: f24d163ee0d245ce90b4c9d40a52582c  # Automatically created id
+        type: picture-entity
+        entity: camera.talo
+        camera_image: camera.talo
+        show_state: false
+      - id: fddc994c5f7a4924aca65a3f076ebb27  # Automatically created id
+        type: entities
+        title: Sensorit
+        entities:
+          - sensor.ruuvitag_outdoor_temperature
+          - sensor.ruuvitag_outdoor_humidity
+      - id: 2feb1de222484885b495af3e49a7af41  # Automatically created id
+        type: entities
+        title: Katos
+        show_header_toggle: false
+        entities:
+          - switch.car_heater_side
+          - sensor.garage_side_socket_power
+          - input_boolean.car_heater_side_armed
+          - input_datetime.car_heater_side_departure
+      - id: 343308fb27034491aa6db427c9bd2b80  # Automatically created id
+        type: entities
+        title: Talli
+        show_header_toggle: false
+        entities:
+          - switch.car_heater_front
+          - sensor.garage_front_socket_power
+          - input_boolean.car_heater_front_armed
+          - input_datetime.car_heater_front_departure
+      - id: 0c3c88a2880a4715a132600ac0d4d274  # Automatically created id
+        type: weather-forecast
+        entity: weather.darksky

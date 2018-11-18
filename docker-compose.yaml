@@ -1,7 +1,7 @@
 version: '3'
 services:
   hass:
-    image: homeassistant/home-assistant:0.80.3
+    image: homeassistant/home-assistant:0.82.1
     env_file: hass.env
     volumes:
       - ./hass:/config
@@ -17,7 +17,7 @@ services:
       - mqtt
 
   mqtt:
-    image: eclipse-mosquitto:1.4.12
+    image: eclipse-mosquitto:1.5.4
     restart: always
     volumes:
       - ./mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
@@ -76,7 +76,7 @@ services:
       - hass
 
   influxdb:
-    image: influxdb:1.6.3-alpine
+    image: influxdb:1.7.1-alpine
     volumes:
       - ./influxdb/data:/var/lib/influxdb
     networks:
@@ -97,7 +97,7 @@ services:
       - influxdb
     
   grafana:
-    image: grafana/grafana:5.2.4
+    image: grafana/grafana:5.3.4
     env_file: ./grafana.env
     ports: 
       - "3000:3000"
@@ -119,7 +119,7 @@ services:
     env_file: ./letsencrypt.env
 
   nginx:
-    image: nginx:1.15.5-alpine
+    image: nginx:1.15.6-alpine
     networks:
       - public
     volumes:
@@ -129,6 +129,8 @@ services:
     ports:
       - "80:80"
       - "443:443"
+    depends_on:
+      - letsencrypt
 
   unifi-video:
     image: pducharme/unifi-video-controller:3.9.9
