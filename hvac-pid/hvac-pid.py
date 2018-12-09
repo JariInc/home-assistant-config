@@ -76,6 +76,8 @@ class HVACPIDController(object):
             self.temp.iteratePID()
             self.fan.calculate(self.temp.pid.previous_error, self.mode)
             self.power.calculate(self.temp.temp_request, self.temp.temp_measure, self.mode, self.temp_outdoors)
+            if not self.power.state:
+                self.temp.pid.reset()
             self.publish_state()
         
     def temp_update_callback(self, client, userdata, message):
@@ -167,6 +169,7 @@ class HVACPIDController(object):
         if temp >= 17 and temp <= 30:
             self.temp.setRequest(temp)
             self.publish_temp()
+            self.temp.pid.reset()
             self.iterate()
             self.setHVAC()
 
