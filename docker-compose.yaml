@@ -1,7 +1,7 @@
 version: '3'
 services:
   hass:
-    image: homeassistant/home-assistant:0.82.1
+    image: homeassistant/home-assistant:0.83.3
     env_file: hass.env
     volumes:
       - ./hass:/config
@@ -97,7 +97,7 @@ services:
       - influxdb
     
   grafana:
-    image: grafana/grafana:5.3.4
+    image: grafana/grafana:5.4.0
     env_file: ./grafana.env
     ports: 
       - "3000:3000"
