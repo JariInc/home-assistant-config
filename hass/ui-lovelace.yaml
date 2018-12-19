@@ -133,3 +133,8 @@ views:
       - id: 0c3c88a2880a4715a132600ac0d4d274  # Automatically created id
         type: weather-forecast
         entity: weather.darksky
+      - type: entities
+        title: Valaistus
+        show_header_toggle: false
+        entities:
+          - light.takaovi

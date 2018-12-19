@@ -26,6 +26,7 @@ mqtt:
 
 tradfri:
   host: !env_var TRADFRI_HOST
+  allow_tradfri_groups: true
 
 cast:
   media_player:
