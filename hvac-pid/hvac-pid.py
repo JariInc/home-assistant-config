@@ -74,7 +74,7 @@ class HVACPIDController(object):
             self.temp.temp_set = self.temp.temp_request
         else:
             self.temp.iteratePID()
-            self.fan.calculate(self.temp.pid.previous_error, self.mode)
+            self.fan.calculate(self.temp.pid.output - self.temp.temp_request, self.mode)
             self.power.calculate(self.temp.temp_request, self.temp.temp_measure, self.mode, self.temp_outdoors)
             if not self.power.state:
                 self.temp.pid.reset()

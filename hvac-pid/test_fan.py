@@ -10,8 +10,8 @@ def test_heating():
     #    -2 |     2
     #    -1 |     3
     #     0 |     3
-    #     1 |     3
-    #     2 |     4
+    #     1 |     4
+    #     2 |     5
     #     3 |     5
 
     # OVERHEATED
@@ -33,10 +33,10 @@ def test_heating():
     assert fan.speed == 3
     
     fan.calculate(1, 'heat')
-    assert fan.speed == 3
+    assert fan.speed == 4
 
     fan.calculate(2, 'heat')
-    assert fan.speed == 4
+    assert fan.speed == 5
 
     fan.calculate(3, 'heat')
     assert fan.speed == 5
