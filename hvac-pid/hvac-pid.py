@@ -142,7 +142,7 @@ class HVACPIDController(object):
                 self.temp.pid.reset()
 
         self.publish_mode()
-        self.iterate()
+        #self.iterate()
         self.setHVAC()
 
     def publish_mode(self):
@@ -170,7 +170,7 @@ class HVACPIDController(object):
             self.temp.setRequest(temp)
             self.publish_temp()
             self.temp.pid.reset()
-            self.iterate()
+            #self.iterate()
             self.setHVAC()
 
     def publish_temp(self):
@@ -181,13 +181,16 @@ class HVACPIDController(object):
         self.mqtt.publish(self.topic_prefix + '/measured_temperature', self.temp.temp_measure, 1, True)
 
     def set_fan(self, client, userdata, message):
-        fan = int(message.payload.decode('utf-8'))
+        fan = message.payload.decode('utf-8')
+        
+        if fan != "auto":
+            fan_int = int(fan)
 
-        if self.manual and fan >= 1 and fan <= 5:
-            self.logger.info('Manually set fan speed to %s/5', self.fan.speed)
-            self.fan.speed = fan
-            self.publish_fan()
-            self.setHVAC()
+            if self.manual and fan_int >= 1 and fan_int <= 5:
+                self.fan.speed = fan_int
+                self.publish_fan()
+                self.setHVAC()
+                self.logger.info('Manually set fan speed to %s/5', self.fan.speed)
 
     def publish_fan(self):
         if not self.control_enable:
