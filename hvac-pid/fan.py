@@ -22,7 +22,7 @@ class Fan(object):
             self.speed = 1
         elif offset < -2:
             self.speed = 2
-        elif offset < -1:
+        elif offset < 0:
             self.speed = 3
         elif offset < 1:
             self.speed = 4
