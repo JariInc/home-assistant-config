@@ -20,9 +20,15 @@ class Temp(object):
 
     def setRequest(self, temp_request):
         self.temp_request = temp_request
-        self.logger.info('Measured temperature is %s', self.temp_request)
+        self.logger.info('Requested temperature is %s', self.temp_request)
 
     def iteratePID(self):
         pid_output = self.pid.iterate(self.temp_request, self.temp_measure)
-        self.temp_set = int(round(min(30, max(17, pid_output))))
+        self.setTemperature(pid_output)
+
+    def setTemperature(self, temp):
+        # allow only +-1 degree change at once
+        old_value = self.temp_set
+        set_value = int(round(min(old_value + 1, max(old_value - 1, temp))))
+        self.temp_set = int(round(min(30, max(17, set_value))))
         self.logger.info('Set temperature is %s', self.temp_set)
