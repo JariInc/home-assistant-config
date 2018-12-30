@@ -7,6 +7,7 @@ def test_upperLimit():
         'Kd': 1,
         'integral_max_effect': 1,
     })
+    temp.temp_set = 40
     temp.setMeasurement(40)
     temp.setRequest(40)
     temp.iteratePID()
@@ -20,6 +21,7 @@ def test_lowerLimit():
         'Kd': 1,
         'integral_max_effect': 1,
     })
+    temp.temp_set = -1
     temp.setMeasurement(-1)
     temp.setRequest(-1)
     temp.iteratePID()
