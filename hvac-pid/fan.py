@@ -18,13 +18,13 @@ class Fan(object):
         self.logger.info('Fan speed is %s/5 in %s mode', self.speed, mode)
 
     def _heating(self, offset):
-        if offset < -2:
+        if offset < -3:
             self.speed = 1
-        elif offset < -1:
+        elif offset < -2:
             self.speed = 2
-        elif offset < 1:
+        elif offset < -1:
             self.speed = 3
-        elif offset < 2:
+        elif offset < 1:
             self.speed = 4
         else:
             self.speed = 5

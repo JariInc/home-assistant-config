@@ -21,19 +21,19 @@ def test_heating():
     assert fan.speed == 1
 
     fan.calculate(-3, 'heat')
-    assert fan.speed == 1
+    assert fan.speed == 2
 
     fan.calculate(-2, 'heat')
-    assert fan.speed == 2
+    assert fan.speed == 3
 
     fan.calculate(-1, 'heat')
     assert fan.speed == 3
 
     fan.calculate(0, 'heat')
-    assert fan.speed == 3
+    assert fan.speed == 4
     
     fan.calculate(1, 'heat')
-    assert fan.speed == 4
+    assert fan.speed == 5
 
     fan.calculate(2, 'heat')
     assert fan.speed == 5
