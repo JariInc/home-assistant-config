@@ -33,11 +33,15 @@ class HVACPIDController(object):
             'Kp': float(os.getenv('PID_KP')), 
             'Ki': float(os.getenv('PID_KI')), 
             'Kd': float(os.getenv('PID_KD')),
-            'integral_max_effect': float(os.getenv('PID_INTEGRAL_MAX_EFFECT'))
+        }
+
+        temp_options = {
+            'temp_min': float(os.getenv('SET_TEMP_MIN')),
+            'temp_max': float(os.getenv('SET_TEMP_MAX')),
         }
 
         # Temp
-        self.temp = Temp(**pid_options)
+        self.temp = Temp(**{**temp_options, **pid_options})
 
         # Fan
         self.fan = Fan()

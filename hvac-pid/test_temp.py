@@ -5,7 +5,8 @@ def test_upperLimit():
         'Kp': 1, 
         'Ki': 1, 
         'Kd': 1,
-        'integral_max_effect': 1,
+        'temp_min': 17,
+        'temp_max': 30,
     })
     temp.temp_set = 40
     temp.setMeasurement(40)
@@ -19,7 +20,8 @@ def test_lowerLimit():
         'Kp': 1, 
         'Ki': 1, 
         'Kd': 1,
-        'integral_max_effect': 1,
+        'temp_min': 17,
+        'temp_max': 30,
     })
     temp.temp_set = -1
     temp.setMeasurement(-1)
