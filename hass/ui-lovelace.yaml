@@ -4,22 +4,16 @@ views:
     title: Yleisnäkymä
     type: horizontal-stack
     cards:
-      - id: 53df2ff7c41a4c38bc14429c34a1372f  # Automatically created id
-        type: sensor
-        entity: sensor.ruuvitag_indoor_temperature
-        name: Sisälämpötila
-        line_width: 2
-        line_color: '#f44141'
-        accuracy: 1000
-        hours_to_show: 24
-      - id: 2aa1f7dae28b4c3e93439c1c6308e2f4  # Automatically created id
-        type: sensor
-        entity: sensor.ruuvitag_outdoor_temperature
-        name: Ulkolämpötila
-        line_width: 2
-        line_color: '#4259f4'
-        accuracy: 1000
-        hours_to_show: 24
+      - type: history-graph
+        title: Sisälämpötila
+        refresh_interval: 60
+        entities:
+          - entity: sensor.ruuvitag_indoor_temperature
+      - type: history-graph
+        title: Ulkolämpötila
+        refresh_interval: 60
+        entities:
+          - entity: sensor.ruuvitag_outdoor_temperature
       - id: 98b65816120241278d23ab4da355fba6  # Automatically created id
         type: entities
         title: Ilmalämpöpumppu

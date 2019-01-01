@@ -1,0 +1,4 @@
+- platform: html5
+  name: push_notify
+  gcm_api_key: AAAA5-qcTA8:APA91bHXSPbJJgI9NGeYsyOnkEIG7Yz5A2gY4MFQsURnepQCf7009v8466NDIfe4TkZfSZfYeS6Vbw0I-xq7ohio_vSskYUEoIT2AQuQ2tuNZL_lTokyzNjhvPvZo7ew9iKKTDMj8guw
+  gcm_sender_id: 996073557007

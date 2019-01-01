@@ -7,3 +7,4 @@
 .tradfri_psk.conf
 *.db
 webostv.conf
+html5_push_registrations.conf

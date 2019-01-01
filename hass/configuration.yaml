@@ -13,6 +13,9 @@ history:
 logbook:
 sun:
 
+lovelace:
+  mode: yaml
+
 http:
   api_password: !env_var HA_PASSWORD
   base_url: !env_var HA_BASE_URL
@@ -50,3 +53,4 @@ camera: !include camera.yaml
 input_datetime: !include input_datetime.yaml
 input_boolean: !include input_boolean.yaml
 weather: !include weather.yaml
+notify: !include notify.yaml
