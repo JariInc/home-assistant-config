@@ -58,7 +58,7 @@ class PID(object):
         min_integral = self.min_integral(set_point, error, derivative)
         new_integral = min_integral if new_integral < min_integral else new_integral
 
-        self.logger.debug("integral limits: [%g %g]", min_integral, max_integral)
+        self.logger.debug("integral limits: [%g, %g]", min_integral, max_integral)
 
         output = self.Kp * error + self.Ki * new_integral + self.Kd * derivative
         self.logger.debug("output: %g * %g + %g * %g + %g * %g = %g", self.Kp, error, self.Ki, new_integral, self.Kd, derivative, output)       
