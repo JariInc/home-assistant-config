@@ -12,7 +12,9 @@ frontend:
 history:
 logbook:
 sun:
-
+config:
+python_script:
+  
 lovelace:
   mode: yaml
 
@@ -54,3 +56,4 @@ input_datetime: !include input_datetime.yaml
 input_boolean: !include input_boolean.yaml
 weather: !include weather.yaml
 notify: !include notify.yaml
+automation: !include automation.yaml

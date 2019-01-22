@@ -94,7 +94,13 @@ views:
         show_header_toggle: false
         entities:
           - light.tuulikaappi
-
+  - title: Pesuhuone/sauna
+    type: vertical-stack
+    cards:
+      - type: entities
+        title: Lämmitys
+        entities:
+          - climate.thermofloor_as_heatit_thermostat_tf_033_heating
 
   - id: 4  # Automatically created id
     title: Piha
