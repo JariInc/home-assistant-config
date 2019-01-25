@@ -33,8 +33,7 @@ class Temp(object):
         self.logger.info('Requested temperature is %s', self.temp_request)
 
     def iteratePID(self):
-        self.pid.min_output = self.temp_min
-        self.pid.max_output = self.temp_max
+        self.pid.setLimits(self.temp_min, self.temp_max)
         pid_output = self.pid.iterate(self.temp_request, self.temp_measure)
         self.setTemperature(pid_output)
 
@@ -44,3 +43,7 @@ class Temp(object):
         set_value = int(round(min(old_value + 1, max(old_value - 1, temp))))
         self.temp_set = int(round(min(self.temp_max, max(self.temp_min, set_value))))
         self.logger.info('Set temperature is %s', self.temp_set)
+
+    def setLimits(self, min_temp, max_temp):
+        self.temp_min = temp_min
+        self.temp_max = temp_max

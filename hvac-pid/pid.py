@@ -76,3 +76,7 @@ class PID(object):
 
     def min_integral(self, set_point, proportional, derivative):
         return (self.min_output - set_point - (self.Kp * proportional) - (self.Kd * derivative)) / self.Ki
+
+    def setLimits(self, min_output, max_output):
+        self.min_output = min_output
+        self.max_output = max_output
