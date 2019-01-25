@@ -81,7 +81,7 @@ class HVACPIDController(object):
             # temp hax
             # limit min temp when outdoors is < -10
             if self.temp_outdoors < -10:
-                self.temp.temp_min = floor(self.temp.temp_request - 1)
+                self.temp.temp_min = floor(self.temp.temp_request)
                 self.logger.debug('Limiting min temp to %g when outdoor temp is %g', self.temp.temp_min, self.temp_outdoors)
             else:
                 self.temp.temp_min = float(os.getenv('SET_TEMP_MIN'))
