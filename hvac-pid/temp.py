@@ -44,6 +44,6 @@ class Temp(object):
         self.temp_set = int(round(min(self.temp_max, max(self.temp_min, set_value))))
         self.logger.info('Set temperature is %s', self.temp_set)
 
-    def setLimits(self, min_temp, max_temp):
+    def setLimits(self, temp_min, temp_max):
         self.temp_min = temp_min
         self.temp_max = temp_max
