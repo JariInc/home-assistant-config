@@ -76,7 +76,6 @@ class HVACPIDController(object):
     def iterate(self):
         if self.manual:
             self.logger.info('Manual mode, skipping PID iteration')
-            self.temp.temp_set = self.temp.temp_request
         else:
             # temp hax
             # limit min temp when outdoors is < -10
@@ -143,6 +142,7 @@ class HVACPIDController(object):
             self.manual = True
             self.power.state = True
             self.mode = 'auto'
+            self.temp.temp_set = self.temp.temp_request
             self.logger.info('Set mode to manual')
         elif mode in ['heat', 'cool']:
             self.manual = False
@@ -155,7 +155,6 @@ class HVACPIDController(object):
                 self.temp.pid.reset()
 
         self.publish_mode()
-        #self.iterate()
         self.setHVAC()
 
     def publish_mode(self):
@@ -177,13 +176,17 @@ class HVACPIDController(object):
         self.mqtt.publish(topic, mode, 1, True)
 
     def set_temp(self, client, userdata, message):
-        temp = float(message.payload.decode('utf-8'))
+        temp = round(float(message.payload.decode('utf-8')), 2)
 
         if temp >= 17 and temp <= 30:
             self.temp.setRequest(temp)
+
+            if self.manual:  
+                self.temp.temp_set = self.temp.temp_request
+            else:
+                self.temp.pid.reset()
+
             self.publish_temp()
-            self.temp.pid.reset()
-            #self.iterate()
             self.setHVAC()
 
     def publish_temp(self):
@@ -259,8 +262,11 @@ if __name__ == '__main__':
 
     while True:
         time.sleep(interval)
-        ctrl.iterate()
-        ctrl.setHVAC()
+
+        if not ctrl.manual:
+            ctrl.iterate()
+            ctrl.setHVAC()
+            ctrl.publish_mode()
+            ctrl.publish_fan()
+
         ctrl.publish_temp()
-        ctrl.publish_mode()
-        ctrl.publish_fan()
