@@ -14,7 +14,8 @@ class MQTTClient(object):
         self.port = port
 
         self.client = mqtt.Client(self.client_id)
-        self.client.enable_logger(logging.getLogger('hvac-pid.mqtt'))
+        #self.client.enable_logger(logging.getLogger('hvac-pid.mqtt'))
+        self.client.disable_logger()
 
     def connect(self):
         self.client.connect(self.host, self.port, self.keepalive)
