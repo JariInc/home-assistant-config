@@ -9,3 +9,14 @@
     data:
       thermostat: climate.thermofloor_as_heatit_thermostat_tf_033_heating
       sensor: sensor.thermofloor_as_heatit_thermostat_tf_033_external_sensor
+- id: bathroom_heating
+  alias: Bathroom manual heating timer
+  trigger:
+  - platform: state
+    entity_id: switch.thermofloor_as_heatit_thermostat_tf_033_switch
+    to: 'on'
+    for:
+      minutes: 30
+  action:
+  - service: switch.turn_off
+    entity_id: switch.thermofloor_as_heatit_thermostat_tf_033_switch

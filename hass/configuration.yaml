@@ -57,3 +57,4 @@ input_boolean: !include input_boolean.yaml
 weather: !include weather.yaml
 notify: !include notify.yaml
 automation: !include automation.yaml
+# timer: !include timer.yaml

@@ -42,6 +42,7 @@ views:
       - id: 42a847cb69ef4a2faf15942309522c0f  # Automatically created id
         type: entities
         title: Sisäilma
+        show_header_toggle: false 
         entities:
           - sensor.ruuvitag_indoor_temperature
           - sensor.ruuvitag_indoor_humidity
@@ -59,11 +60,13 @@ views:
       - id: 0101005e8a7c412b83b1b00e4736a8a9  # Automatically created id
         type: entities
         title: Ilmalämpöpumppu
+        show_header_toggle: false 
         entities:
           - climate.toshiba_arctic_25
       - id: d5dcc8cf85d741f19d29e64562bbc5b9  # Automatically created id
         type: entities
         title: Kahvinkeitin
+        show_header_toggle: false 
         entities:
           - sensor.philio_technology_corporation_pan11_smart_energy_plug_in_switch_power
           - sensor.philio_technology_corporation_pan11_smart_energy_plug_in_switch_energy
@@ -71,6 +74,7 @@ views:
       - id: fcb460d001534433b44e076429b8d81a  # Automatically created id
         type: entities
         title: Uuni
+        show_header_toggle: false 
         entities:
           - sensor.ruuvitag_oven_temperature
       # - id: 2e8e396edcb14e66a440608fc74a9087  # Automatically created id
@@ -95,13 +99,17 @@ views:
         show_header_toggle: false
         entities:
           - light.tuulikaappi
+
   - title: Pesuhuone/sauna
     type: vertical-stack
     cards:
       - type: entities
         title: Lämmitys
+        show_header_toggle: false
         entities:
           - climate.thermofloor_as_heatit_thermostat_tf_033_heating
+          - name: Lämmitys päällä
+            entity: switch.thermofloor_as_heatit_thermostat_tf_033_switch
 
   - id: 4  # Automatically created id
     title: Piha
@@ -119,7 +127,8 @@ views:
         show_state: false
       - id: fddc994c5f7a4924aca65a3f076ebb27  # Automatically created id
         type: entities
-        title: Sensorit
+        title: Mittaus
+        show_header_toggle: false 
         entities:
           - sensor.ruuvitag_outdoor_temperature
           - sensor.ruuvitag_outdoor_humidity

@@ -8,3 +8,4 @@
 *.db
 webostv.conf
 html5_push_registrations.conf
+home-assistant_v2.*
