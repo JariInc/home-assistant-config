@@ -1,7 +1,7 @@
 version: '3'
 services:
   hass:
-    image: homeassistant/home-assistant:0.84.6
+    image: homeassistant/home-assistant:0.86.4
     env_file: hass.env
     volumes:
       - ./hass:/config
@@ -17,7 +17,7 @@ services:
       - mqtt
 
   mqtt:
-    image: eclipse-mosquitto:1.5.4
+    image: eclipse-mosquitto:1.5.5
     restart: always
     volumes:
       - ./mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
@@ -51,7 +51,7 @@ services:
     volumes:
       - .:/data:ro
       - ./duplicity/cache:/home/duplicity/.cache/duplicity
-    command: 
+    command:
       - "duplicity"
       - "--full-if-older-than=1M"
       - "--no-encryption"
@@ -76,7 +76,7 @@ services:
       - hass
 
   influxdb:
-    image: influxdb:1.7.1-alpine
+    image: influxdb:1.7.3-alpine
     volumes:
       - ./influxdb/data:/var/lib/influxdb
     networks:
@@ -95,11 +95,11 @@ services:
     depends_on:
       - mqtt
       - influxdb
-    
+
   grafana:
-    image: grafana/grafana:5.4.0
+    image: grafana/grafana:5.4.3
     env_file: ./grafana.env
-    ports: 
+    ports:
       - "3000:3000"
     volumes:
       - ./grafana/data:/var/lib/grafana
@@ -119,7 +119,7 @@ services:
     env_file: ./letsencrypt.env
 
   nginx:
-    image: nginx:1.15.6-alpine
+    image: nginx:1.15.8-alpine
     networks:
       - public
     volumes:
@@ -133,7 +133,7 @@ services:
       - letsencrypt
 
   unifi-video:
-    image: pducharme/unifi-video-controller:3.9.9
+    image: pducharme/unifi-video-controller:3.9.11
     ports:
       - "1935:1935"
       - "6666:6666"
