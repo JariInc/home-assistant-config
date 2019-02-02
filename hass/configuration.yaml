@@ -14,7 +14,7 @@ logbook:
 sun:
 config:
 python_script:
-  
+
 lovelace:
   mode: yaml
 
@@ -47,6 +47,10 @@ influxdb:
   password : !env_var INFLUXDB_PASSWORD
   database : !env_var INFLUXDB_DATABASE
 
+octoprint:
+  host: !env_var OCTOPRINT_HOST
+  api_key: !env_var OCTOPRINT_KEY
+
 sensor: !include sensor.yaml
 switch: !include switch.yaml
 climate: !include climate.yaml
@@ -57,4 +61,3 @@ input_boolean: !include input_boolean.yaml
 weather: !include weather.yaml
 notify: !include notify.yaml
 automation: !include automation.yaml
-# timer: !include timer.yaml
