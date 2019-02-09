@@ -16,7 +16,31 @@
     entity_id: switch.thermofloor_as_heatit_thermostat_tf_033_switch
     to: 'on'
     for:
-      minutes: 30
+      minutes: 60
   action:
   - service: switch.turn_off
     entity_id: switch.thermofloor_as_heatit_thermostat_tf_033_switch
+- id: disable_car_heater_side
+  alias: Disable side car heater 
+  trigger:
+    platform: numeric_state
+    entity_id: sensor.garage_side_socket_power
+    above: -1
+    below: 1
+    for: 
+      minutes: 10
+  action:
+    service: switch.turn_off
+    entity_id: switch.car_heater_side
+- id: disable_car_heater_front
+  alias: Disable front cat heater
+  trigger:
+    platform: numeric_state
+    entity_id: sensor.garage_front_socket_power
+    above: -1
+    below: 1
+    for: 
+      minutes: 10
+  action:
+    service: switch.turn_off
+    entity_id: switch.car_heater_front
