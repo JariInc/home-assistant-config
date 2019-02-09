@@ -15,6 +15,7 @@ services:
       - hass
     depends_on:
       - mqtt
+      - mariadb
 
   mqtt:
     image: eclipse-mosquitto:1.5.5
@@ -166,6 +167,20 @@ services:
     restart: always
     depends_on:
       - hass
+
+  mariadb:
+    image: mariadb:10.4
+    env_file: ./mariadb.env
+    restart: always
+    networks: 
+      - hass
+    volumes:
+      - mariadb-data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+
+volumes:
+  mariadb-data:
 
 networks:
   hass:

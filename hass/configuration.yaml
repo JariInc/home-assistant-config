@@ -14,6 +14,10 @@ logbook:
 sun:
 config:
 python_script:
+recorder:
+  purge_keep_days: 30
+  db_url: !env_var MARIADB_HISTORY_URI
+
 
 lovelace:
   mode: yaml
