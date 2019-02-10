@@ -5,34 +5,35 @@ views:
     type: horizontal-stack
     cards:
       - type: history-graph
-        title: Sisälämpötila
+        title: Lämpötila
         refresh_interval: 60
         entities:
           - entity: sensor.ruuvitag_indoor_temperature
-      - type: history-graph
-        title: Ulkolämpötila
-        refresh_interval: 60
-        entities:
+            name: Sisällä
           - entity: sensor.ruuvitag_outdoor_temperature
+            name: Ulkona
       - id: 98b65816120241278d23ab4da355fba6  # Automatically created id
         type: entities
-        title: Ilmalämpöpumppu
+        title: Lämmitys
+        show_header_toggle: false
         entities:
           - climate.toshiba_arctic_25
+          - climate.thermofloor_as_heatit_thermostat_tf_033_heating
+
       - id: f354c9aed2b94f1884cda099bbec4a5f  # Automatically created id
         type: entities
-        title: Auton lämmitys (katos)
+        title: Autojen lämmitys
         show_header_toggle: false
         entities:
-          - input_boolean.car_heater_side_armed
-          - input_datetime.car_heater_side_departure
-      - id: 5f139e5577ed4f198f1512e2975096dc  # Automatically created id
-        type: entities
-        title: Auton lämmitys (talli)
-        show_header_toggle: false
-        entities:
-          - input_boolean.car_heater_front_armed
-          - input_datetime.car_heater_front_departure
+          - entity: input_boolean.car_heater_side_armed
+            name: Katos ajastettu
+          - entity: input_datetime.car_heater_side_departure
+            name: Katos lähtöaika
+          - type: divider
+          - entity: input_boolean.car_heater_front_armed
+            name: Talli ajastettu
+          - entity: input_datetime.car_heater_front_departure
+            name: Talli lähtöaika
 
   - id: 1  # Automatically created id
     title: Olohuone
@@ -94,7 +95,13 @@ views:
         show_header_toggle: false
         entities:
           - light.tuulikaappi
-
+  - title: Pesuhuone/sauna
+    type: vertical-stack
+    cards:
+      - type: entities
+        title: Lämmitys
+        entities:
+          - climate.thermofloor_as_heatit_thermostat_tf_033_heating
 
   - id: 4  # Automatically created id
     title: Piha
@@ -121,7 +128,8 @@ views:
         title: Katos
         show_header_toggle: false
         entities:
-          - switch.car_heater_side
+          - entity: switch.car_heater_side
+            secondary_info: last-changed
           - sensor.garage_side_socket_power
           - input_boolean.car_heater_side_armed
           - input_datetime.car_heater_side_departure
@@ -130,7 +138,8 @@ views:
         title: Talli
         show_header_toggle: false
         entities:
-          - switch.car_heater_front
+          - entity: switch.car_heater_front
+            secondary_info: last-changed
           - sensor.garage_front_socket_power
           - input_boolean.car_heater_front_armed
           - input_datetime.car_heater_front_departure

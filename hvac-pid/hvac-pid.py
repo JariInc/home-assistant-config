@@ -7,6 +7,7 @@ from temp import Temp
 from fan import Fan
 from power import Power
 from dotenv import load_dotenv
+from math import floor
 
 load_dotenv()
 
@@ -77,6 +78,14 @@ class HVACPIDController(object):
             self.logger.info('Manual mode, skipping PID iteration')
             self.temp.temp_set = self.temp.temp_request
         else:
+            # temp hax
+            # limit min temp when outdoors is < -10
+            if self.temp_outdoors < -10:
+                self.temp.temp_min = floor(self.temp.temp_request - 1)
+                self.logger.debug('Limiting min temp to %g when outdoor temp is %g', self.temp.temp_min, self.temp_outdoors)
+            else:
+                self.temp.temp_min = float(os.getenv('SET_TEMP_MIN'))
+
             self.temp.iteratePID()
             self.fan.calculate(self.temp.pid.output - self.temp.temp_request, self.mode)
             self.power.calculate(self.temp.temp_request, self.temp.temp_measure, self.mode, self.temp_outdoors)

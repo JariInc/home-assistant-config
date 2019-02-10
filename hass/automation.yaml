@@ -1,0 +1,11 @@
+- id: heating_update_thermostats
+  alias: 'Heating Update Thermostats'
+  trigger:
+    platform: state
+    entity_id:
+      - sensor.thermofloor_as_heatit_thermostat_tf_033_external_sensor
+  action:
+    service: python_script.heating_thermostat_update
+    data:
+      thermostat: climate.thermofloor_as_heatit_thermostat_tf_033_heating
+      sensor: sensor.thermofloor_as_heatit_thermostat_tf_033_external_sensor
