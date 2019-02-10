@@ -1,5 +1,6 @@
 - id: heating_update_thermostats
-  alias: 'Heating Update Thermostats'
+  alias: Heating Update Thermostats
+  initial_state: true
   trigger:
     platform: state
     entity_id:
@@ -11,6 +12,7 @@
       sensor: sensor.thermofloor_as_heatit_thermostat_tf_033_external_sensor
 - id: bathroom_heating
   alias: Bathroom manual heating timer
+  initial_state: true
   trigger:
   - platform: state
     entity_id: switch.thermofloor_as_heatit_thermostat_tf_033_switch
@@ -22,6 +24,7 @@
     entity_id: switch.thermofloor_as_heatit_thermostat_tf_033_switch
 - id: disable_car_heater_side
   alias: Disable side car heater 
+  initial_state: true
   trigger:
     platform: numeric_state
     entity_id: sensor.garage_side_socket_power
@@ -34,6 +37,7 @@
     entity_id: switch.car_heater_side
 - id: disable_car_heater_front
   alias: Disable front cat heater
+  initial_state: true
   trigger:
     platform: numeric_state
     entity_id: sensor.garage_front_socket_power
