@@ -10,11 +10,15 @@ homeassistant:
 api:
 frontend:
 history:
-logbook:
 sun:
 config:
 python_script:
 system_health:
+
+logbook:
+  exclude:
+    entities: 
+      - automation.heating_update_thermostats
 
 recorder:
   purge_keep_days: 30
