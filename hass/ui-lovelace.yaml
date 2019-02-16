@@ -119,6 +119,7 @@ views:
         camera_image: camera.octoprint
         show_state: false
         show_name: false
+        aspect_ratio: 4x3
       - type: entities
         title: 3D tulostin
         show_header_toggle: false

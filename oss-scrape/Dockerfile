@@ -9,4 +9,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-CMD [ "python", "-u", "./test.py" ]
+CMD [ "python", "-u", "./main.py" ]

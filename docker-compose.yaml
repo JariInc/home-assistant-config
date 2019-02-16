@@ -179,6 +179,15 @@ services:
     ports:
       - "3306:3306"
 
+  oss-scrape:
+    build: ./oss-scrape
+    env_file: ./oss-scrape.env
+    restart: "no"
+    networks:
+      - hass
+    depends_on:
+      - influxdb
+
 volumes:
   mariadb-data:
 
