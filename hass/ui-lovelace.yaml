@@ -63,14 +63,8 @@ views:
         show_header_toggle: false
         entities:
           - climate.toshiba_arctic_25
-      - id: d5dcc8cf85d741f19d29e64562bbc5b9  # Automatically created id
-        type: entities
-        title: Kahvinkeitin
-        show_header_toggle: false
-        entities:
           - sensor.philio_technology_corporation_pan11_smart_energy_plug_in_switch_power
           - sensor.philio_technology_corporation_pan11_smart_energy_plug_in_switch_energy
-          - switch.philio_technology_corporation_pan11_smart_energy_plug_in_switch_switch
       - id: fcb460d001534433b44e076429b8d81a  # Automatically created id
         type: entities
         title: Uuni
