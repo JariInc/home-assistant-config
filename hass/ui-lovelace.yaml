@@ -12,6 +12,11 @@ views:
             name: Sisällä
           - entity: sensor.ruuvitag_outdoor_temperature
             name: Ulkona
+      - type: glance
+        name: Lämpötila
+        entities:
+          - sensor.ruuvitag_indoor_temperature
+          - sensor.ruuvitag_outdoor_temperature
       - id: 98b65816120241278d23ab4da355fba6  # Automatically created id
         type: entities
         title: Lämmitys
