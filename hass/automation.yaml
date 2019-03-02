@@ -43,6 +43,10 @@
   - service: input_boolean.turn_off
     data:
       entity_id: input_boolean.bathroom_force_heat
+  - service: notify.push_notify
+    data:
+      title: "Pesuhuone lattialämmitys"
+      message: "Lämpötila asetettu 20 asteeseen"
 
 - id: disable_car_heater_side
   alias: Disable side car heater 
@@ -59,6 +63,7 @@
       entity_id: switch.car_heater_side
     - service: input_boolean.turn_off
       entity_id: input_boolean.car_heater_side_armed
+
 - id: disable_car_heater_front
   alias: Disable front cat heater
   initial_state: true
