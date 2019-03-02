@@ -6,3 +6,7 @@ car_heater_side_armed:
   name: Lämmitin ajastettu
   initial: off
   icon: mdi:calendar-check
+bathroom_force_heat:
+  name: Pakotettu lämmitys
+  initial: off
+  icon: mdi:radiator

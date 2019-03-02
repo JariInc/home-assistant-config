@@ -10,18 +10,40 @@
     data:
       thermostat: climate.thermofloor_as_heatit_thermostat_tf_033_heating
       sensor: sensor.thermofloor_as_heatit_thermostat_tf_033_external_sensor
-- id: bathroom_heating
-  alias: Bathroom manual heating timer
+
+- id: bathroom_force_heat_on
+  alias: Enable bathroom forced heating
   initial_state: true
   trigger:
   - platform: state
-    entity_id: switch.thermofloor_as_heatit_thermostat_tf_033_switch
+    entity_id: input_boolean.bathroom_force_heat
+    to: 'on'
+  action:
+  - service: climate.set_temperature
+    data:
+      entity_id: climate.thermofloor_as_heatit_thermostat_tf_033_heating
+      temperature: 25
+      operation_mode: heat
+
+- id: bathroom_force_heat_off
+  alias: Disable bathroom forced heating
+  initial_state: true
+  trigger:
+  - platform: state
+    entity_id: input_boolean.bathroom_force_heat
     to: 'on'
     for:
       minutes: 60
   action:
-  - service: switch.turn_off
-    entity_id: switch.thermofloor_as_heatit_thermostat_tf_033_switch
+  - service: climate.set_temperature
+    data:
+      entity_id: climate.thermofloor_as_heatit_thermostat_tf_033_heating
+      temperature: 20
+      operation_mode: heat
+  - service: input_boolean.turn_off
+    data:
+      entity_id: input_boolean.bathroom_force_heat
+
 - id: disable_car_heater_side
   alias: Disable side car heater 
   initial_state: true
