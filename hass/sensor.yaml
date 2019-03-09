@@ -38,6 +38,7 @@
   value_template: '{{ value_json["ENERGY"]["Power"] }}'
   unit_of_measurement: "W"
 
+# octopi
 - platform: template
   sensors:
     octoprint_time_elapsed_format:
@@ -103,3 +104,13 @@
           {%- endif -%}
         {%- endif -%}
 
+# heatpump pid
+- platform: mqtt
+  name: heatpump_set_temperature
+  state_topic: "hvac/toshiba-63200289/pid/state"
+  value_template: '{{ value_json["temperature_set"] }}'
+  unit_of_measurement: "°C"
+- platform: mqtt
+  name: heatpump_fan_speed
+  state_topic: "hvac/toshiba-63200289/pid/state"
+  value_template: '{{ value_json["fan"] }}'

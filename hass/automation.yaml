@@ -79,3 +79,16 @@
       entity_id: switch.car_heater_front
     - service: input_boolean.turn_off
       entity_id: input_boolean.car_heater_front_armed
+
+- id: alert_heatpump
+  alias: Heat pump cold draft prevention function alert
+  initial_state: true
+  trigger:
+  - platform: numeric_state
+    entity_id: sensor.heatpump_set_temperature
+    above: 25
+  action:
+  - service: notify.push_notify
+    data:
+      title: "Ilmalämpöpumppuhälytys"
+      message: "Asetuslämpötila yli 25 astetta"

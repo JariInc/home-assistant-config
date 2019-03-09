@@ -68,9 +68,18 @@ views:
         title: Ilmalämpöpumppu
         show_header_toggle: false
         entities:
-          - climate.toshiba_arctic_25
-          - sensor.philio_technology_corporation_pan11_smart_energy_plug_in_switch_power
-          - sensor.philio_technology_corporation_pan11_smart_energy_plug_in_switch_energy
+          - entity: climate.toshiba_arctic_25
+            icon: mdi:thermostat
+          - entity: sensor.heatpump_set_temperature
+            name: Asetuslämpötila
+          - entity: sensor.heatpump_fan_speed
+            name: Puhallus
+            icon: mdi:fan
+          - entity: sensor.philio_technology_corporation_pan11_smart_energy_plug_in_switch_power
+            icon: mdi:gauge
+          - entity: sensor.philio_technology_corporation_pan11_smart_energy_plug_in_switch_energy
+            icon: mdi:power-plug
+
       - id: fcb460d001534433b44e076429b8d81a  # Automatically created id
         type: entities
         title: Uuni
