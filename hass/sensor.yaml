@@ -13,6 +13,11 @@
   name: ruuvitag_oven_temperature
   unit_of_measurement: "°C"
   value_template: '{{ value_json.temperature }}'
+- platform: mqtt
+  state_topic: "bme280/8EB850"
+  name: bokashi_temperature
+  unit_of_measurement: "°C"
+  value_template: '{{ value_json.temperature }}'
 
 - platform: mqtt
   state_topic: "ruuvitag/C316F66C57EB"

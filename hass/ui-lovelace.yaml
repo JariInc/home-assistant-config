@@ -89,6 +89,12 @@ views:
       # - id: 2e8e396edcb14e66a440608fc74a9087  # Automatically created id
       #   type: thermostat
       #   entity: climate.toshiba_arctic_25
+      - type: entities
+        title: Bokashi
+        show_header_toggle: false
+        entities:
+          - entity: sensor.bokashi_temperature
+            name: Sankon lämpötila
   - id: 3  # Automatically created id
     title: Kodinhoitohuone
     type: vertical-stack
