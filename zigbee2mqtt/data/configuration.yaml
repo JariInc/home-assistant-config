@@ -1,0 +1,23 @@
+homeassistant: true
+permit_join: false
+mqtt:
+  base_topic: zigbee2mqtt
+  server: 'mqtt://mqtt'
+serial:
+  port: /dev/ttyACM0
+  disable_led: true
+advanced:
+  last_seen: ISO_8601
+devices:
+  '0x90fd9ffffeff2e13':
+    friendly_name: '0x90fd9ffffeff2e13'
+    retain: false
+  '0xd0cf5efffe124b79':
+    friendly_name: '0xd0cf5efffe124b79'
+    retain: false
+  '0x90fd9ffffef1731a':
+    friendly_name: '0x90fd9ffffef1731a'
+    retain: false
+  '0x90fd9ffffeebdbf9':
+    friendly_name: '0x90fd9ffffeebdbf9'
+    retain: false

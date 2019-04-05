@@ -92,3 +92,38 @@
     data:
       title: "Ilmalämpöpumppuhälytys"
       message: "Asetuslämpötila yli 25 astetta"
+
+- id: front_door_light_on
+  alias: Front door light on
+  initial_state: true
+  trigger:
+    platform: state
+    entity_id: binary_sensor.0xd0cf5efffe124b79_occupancy
+    from: 'off'
+    to: 'on'
+  condition:
+    condition: or
+    conditions:
+      - condition: sun
+        after: sunset
+      - condition: sun
+        before: sunrise
+  action:
+    service: light.turn_on
+    data:
+      entity_id:
+        - light.0x90fd9ffffeff2e13_light
+
+- id: front_door_light_off
+  alias: Front door light off
+  initial_state: true
+  trigger:
+    platform: state
+    entity_id: binary_sensor.0xd0cf5efffe124b79_occupancy
+    from: 'on'
+    to: 'off'
+  action:
+    service: light.turn_off
+    data:
+      entity_id:
+        - light.0x90fd9ffffeff2e13_light

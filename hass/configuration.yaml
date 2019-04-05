@@ -37,10 +37,18 @@ mqtt:
   broker: mqtt
   port: 1883
   client_id: hass
+  discovery: true
+  discovery_prefix: homeassistant
+  birth_message:
+    topic: 'hass/status'
+    payload: 'online'
+  will_message:
+    topic: 'hass/status'
+    payload: 'offline'
 
-tradfri:
-  host: !env_var TRADFRI_HOST
-  allow_tradfri_groups: true
+#tradfri:
+#  host: !env_var TRADFRI_HOST
+#  allow_tradfri_groups: true
 
 cast:
   media_player:

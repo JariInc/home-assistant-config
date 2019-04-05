@@ -1,7 +1,7 @@
 version: '3'
 services:
   hass:
-    image: homeassistant/home-assistant:0.88.2
+    image: homeassistant/home-assistant:0.90.1
     env_file: hass.env
     volumes:
       - ./hass:/config
@@ -187,6 +187,18 @@ services:
       - hass
     depends_on:
       - influxdb
+
+  zigbee2mqtt:
+    image: koenkk/zigbee2mqtt:1.2.1
+    restart: always
+    networks: 
+      - hass
+    depends_on:
+      - mqtt
+    volumes:
+      - ./zigbee2mqtt/data:/app/data 
+    devices:
+      - /dev/ttyACM1:/dev/ttyACM0
 
 volumes:
   mariadb-data:
