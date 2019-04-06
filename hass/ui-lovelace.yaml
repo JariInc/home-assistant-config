@@ -99,21 +99,20 @@ views:
     title: Kodinhoitohuone
     type: vertical-stack
     cards:
-      - id: 77be66c01b144689a3b8a71b195c6204  # Automatically created id
-        type: entities
-        title: Valaistus
-        show_header_toggle: false
-        entities:
-          - light.kattovalaisin
+      - type: light
+        entity: light.0x90fd9ffffef1731a_light
 
   - title: Eteinen
     type: vertical-stack
     cards:
+      - type: light
+        entity: light.0x90fd9ffffeff2e13_light
       - type: entities
         title: Valaistus
         show_header_toggle: false
         entities:
-          - light.tuulikaappi
+          - binary_sensor.0xd0cf5efffe124b79_occupancy
+          - sensor.0xd0cf5efffe124b79_battery
 
   - title: Pesuhuone/sauna
     type: vertical-stack
