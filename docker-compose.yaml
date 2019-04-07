@@ -1,7 +1,7 @@
 version: '3'
 services:
   hass:
-    image: homeassistant/home-assistant:0.90.1
+    image: homeassistant/home-assistant:0.91.1
     env_file: hass.env
     volumes:
       - ./hass:/config
@@ -77,7 +77,7 @@ services:
       - hass
 
   influxdb:
-    image: influxdb:1.7.4-alpine
+    image: influxdb:1.7.5-alpine
     volumes:
       - ./influxdb/data:/var/lib/influxdb
     networks:
@@ -98,7 +98,7 @@ services:
       - influxdb
 
   grafana:
-    image: grafana/grafana:6.0.0
+    image: grafana/grafana:6.1.1
     env_file: ./grafana.env
     ports:
       - "3000:3000"
@@ -120,7 +120,7 @@ services:
     env_file: ./letsencrypt.env
 
   nginx:
-    image: nginx:1.15.9-alpine
+    image: nginx:1.15.10-alpine
     networks:
       - public
     volumes:
