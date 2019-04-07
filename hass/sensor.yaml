@@ -18,6 +18,11 @@
   name: bokashi_temperature
   unit_of_measurement: "°C"
   value_template: '{{ value_json.temperature }}'
+- platform: mqtt
+  state_topic: "bme280/8EB9F9"
+  name: sauna_temperature
+  unit_of_measurement: "°C"
+  value_template: '{{ value_json.temperature }}'
 
 - platform: mqtt
   state_topic: "ruuvitag/C316F66C57EB"
@@ -27,6 +32,11 @@
 - platform: mqtt
   state_topic: "ruuvitag/DC136ADEF844"
   name: ruuvitag_outdoor_humidity
+  unit_of_measurement: "%"
+  value_template: '{{ value_json.humidity }}'
+- platform: mqtt
+  state_topic: "bme280/8EB9F9"
+  name: sauna_humidity
   unit_of_measurement: "%"
   value_template: '{{ value_json.humidity }}'
 

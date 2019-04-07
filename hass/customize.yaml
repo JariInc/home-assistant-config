@@ -37,3 +37,5 @@ climate.toshiba_arctic_25:
   icon: mdi:fan
 weather.darksky:
   friendly_name: Sää
+sensor.sauna_temperature:
+  friendly_name: Sauna

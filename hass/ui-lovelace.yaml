@@ -12,10 +12,13 @@ views:
             name: Sisällä
           - entity: sensor.ruuvitag_outdoor_temperature
             name: Ulkona
+          - entity: sensor.sauna_temperature
+            name: Sauna
       - type: glance
         name: Lämpötila
         entities:
           - sensor.ruuvitag_indoor_temperature
+          - sensor.sauna_temperature
           - sensor.ruuvitag_outdoor_temperature
           - sensor.thermofloor_as_heatit_thermostat_tf_033_external_sensor
       - id: 98b65816120241278d23ab4da355fba6  # Automatically created id
@@ -122,13 +125,16 @@ views:
       - type: entities
         show_header_toggle: false
         entities:
+          - entity: sensor.sauna_temperature
+            name: Sauna lämpötila
+          - entity: sensor.sauna_humidity
+            name: Sauna ilmankosteus
           - entity: climate.thermofloor_as_heatit_thermostat_tf_033_heating
           - name: Teho
             icon: mdi:flash
             entity: sensor.thermofloor_as_heatit_thermostat_tf_033_power
           - name: Lämmitä 60 min
             entity: input_boolean.bathroom_force_heat
-
   - title: Toimisto
     type: vertical-stack
     cards:

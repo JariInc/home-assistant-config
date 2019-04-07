@@ -46,10 +46,6 @@ mqtt:
     topic: 'hass/status'
     payload: 'offline'
 
-#tradfri:
-#  host: !env_var TRADFRI_HOST
-#  allow_tradfri_groups: true
-
 cast:
   media_player:
   - host: !env_var CHROMECAST_IP
