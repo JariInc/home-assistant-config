@@ -16,6 +16,12 @@ services:
     depends_on:
       - mqtt
       - mariadb
+      - influxdb
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "--silent", "-H", "Authorization: Bearer ${HASS_ACCESS_TOKEN}", "http://127.0.0.1:8123/api/"]
+      interval: 30s
+      timeout: 1s
+      retries: 10
 
   mqtt:
     image: eclipse-mosquitto:1.5.8
@@ -86,6 +92,11 @@ services:
     ports:
       - "8086:8086"
     env_file: influxdb.env
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://127.0.0.1:8086/ping"]
+      interval: 30s
+      timeout: 1s
+      retries: 10
 
   mqtt-influxdb:
     build: ./mqtt-influxdb
@@ -176,8 +187,14 @@ services:
       - hass
     volumes:
       - mariadb-data:/var/lib/mysql
+      - ./mariadb/conf.d:/etc/mysql/conf.d
     ports:
       - "3306:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "--silent"]
+      interval: 30s
+      timeout: 1s
+      retries: 10
 
   oss-scrape:
     build: ./oss-scrape
