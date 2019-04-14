@@ -6,6 +6,7 @@ import json
 from mqtt import MQTTClient
 from influx import Influx
 from dotenv import load_dotenv
+from util import Util
 
 load_dotenv()
 
@@ -13,6 +14,7 @@ class MQTTInfluxDBBridge(object):
 	logger = None
 	mqtt = None
 	influx = None
+	utll = None
 	
 	def __init__(self):
 		self.logger = logging.getLogger('mqtt-influxdb')
@@ -24,6 +26,9 @@ class MQTTInfluxDBBridge(object):
 		self.logger.addHandler(ch)
 		self.logger.propagate = False
 		self.logger.info('Starting mqtt-influxdb')
+
+		# Util
+		self.util = Util()
 
 		# InfluxDB
 		self.influx = Influx(
@@ -68,6 +73,9 @@ class MQTTInfluxDBBridge(object):
 		mac = topic_parts[1]
 		now = datetime.datetime.now()
 
+		payload['dew_point'] = self.util.dewPoint(payload['temperature'], payload['humidity'])
+		payload['absolute_humidity'] = self.util.absoluteHumidity(payload['temperature'], payload['humidity'])
+
 		self.influx.write(
 			'ruuvitag', 
 			'environment', 
@@ -81,6 +89,9 @@ class MQTTInfluxDBBridge(object):
 		topic_parts = message.topic.split('/')
 		bme280_id = topic_parts[1]
 		now = datetime.datetime.now()
+
+		payload['dew_point'] = self.util.dewPoint(payload['temperature'], payload['humidity'])
+		payload['absolute_humidity'] = self.util.absoluteHumidity(payload['temperature'], payload['humidity'])
 
 		self.influx.write(
 			'bme280', 
