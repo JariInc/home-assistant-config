@@ -5,6 +5,8 @@ services:
 
 before_install:
   - docker build -t hvac-pid hvac-pid
+  - docker build -t mqtt-influxdb mqtt-influxdb
 
 script:
   - docker run hvac-pid pytest
+  - docker run mqtt-influxdb pytest
