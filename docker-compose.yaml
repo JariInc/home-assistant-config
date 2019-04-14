@@ -145,25 +145,25 @@ services:
       - letsencrypt
 
   unifi-video:
-    image: pducharme/unifi-video-controller:3.9.12
+    image: pducharme/unifi-video-controller:latest
     ports:
-      - "1935:1935"
-      - "6666:6666"
-      - "7080:7080"
-      - "7442:7442"
-      - "7443:7443"
-      - "7444:7444"
-      - "7445:7445"
-      - "7446:7446"
-      - "7447:7447"
-      - "10001:10001"
+      - 1935:1935
+      - 6666:6666
+      - 7004:7004
+      - 7080:7080
+      - 7442:7442
+      - 7443:7443
+      - 7444:7444
+      - 7445:7445
+      - 7446:7446
+      - 7447:7447
+      - 10001:10001
     volumes:
       - ./unifi-video/data:/var/lib/unifi-video
+      - ./unifi-video/videos:/var/lib/unifi-video/videos
     environment:
       - TZ=Europe/Helsinki
-      - PUID=99
-      - PGID=100
-      - DEBUG=0
+      - DEBUG=1
     cap_add:
       - SYS_ADMIN
       - DAC_READ_SEARCH
