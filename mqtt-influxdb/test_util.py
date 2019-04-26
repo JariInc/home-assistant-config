@@ -26,3 +26,11 @@ def test_absoluteHumidity():
 	util = Util()
 	A = util.absoluteHumidity(temperature, humidity)
 	assert round(A, 2) == expected
+
+def test_invalidInputOnDewPoint():
+	temperature = 0
+	humidity = 0
+
+	util = Util()
+	T_d = util.dewPoint(temperature, humidity)
+	assert T_d == None
