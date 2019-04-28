@@ -129,3 +129,19 @@
   name: heatpump_fan_speed
   state_topic: "hvac/toshiba-63200289/pid/state"
   value_template: '{{ value_json["fan"] }}'
+
+# Google Maps
+- platform: rest
+  resource: !env_var HOME_TO_OULU_URL
+  name: home_to_oulu
+  value_template: '{{ value_json.rows[0].elements[0].duration_in_traffic.value }}'
+  method: GET
+  verify_ssl: true
+  unit_of_measurement: seconds
+- platform: rest
+  resource: !env_var OULU_TO_HOME_URL
+  name: oulu_to_home
+  value_template: '{{ value_json.rows[0].elements[0].duration_in_traffic.value }}'
+  method: GET
+  verify_ssl: true
+  unit_of_measurement: seconds
