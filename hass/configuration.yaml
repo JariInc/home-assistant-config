@@ -64,6 +64,16 @@ octoprint:
   host: !env_var OCTOPRINT_HOST
   api_key: !env_var OCTOPRINT_KEY
 
+webhook:
+
+zigbee2mqtt_networkmap:
+
+panel_iframe:
+ networkmap:
+   title: 'Zigbee Map'
+   url: '/local/zigbee2mqtt_networkmap/map.html'
+   icon: 'mdi:graphql'
+
 sensor: !include sensor.yaml
 switch: !include switch.yaml
 climate: !include climate.yaml
@@ -74,3 +84,4 @@ input_boolean: !include input_boolean.yaml
 weather: !include weather.yaml
 notify: !include notify.yaml
 automation: !include automation.yaml
+# timer: !include timer.yaml

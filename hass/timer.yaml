@@ -1,0 +1,3 @@
+# zigbee_permit_join:
+#   name: Zigbee join timer remaining
+#   duration: 300
