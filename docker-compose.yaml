@@ -1,7 +1,7 @@
 version: '3'
 services:
   hass:
-    image: homeassistant/home-assistant:0.92.1
+    image: homeassistant/home-assistant:0.92.2
     env_file: hass.env
     volumes:
       - ./hass:/config
@@ -66,7 +66,7 @@ services:
       - "--s3-use-rrs"
       - "--s3-use-multiprocessing"
       - "--exclude"
-      - "/data/unifi-video/data"
+      - "/data/unifi-video/videos"
       - "--exclude"
       - "/data/duplicity/cache"
       - "/data"

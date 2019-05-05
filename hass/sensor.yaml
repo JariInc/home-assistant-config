@@ -138,6 +138,7 @@
   method: GET
   verify_ssl: true
   unit_of_measurement: seconds
+  scan_interval: 300
 - platform: rest
   resource: !env_var OULU_TO_HOME_URL
   name: oulu_to_home
@@ -145,3 +146,4 @@
   method: GET
   verify_ssl: true
   unit_of_measurement: seconds
+  scan_interval: 300

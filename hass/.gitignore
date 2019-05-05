@@ -9,5 +9,7 @@
 webostv.conf
 html5_push_registrations.conf
 home-assistant_v2.*
-custom_components/zigbee2mqtt_networkmap
-www/zigbee2mqtt_networkmap
+custom_components
+www
+google_calendars.yaml
+.google.token

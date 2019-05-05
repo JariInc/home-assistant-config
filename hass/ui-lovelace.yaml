@@ -1,4 +1,7 @@
 title: Älytönkoti
+resources:
+  - url: /local/calendar-card.js?track=true
+    type: js
 views:
   - id: 0  # Automatically created id
     title: Yleisnäkymä
@@ -43,6 +46,14 @@ views:
             name: Talli ajastettu
           - entity: input_datetime.car_heater_front_departure
             name: Talli lähtöaika
+      - type: custom:calendar-card
+        title: "Kalenteri"
+        progressBar: true
+        showMultiDay: true
+        numberOfDays: 30
+        showLocation: true
+        entities:
+        - calendar.yhteinen
 
   - id: 1  # Automatically created id
     title: Olohuone

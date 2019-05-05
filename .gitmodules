@@ -1,12 +1,3 @@
 [submodule "hass/external/ha_zigbee2mqtt_networkmap"]
 	path = hass/external/ha_zigbee2mqtt_networkmap
 	url = git@github.com:rgruebel/ha_zigbee2mqtt_networkmap.git
-[submodule "zigbee2mqtt/zigbee2mqtt.io"]
-	path = zigbee2mqtt/zigbee2mqtt.io
-	url = https://github.com/JariInc/zigbee2mqtt.io
-[submodule "zigbee2mqtt/zigbee-shepherd-converters"]
-	path = zigbee2mqtt/zigbee-shepherd-converters
-	url = git@github.com:JariInc/zigbee-shepherd-converters.git
-[submodule "zigbee2mqtt/zigbee2mqtt"]
-	path = zigbee2mqtt/zigbee2mqtt
-	url = https://github.com/Koenkk/zigbee2mqtt

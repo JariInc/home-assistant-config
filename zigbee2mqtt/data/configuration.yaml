@@ -8,16 +8,20 @@ serial:
   disable_led: true
 advanced:
   last_seen: ISO_8601
+  log_level: info
 devices:
   '0x90fd9ffffeff2e13':
-    friendly_name: '0x90fd9ffffeff2e13'
+    friendly_name: 'Ikea Trådfri LED bulp'
     retain: false
   '0xd0cf5efffe124b79':
-    friendly_name: '0xd0cf5efffe124b79'
+    friendly_name: 'Ikea Trådfri motion sensor'
     retain: false
   '0x90fd9ffffef1731a':
-    friendly_name: '0x90fd9ffffef1731a'
+    friendly_name: 'Ikea Floalt LED panel'
     retain: false
   '0x90fd9ffffeebdbf9':
-    friendly_name: '0x90fd9ffffeebdbf9'
+    friendly_name: 'Ikea Trådfri remote control'
+    retain: false
+  '0x00158d0002008fa0':
+    friendly_name: 'Xiaomi Aqara button'
     retain: false
