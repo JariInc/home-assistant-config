@@ -11,17 +11,45 @@ advanced:
   log_level: info
 devices:
   '0x90fd9ffffeff2e13':
-    friendly_name: 'Ikea Trådfri LED bulp'
+    friendly_name: ikea_tradfri_bulb_1
     retain: false
   '0xd0cf5efffe124b79':
-    friendly_name: 'Ikea Trådfri motion sensor'
+    friendly_name: ikea_tradfri_motion_1
     retain: false
   '0x90fd9ffffef1731a':
-    friendly_name: 'Ikea Floalt LED panel'
+    friendly_name: ikea_floalt_panel_1
     retain: false
   '0x90fd9ffffeebdbf9':
-    friendly_name: 'Ikea Trådfri remote control'
+    friendly_name: ikea_tradfri_remote_1
     retain: false
   '0x00158d0002008fa0':
-    friendly_name: 'Xiaomi Aqara button'
+    friendly_name: xiaomi_agara_button_1
     retain: false
+  '0x00158d000346b688':
+    friendly_name: xiaomi_agara_temp_1
+    retain: false
+  '0x00158d00036b1ad1':
+    friendly_name: xiaomi_agara_temp_2
+    retain: false
+  '0x00158d000346b7aa':
+    friendly_name: xiaomi_agara_temp_3
+    retain: false
+  '0x00158d000280807c':
+    friendly_name: 'xiaomi_agara_leak_1'
+    retain: false
+  # gledopto gu10 bulb
+  #'0x00124b001b6ae725':
+  #  friendly_name: '0x00124b001b6ae725'
+  #  retain: false
+  '0xd0cf5efffe1e8eb9':
+    friendly_name: 'ikea_tradfri_bulb_2'
+    retain: false
+  '0xd0cf5efffe1e963f':
+    friendly_name: 'ikea_tradfri_bulb_3'
+    retain: false
+groups:
+  '1':
+    friendly_name: shower_room
+    devices:
+      - '0xd0cf5efffe1e8eb9'
+      - '0xd0cf5efffe1e963f'
