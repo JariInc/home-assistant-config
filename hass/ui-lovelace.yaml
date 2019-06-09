@@ -99,7 +99,11 @@ views:
             icon: mdi:gauge
           - entity: sensor.philio_technology_corporation_pan11_smart_energy_plug_in_switch_energy
             icon: mdi:power-plug
-
+      - type: history-graph
+        title: 'Ilmalämpöpumppu teho'
+        entities:
+          - entity: sensor.philio_technology_corporation_pan11_smart_energy_plug_in_switch_power
+            name: Teho
       - id: fcb460d001534433b44e076429b8d81a  # Automatically created id
         type: entities
         title: Uuni
