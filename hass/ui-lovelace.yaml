@@ -97,7 +97,11 @@ views:
             icon: mdi:fan
           - entity: sensor.philio_technology_corporation_pan11_smart_energy_plug_in_switch_power
             icon: mdi:gauge
-          - entity: sensor.philio_technology_corporation_pan11_smart_energy_plug_in_switch_energy
+          - entity: sensor.hvac_energy_daily
+            name: Energiankulutus tänään
+            icon: mdi:power-plug
+          - entity: sensor.hvac_energy_monthly
+            name: Energiankulutus tämä kk
             icon: mdi:power-plug
       - type: history-graph
         title: 'Ilmalämpöpumppu teho'
@@ -175,6 +179,8 @@ views:
         title: 3D tulostin
         show_header_toggle: false
         entities:
+          - entity: switch.0x000d6ffffedaafbf_switch
+            name: Virtakytkin
           - sensor.octoprint_current_state
           - sensor.octoprint_job_percentage
           - sensor.octoprint_time_elapsed_format
