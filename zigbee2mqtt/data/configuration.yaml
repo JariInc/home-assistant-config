@@ -35,17 +35,16 @@ devices:
     friendly_name: xiaomi_agara_temp_3
     retain: false
   '0x00158d000280807c':
-    friendly_name: 'xiaomi_agara_leak_1'
+    friendly_name: xiaomi_agara_leak_1
     retain: false
-  # gledopto gu10 bulb
-  #'0x00124b001b6ae725':
-  #  friendly_name: '0x00124b001b6ae725'
-  #  retain: false
   '0xd0cf5efffe1e8eb9':
-    friendly_name: 'ikea_tradfri_bulb_2'
+    friendly_name: ikea_tradfri_bulb_2
     retain: false
   '0xd0cf5efffe1e963f':
-    friendly_name: 'ikea_tradfri_bulb_3'
+    friendly_name: ikea_tradfri_bulb_3
+    retain: false
+  '0x000d6ffffedaafbf':
+    friendly_name: 'ikea_tradfri_outlet_1'
     retain: false
 groups:
   '1':
