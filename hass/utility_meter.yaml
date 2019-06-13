@@ -1,0 +1,6 @@
+hvac_energy_daily:
+  source: sensor.philio_technology_corporation_pan11_smart_energy_plug_in_switch_energy
+  cycle: daily
+hvac_energy_monthly:
+  source: sensor.philio_technology_corporation_pan11_smart_energy_plug_in_switch_energy
+  cycle: monthly

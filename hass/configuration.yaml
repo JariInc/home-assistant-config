@@ -89,3 +89,4 @@ weather: !include weather.yaml
 notify: !include notify.yaml
 automation: !include automation.yaml
 # timer: !include timer.yaml
+utility_meter: !include utility_meter.yaml
