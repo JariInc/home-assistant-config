@@ -49,6 +49,16 @@ views:
             name: Talli ajastettu
           - entity: input_datetime.car_heater_front_departure
             name: Talli lähtöaika
+      - type: entities
+        title: Sähkönkulutus
+        show_header_toggle: false
+        entities:
+          - entity: sensor.sparsnas_power
+            name: Teho
+          - entity: sensor.electricity_daily
+            name: Sähkönkulutus tänään
+          - entity: sensor.electricity_monthly
+            name: Sähkönkulutus tässä kuussa
       - type: custom:calendar-card
         title: "Kalenteri"
         progressBar: true

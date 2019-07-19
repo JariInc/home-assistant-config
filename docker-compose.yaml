@@ -1,7 +1,7 @@
 version: '3'
 services:
   hass:
-    image: homeassistant/home-assistant:0.94.1
+    image: homeassistant/home-assistant:0.96.1
     env_file: hass.env
     volumes:
       - ./hass:/config
@@ -217,9 +217,25 @@ services:
     devices:
       - /dev/ttyACM1:/dev/ttyACM0
 
+  sparsnas:
+    build: 
+      context: sparsnas/src
+      args:
+        SENSORS: "667076 10000"
+    env_file: ./sparsnas.env
+    restart: always
+    networks:
+      - hass
+    depends_on:
+      - mqtt
+    devices:
+      - /dev/bus/usb:/dev/bus/usb
+    volumes:
+      - sparsnas-tmp:/tmp 
+
 volumes:
   mariadb-data:
-
+  sparsnas-tmp:
 networks:
   hass:
   samba:

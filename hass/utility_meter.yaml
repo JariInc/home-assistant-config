@@ -4,3 +4,9 @@ hvac_energy_daily:
 hvac_energy_monthly:
   source: sensor.philio_technology_corporation_pan11_smart_energy_plug_in_switch_energy
   cycle: monthly
+electricity_monthly:
+  source: sensor.sparsnas_energy
+  cycle: monthly
+electricity_daily:
+  source: sensor.sparsnas_energy
+  cycle: daily

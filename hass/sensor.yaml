@@ -164,3 +164,17 @@
   verify_ssl: true
   unit_of_measurement: seconds
   scan_interval: 300
+
+# Sparsnas
+- platform: mqtt
+  state_topic: sparsnas/667076
+  name: sparsnas_power
+  unit_of_measurement: "W"
+  value_template: '{{ value_json.Watt | round(1) }}'
+  icon: mdi:flash-circle
+- platform: mqtt
+  state_topic: sparsnas/667076
+  name: sparsnas_energy
+  unit_of_measurement: "kWh"
+  value_template: '{{ value_json.kWh | round(3) }}'
+  icon: mdi:flash-circle
