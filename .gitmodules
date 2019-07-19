@@ -1,3 +1,0 @@
-[submodule "hass/external/ha_zigbee2mqtt_networkmap"]
-	path = hass/external/ha_zigbee2mqtt_networkmap
-	url = git@github.com:rgruebel/ha_zigbee2mqtt_networkmap.git

@@ -66,8 +66,6 @@ octoprint:
 
 webhook:
 
-zigbee2mqtt_networkmap:
-
 panel_iframe:
  networkmap:
    title: 'Zigbee Map'
