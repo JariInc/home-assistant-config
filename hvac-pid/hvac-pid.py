@@ -8,6 +8,7 @@ from fan import Fan
 from power import Power
 from dotenv import load_dotenv
 from math import floor
+from util import Util
 
 load_dotenv()
 
@@ -40,6 +41,8 @@ class HVACPIDController(object):
             'temp_min': float(os.getenv('SET_TEMP_MIN')),
             'temp_max': float(os.getenv('SET_TEMP_MAX')),
         }
+
+        self.util = Util()
 
         # Temp
         self.temp = Temp(**{**temp_options, **pid_options})
@@ -94,7 +97,13 @@ class HVACPIDController(object):
         
     def temp_update_callback(self, client, userdata, message):
         payload_json = json.loads(message.payload.decode('utf-8'))
-        self.temp.setMeasurement(payload_json['temperature'])
+
+        if self.mode == 'cool':
+            dew_point = self.util.dewPoint(payload_json['temperature'], payload_json['humidity'])
+            self.logger.info('Using dew point for temperature measurement')
+            self.temp.setMeasurement(dew_point)
+        else:
+            self.temp.setMeasurement(payload_json['temperature'])
 
     def temp_outdoors_update_callback(self, client, userdata, message):
         payload_json = json.loads(message.payload.decode('utf-8'))
@@ -131,7 +140,12 @@ class HVACPIDController(object):
 
     def set_mode(self, client, userdata, message):
         mode = message.payload.decode('utf-8')
-        previous_is_manual = self.manual
+        previous_mode = self.mode
+
+        # reset PID if switching between modes
+        if previous_mode != mode:
+            self.temp.temp_set = self.temp.temp_request
+            self.temp.pid.reset()
 
         if mode == 'off':
             self.manual = True
@@ -144,16 +158,14 @@ class HVACPIDController(object):
             self.mode = 'auto'
             self.temp.temp_set = self.temp.temp_request
             self.logger.info('Set mode to manual')
-        elif mode in ['heat', 'cool']:
+        elif mode == 'heat':
             self.manual = False
             self.mode = mode
-
             self.logger.info('Set mode to %s', self.mode)
-
-            # reset PID if switching between manual and pid modes
-            if previous_is_manual != self.manual:
-                self.temp.temp_set = self.temp.temp_request
-                self.temp.pid.reset()
+        elif mode == 'cool':
+            self.manual = False
+            self.mode = mode
+            self.logger.info('Set mode to %s', self.mode)
 
         self.publish_mode()
         self.setHVAC()
@@ -179,7 +191,7 @@ class HVACPIDController(object):
     def set_temp(self, client, userdata, message):
         temp = round(float(message.payload.decode('utf-8')), 2)
 
-        if temp >= 17 and temp <= 30:
+        if temp >= float(os.getenv('SET_TEMP_MIN')) and temp <= float(os.getenv('SET_TEMP_MAX')):
             self.temp.setRequest(temp)
 
             if self.manual:  
