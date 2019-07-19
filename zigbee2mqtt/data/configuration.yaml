@@ -44,7 +44,10 @@ devices:
     friendly_name: ikea_tradfri_bulb_3
     retain: false
   '0x000d6ffffedaafbf':
-    friendly_name: 'ikea_tradfri_outlet_1'
+    friendly_name: ikea_tradfri_outlet_1
+    retain: false
+  '0x00124b001d43d764':
+    friendly_name: '0x00124b001d43d764'
     retain: false
 groups:
   '1':

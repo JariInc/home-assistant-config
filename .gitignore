@@ -3,3 +3,4 @@
 .ssh
 .gitconfig
 .recycle
+zigbee2mqtt/data/.storage
