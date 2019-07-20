@@ -5,6 +5,7 @@
   max_temp: 30
   temp_step: 0.25
   send_if_off: false
+  retain: true
   modes:
     - 'off'
     - 'manual'
