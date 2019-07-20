@@ -13,7 +13,9 @@ class Temp(object):
     temp_min = -100
     temp_max = 100
 
-    def __init__(self, temp_max, temp_min, **pid_options):
+    mode = 'heat'
+
+    def __init__(self, temp_max, temp_min, mode, **pid_options):
         self.logger = logging.getLogger('hvac-pid.temp')
         self.pid = PID(**{
             **pid_options, 
@@ -23,6 +25,7 @@ class Temp(object):
 
         self.temp_max = temp_max
         self.temp_min = temp_min
+        self.mode = mode
 
     def setMeasurement(self, temp_measure):
         self.temp_measure = temp_measure
@@ -35,7 +38,11 @@ class Temp(object):
     def iteratePID(self):
         self.pid.setLimits(self.temp_min, self.temp_max)
         pid_output = self.pid.iterate(self.temp_request, self.temp_measure)
-        self.setTemperature(pid_output)
+
+        if self.mode == 'cool':
+            self.setTemperature(self.temp_measure + pid_output)
+        else:    
+            self.setTemperature(self.temp_request + pid_output)
 
     def setTemperature(self, temp):
         # allow only +-1 degree change at once

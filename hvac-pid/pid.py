@@ -54,7 +54,7 @@ class PID(object):
         max_integral = self.max_integral(set_point, error, derivative)
         new_integral = max_integral if new_integral > max_integral else new_integral
         
-        # clanmp integral to min
+        # clamp integral to min
         min_integral = self.min_integral(set_point, error, derivative)
         new_integral = min_integral if new_integral < min_integral else new_integral
 
@@ -67,7 +67,7 @@ class PID(object):
         self.iteration_ts = ts
         self.previous_error = error
 
-        self.output = set_point + output
+        self.output = output
 
         return self.output
 

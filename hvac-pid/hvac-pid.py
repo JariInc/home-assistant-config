@@ -40,6 +40,7 @@ class HVACPIDController(object):
         temp_options = {
             'temp_min': float(os.getenv('SET_TEMP_MIN')),
             'temp_max': float(os.getenv('SET_TEMP_MAX')),
+            'mode': self.mode,
         }
 
         self.util = Util()
@@ -101,7 +102,7 @@ class HVACPIDController(object):
         if self.mode == 'cool':
             dew_point = self.util.dewPoint(payload_json['temperature'], payload_json['humidity'])
             self.logger.info('Using dew point for temperature measurement')
-            self.temp.setMeasurement(dew_point)
+            self.temp.setMeasurement(round(dew_point, 2))
         else:
             self.temp.setMeasurement(payload_json['temperature'])
 
@@ -145,6 +146,7 @@ class HVACPIDController(object):
         # reset PID if switching between modes
         if previous_mode != mode:
             self.temp.temp_set = self.temp.temp_request
+            self.temp.mode = mode
             self.temp.pid.reset()
 
         if mode == 'off':
