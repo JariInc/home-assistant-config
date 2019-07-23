@@ -12,23 +12,25 @@ class Power(object):
         self.threshold = threshold
         self.hysteresis = hysteresis
 
-    def calculate(self, temp_request, temp_measure, mode, temp_outdoors = 0):
+    def calculate(self, temp_request, temp_measure, temp_set, mode, temp_outdoors = 0):
         is_heat = mode == 'heat'
 
         if is_heat:
             threshold = temp_request + self._threshold(temp_outdoors, self.threshold_params)
-            self.logger.debug('Power off threshold is %g before hysteresis', threshold)
             self.state = not self._hysteresis(threshold, temp_measure, not self.state, True)
         else:
             threshold = temp_request - self.threshold
             self.state = not self._hysteresis(threshold, temp_measure, not self.state, False)
 
+        self.logger.debug('Power off threshold is %g before hysteresis', threshold)
         self.logger.info('Power is %s', self.state)
 
 
     def _hysteresis(self, threshold, value, crossed_threshold, direction):
         lower_threshold = threshold - (self.hysteresis / 2)
         upper_threshold = threshold + (self.hysteresis / 2)
+
+        self.logger.debug("Thresholds %s (%s/%s) crossed %s value %s", threshold, lower_threshold, upper_threshold, crossed_threshold, value)
 
         if direction:
             if crossed_threshold:

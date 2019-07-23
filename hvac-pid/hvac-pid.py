@@ -90,8 +90,8 @@ class HVACPIDController(object):
                 self.temp.setLimits(float(os.getenv('SET_TEMP_MIN')), float(os.getenv('SET_TEMP_MAX')))
 
             self.temp.iteratePID()
-            self.fan.calculate(self.temp.pid.output - self.temp.temp_request, self.mode)
-            self.power.calculate(self.temp.temp_request, self.temp.temp_measure, self.mode, self.temp_outdoors)
+            self.fan.calculate(self.temp.pid_offset, self.mode)
+            self.power.calculate(self.temp.temp_request, self.temp.temp_measure, self.temp.temp_set, self.mode, self.temp_outdoors)
             if not self.power.state:
                 self.temp.pid.reset()
             self.publish_state()
@@ -101,10 +101,9 @@ class HVACPIDController(object):
 
         if self.mode == 'cool':
             dew_point = self.util.dewPoint(payload_json['temperature'], payload_json['humidity'])
-            self.logger.info('Using dew point for temperature measurement')
-            self.temp.setMeasurement(round(dew_point, 2))
+            self.temp.setMeasurement(round(dew_point, 2), payload_json['temperature'])
         else:
-            self.temp.setMeasurement(payload_json['temperature'])
+            self.temp.setMeasurement(payload_json['temperature'], payload_json['temperature'])
 
     def temp_outdoors_update_callback(self, client, userdata, message):
         payload_json = json.loads(message.payload.decode('utf-8'))
@@ -145,7 +144,7 @@ class HVACPIDController(object):
 
         # reset PID if switching between modes
         if previous_mode != mode:
-            self.temp.temp_set = self.temp.temp_request
+            self.temp.temp_set = self.temp.temp_measure
             self.temp.mode = mode
             self.temp.pid.reset()
 
