@@ -1,7 +1,7 @@
 version: '3'
 services:
   hass:
-    image: homeassistant/home-assistant:0.96.1
+    image: homeassistant/home-assistant:0.96.4
     env_file: hass.env
     volumes:
       - ./hass:/config
@@ -24,7 +24,7 @@ services:
       retries: 10
 
   mqtt:
-    image: eclipse-mosquitto:1.6.2
+    image: eclipse-mosquitto:1.6.3
     restart: always
     volumes:
       - ./mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
@@ -83,7 +83,7 @@ services:
       - hass
 
   influxdb:
-    image: influxdb:1.7.6-alpine
+    image: influxdb:1.7.7-alpine
     volumes:
       - ./influxdb/data:/var/lib/influxdb
     networks:
@@ -109,7 +109,7 @@ services:
       - influxdb
 
   grafana:
-    image: grafana/grafana:6.2.2
+    image: grafana/grafana:6.2.5
     env_file: ./grafana.env
     ports:
       - "3000:3000"
@@ -206,7 +206,7 @@ services:
       - influxdb
 
   zigbee2mqtt:
-    image: koenkk/zigbee2mqtt:1.4.0
+    image: koenkk/zigbee2mqtt:1.5.1
     restart: always
     networks: 
       - hass
