@@ -219,7 +219,7 @@ services:
 
   sparsnas:
     build: 
-      context: github.com/JariInc/sparsnas_decoder#pin-alpine-version
+      context: github.com/tubalainen/sparsnas_decoder.git
       args:
         SENSORS: "667076 10000"
     env_file: ./sparsnas.env
