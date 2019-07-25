@@ -6,9 +6,10 @@ from mqtt import MQTTClient
 from temp import Temp
 from fan import Fan
 from power import Power
-from dotenv import load_dotenv
 from math import floor
 from util import Util
+from config import Config
+from dotenv import load_dotenv
 
 load_dotenv()
 
@@ -18,6 +19,7 @@ class HVACPIDController(object):
     temp = None
     fan = None
     power = None
+    config = None
 
     temp_outdoors = 0
 
@@ -30,20 +32,12 @@ class HVACPIDController(object):
         self.logger = logging.getLogger('hvac-pid')
         self.logger.info('Starting hvac-pid')
 
-        # PID options
-        pid_options = {
-            'Kp': float(os.getenv('PID_KP')), 
-            'Ki': float(os.getenv('PID_KI')), 
-            'Kd': float(os.getenv('PID_KD')),
-        }
-
-        temp_options = {
-            'temp_min': float(os.getenv('SET_TEMP_MIN')),
-            'temp_max': float(os.getenv('SET_TEMP_MAX')),
-            'mode': self.mode,
-        }
-
+        self.config = Config()
         self.util = Util()
+
+        # PID options
+        pid_options = self.config.getPIDOptions(self.mode)
+        temp_options = self.config.getTempOptions(self.mode)
 
         # Temp
         self.temp = Temp(**{**temp_options, **pid_options})
@@ -84,10 +78,10 @@ class HVACPIDController(object):
             # temp hax
             # limit min temp when outdoors is < -10
             if self.temp_outdoors < -10:
-                self.temp.setLimits(floor(self.temp.temp_request), float(os.getenv('SET_TEMP_MAX')))
+                self.temp.setLimits(floor(self.temp.temp_request), self.config.getSetTempMax())
                 self.logger.debug('Limiting min temp to %g when outdoor temp is %g', self.temp.temp_min, self.temp_outdoors)
             else:
-                self.temp.setLimits(float(os.getenv('SET_TEMP_MIN')), float(os.getenv('SET_TEMP_MAX')))
+                self.temp.setLimits(self.config.getSetTempMin(), self.config.getSetTempMax())
 
             self.temp.iteratePID()
             self.fan.calculate(self.temp.pid_offset, self.mode)
@@ -144,9 +138,10 @@ class HVACPIDController(object):
 
         # reset PID if switching between modes
         if previous_mode != mode:
+            pid_options = self.config.getPIDOptions(mode)
+            temp_options = self.config.getTempOptions(mode)
+            self.temp = Temp(**{**temp_options, **pid_options})
             self.temp.temp_set = self.temp.temp_measure
-            self.temp.mode = mode
-            self.temp.pid.reset()
 
         if mode == 'off':
             self.manual = True
@@ -192,7 +187,7 @@ class HVACPIDController(object):
     def set_temp(self, client, userdata, message):
         temp = round(float(message.payload.decode('utf-8')), 2)
 
-        if temp >= float(os.getenv('SET_TEMP_MIN')) and temp <= float(os.getenv('SET_TEMP_MAX')):
+        if temp >= float(os.getenv('REQUEST_MIN_TEMP', 0)) and temp <= float(os.getenv('REQUEST_MAX_TEMP', 100)):
             self.temp.setRequest(temp)
 
             if self.manual:  
@@ -272,10 +267,9 @@ if __name__ == '__main__':
     logger.addHandler(ch)
 
     ctrl = HVACPIDController()
-    interval = int(os.getenv('PID_INTERVAL'))
 
     while True:
-        time.sleep(interval)
+        time.sleep(ctrl.config.getWaitTime(ctrl.mode))
 
         if not ctrl.manual:
             ctrl.iterate()
