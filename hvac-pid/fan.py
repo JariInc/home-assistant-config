@@ -30,13 +30,13 @@ class Fan(object):
             self.speed = 5
 
     def _cooling(self, offset):
-        if offset < -2:
+        if offset < -3:
             self.speed = 5
-        elif offset < -1:
+        elif offset < -2:
             self.speed = 4
-        elif offset < 2:
+        elif offset < -1:
             self.speed = 3
-        elif offset < 3:
+        elif offset < 0:
             self.speed = 2
         else:
             self.speed = 1

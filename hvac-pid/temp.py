@@ -20,8 +20,8 @@ class Temp(object):
     def __init__(self, temp_max, temp_min, mode, **pid_options):
         self.logger = logging.getLogger('hvac-pid.temp')
         self.pid = PID(**{
-            **pid_options, 
-            'max_output': temp_max, 
+            **pid_options,
+            'max_output': temp_max,
             'min_output': temp_min,
         });
 
@@ -43,7 +43,7 @@ class Temp(object):
         self.pid_offset = self.pid.iterate(self.temp_request, self.temp_measure)
 
         if self.mode == 'cool':
-            self.logger.debug('Set temperature %s + %s = %s', self.temp_absolute, self.pid_offset, (self.temp_set + self.pid_offset))
+            self.logger.debug('Set temperature %s + %s = %s', self.temp_absolute, self.pid_offset, (self.temp_absolute + self.pid_offset))
             self.setTemperature(self.temp_absolute + self.pid_offset)
         else:
             self.logger.debug('Set temperature %s + %s = %s', self.temp_request, self.pid_offset, (self.temp_request + self.pid_offset))
