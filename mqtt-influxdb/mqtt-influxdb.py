@@ -54,6 +54,12 @@ class MQTTInfluxDBBridge(object):
 		for bme280_id in bme280_ids:
 			self.mqtt.subscribe('bme280/' + bme280_id, 0, self.bme280_callback)
 
+		# Xiaomi Agara (zigbee2mqtt)
+		agara_ids = os.getenv('AGARA_IDS').split(',')
+		for agara_id in agara_ids:
+			self.mqtt.subscribe('zigbee2mqtt/' + agara_id, 0, self.agara_callback)
+
+
 		self.logger.info('MQTT connected')
 
 	def hvac_callback(self, client, userdata, message):
@@ -90,6 +96,9 @@ class MQTTInfluxDBBridge(object):
 		bme280_id = topic_parts[1]
 		now = datetime.datetime.now()
 
+		# Fix pressure unit
+		payload['pressure'] = payload['pressure'] / 100
+
 		payload['dew_point'] = self.util.dewPoint(payload['temperature'], payload['humidity'])
 		payload['absolute_humidity'] = self.util.absoluteHumidity(payload['temperature'], payload['humidity'])
 
@@ -100,6 +109,26 @@ class MQTTInfluxDBBridge(object):
 			payload,
 			now
 		)
+
+	def agara_callback(self, client, userdata, message):
+			payload = json.loads(message.payload.decode('utf-8'), parse_int=float)
+			topic_parts = message.topic.split('/')
+			agara_id = topic_parts[1]
+			now = datetime.datetime.now()
+
+			# clean up
+			del payload['last_seen']
+
+			payload['dew_point'] = self.util.dewPoint(payload['temperature'], payload['humidity'])
+			payload['absolute_humidity'] = self.util.absoluteHumidity(payload['temperature'], payload['humidity'])
+
+			self.influx.write(
+				'agara', 
+				'environment', 
+				{'sensor': agara_id},
+				payload,
+				now
+			)
 
 if __name__ == '__main__':
 	ctrl = MQTTInfluxDBBridge()
