@@ -1,0 +1,5 @@
+- platform: mqtt
+  name: "shelly1-25ABB7"
+  state_topic: "shellies/shelly1-25ABB7/input/0"
+  payload_on: "1"
+  payload_off: "0"

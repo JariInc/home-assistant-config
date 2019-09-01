@@ -49,14 +49,14 @@
       message: "Lämpötila asetettu 20 asteeseen"
 
 - id: disable_car_heater_side
-  alias: Disable side car heater 
+  alias: Disable side car heater
   initial_state: true
   trigger:
     platform: numeric_state
     entity_id: sensor.garage_side_socket_power
     above: -1
     below: 1
-    for: 
+    for:
       minutes: 10
   action:
     - service: switch.turn_off
@@ -72,7 +72,7 @@
     entity_id: sensor.garage_front_socket_power
     above: -1
     below: 1
-    for: 
+    for:
       minutes: 10
   action:
     - service: switch.turn_off
@@ -127,3 +127,30 @@
     data:
       entity_id:
         - light.0x90fd9ffffeff2e13_light
+
+- id: shower_room_light_on
+  alias: Shower room light on
+  initial_state: true
+  trigger:
+    platform: state
+    entity_id: binary_sensor.shelly1_25abb7
+    from: 'off'
+    to: 'on'
+  action:
+    service: light.turn_on
+    data:
+      entity_id: light.shower_room_light
+      brightness_pct: 50
+
+- id: shower_room_light_off
+  alias: Shower room light off
+  initial_state: true
+  trigger:
+    platform: state
+    entity_id: binary_sensor.shelly1_25abb7
+    from: 'on'
+    to: 'off'
+  action:
+    service: light.turn_off
+    data:
+      entity_id: light.shower_room_light

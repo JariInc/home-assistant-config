@@ -1,0 +1,17 @@
+- platform: mqtt
+  name: "Shower room light"
+  command_topic: "cmnd/shower-room-dimmer/POWER"
+  state_topic: "tele/shower-room-dimmer/STATE"
+  state_value_template: "{{value_json.POWER}}"
+  availability_topic: "tele/shower-room-dimmer/LWT"
+  brightness_command_topic: "cmnd/shower-room-dimmer/Dimmer"
+  brightness_state_topic: "tele/shower-room-dimmer/STATE"
+  brightness_scale: 100
+  on_command_type: "brightness"
+  brightness_value_template: "{{value_json.Dimmer}}"
+  payload_on: "ON"
+  payload_off: "OFF"
+  payload_available: "Online"
+  payload_not_available: "Offline"
+  qos: 1
+  retain: false

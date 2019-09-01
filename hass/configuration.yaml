@@ -17,7 +17,7 @@ system_health:
 
 logbook:
   exclude:
-    entities: 
+    entities:
       - automation.heating_update_thermostats
 
 recorder:
@@ -88,3 +88,5 @@ notify: !include notify.yaml
 automation: !include automation.yaml
 # timer: !include timer.yaml
 utility_meter: !include utility_meter.yaml
+binary_sensor: !include binary_sensor.yaml
+light: !include light.yaml
