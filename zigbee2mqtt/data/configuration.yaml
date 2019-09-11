@@ -51,7 +51,7 @@ devices:
     retain: false
 groups:
   '1':
-    friendly_name: shower_room
+    friendly_name: shower_room_downlight
     devices:
       - '0xd0cf5efffe1e8eb9'
       - '0xd0cf5efffe1e963f'
