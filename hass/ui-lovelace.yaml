@@ -172,9 +172,11 @@ views:
           - name: Lämmitä 60 min
             entity: input_boolean.bathroom_force_heat
       - type: light
-        entity: light.0xd0cf5efffe1e8eb9_light
+        entity: light.shower_room_downlight
+        name: Pesuhuone alasvalot
       - type: light
-        entity: light.0xd0cf5efffe1e963f_light
+        entity: light.shower_room_led_strip
+        name: Pesuhuone LED lista
 
   - title: Toimisto
     type: vertical-stack

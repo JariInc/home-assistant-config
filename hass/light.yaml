@@ -1,5 +1,5 @@
 - platform: mqtt
-  name: "Shower room light"
+  name: "Shower room LED strip"
   command_topic: "cmnd/shower-room-dimmer/POWER"
   state_topic: "tele/shower-room-dimmer/STATE"
   state_value_template: "{{value_json.POWER}}"
@@ -13,5 +13,15 @@
   payload_off: "OFF"
   payload_available: "Online"
   payload_not_available: "Offline"
+  qos: 1
+  retain: false
+- platform: mqtt
+  schema: json
+  name: "Shower room downlight"
+  command_topic: "zigbee2mqtt/shower_room_downlight/set"
+  state_topic: "zigbee2mqtt/shower_room_downlight"
+  color_temp: true
+  brightness: true
+  rgb: false
   qos: 1
   retain: false
