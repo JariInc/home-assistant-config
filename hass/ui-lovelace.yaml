@@ -34,7 +34,6 @@ views:
         entities:
           - climate.toshiba_arctic_25
           - climate.thermofloor_as_heatit_thermostat_tf_033_heating
-
       - id: f354c9aed2b94f1884cda099bbec4a5f  # Automatically created id
         type: entities
         title: Autojen lämmitys

@@ -154,3 +154,97 @@
     service: light.turn_off
     data:
       entity_id: light.shower_room_led_strip
+
+- id: occupancy_home
+  alias: At home
+  trigger:
+    platform: state
+    entity_id: input_select.occupancy_state
+    to: 'home'
+  action:
+    service: system_log.write
+    data_template:
+      message: 'State is home'
+      level: info
+
+- id: occupancy_away
+  alias: Away
+  trigger:
+    platform: state
+    entity_id: input_select.occupancy_state
+    to: 'away'
+  action:
+    service: system_log.write
+    data_template:
+      message: 'State is away'
+      level: info
+
+- id: occupancy_sleep
+  alias: Sleeping
+  trigger:
+    platform: state
+    entity_id: input_select.occupancy_state
+    to: 'sleep'
+  action:
+    service: system_log.write
+    data_template:
+      message: 'State is sleep'
+      level: info
+
+- id: occupancy_button_home
+  alias: "Set occupancy to home"
+  trigger:
+    platform: mqtt
+    topic: zigbee2mqtt/xiaomi_agara_double_button_1
+  condition:
+    condition: template
+    value_template: "{{ 'left' == trigger.payload_json.click }}"
+  action:
+    service: input_select.select_option
+    data:
+      entity_id: input_select.occupancy_state
+      option: 'home'
+
+- id: occupancy_button_away
+  alias: "Set occupancy to away"
+  trigger:
+    platform: mqtt
+    topic: zigbee2mqtt/xiaomi_agara_double_button_1
+  condition:
+    condition: template
+    value_template: "{{ 'right' == trigger.payload_json.click }}"
+  action:
+    service: input_select.select_option
+    data:
+      entity_id: input_select.occupancy_state
+      option: 'away'
+
+- id: occupancy_timed_sleep
+  alias: "Set occupancy to sleep"
+  trigger:
+    platform: time
+    at: "22:00:00"
+  condition:
+    condition: state
+    entity_id: input_select.occupancy_state
+    state: 'home'
+  action:
+    service: input_select.select_option
+    data:
+      entity_id: input_select.occupancy_state
+      option: 'sleep'
+
+- id: occupancy_timed_home
+  alias: "Set occupancy to home if in sleep"
+  trigger:
+    platform: time
+    at: "06:00:00"
+  condition:
+    condition: state
+    entity_id: input_select.occupancy_state
+    state: 'sleep'
+  action:
+    service: input_select.select_option
+    data:
+      entity_id: input_select.occupancy_state
+      option: 'home'

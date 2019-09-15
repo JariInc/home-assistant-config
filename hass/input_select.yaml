@@ -1,0 +1,5 @@
+occupancy_state:
+  options:
+    - home
+    - away
+    - sleep

@@ -14,6 +14,9 @@ sun:
 config:
 python_script:
 system_health:
+system_log:
+  max_entries: 1000
+  fire_event: true
 
 logbook:
   exclude:
@@ -90,3 +93,5 @@ automation: !include automation.yaml
 utility_meter: !include utility_meter.yaml
 binary_sensor: !include binary_sensor.yaml
 light: !include light.yaml
+# scene: !include scene.yaml
+input_select: !include input_select.yaml
