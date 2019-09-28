@@ -2,9 +2,6 @@
 ssl_certificate /etc/letsencrypt/live/poyta16.com/fullchain.pem;
 ssl_certificate_key /etc/letsencrypt/live/poyta16.com/privkey.pem;
 
-# openssl dhparam 4096 -out /etc/ssl/dhparam.pem
-ssl_dhparam /etc/ssl/dhparam.pem;
-
 ssl_protocols TLSv1.3 TLSv1.2 TLSv1.1 TLSv1;
 ssl_prefer_server_ciphers on;
 ssl_ciphers EECDH+ECDSA+AESGCM:EECDH+aRSA+AESGCM:EECDH+ECDSA+SHA512:EECDH+ECDSA+SHA384:EECDH+ECDSA+SHA256:ECDH+AESGCM:ECDH+AES256:DH+AESGCM:DH+AES256:RSA+AESGCM:!aNULL:!eNULL:!LOW:!RC4:!3DES:!MD5:!EXP:!PSK:!SRP:!DSS;
@@ -20,3 +17,5 @@ resolver 1.1.1.1; # 1dot1dot1dot1.cloudflare-dns.com
 add_header Strict-Transport-Security 'max-age=31536000; includeSubDomains; preload' always;
 
 proxy_buffering off;
+
+ssl_dhparam /etc/ssl/dhparams.pem;

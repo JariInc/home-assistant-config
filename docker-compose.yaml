@@ -17,11 +17,11 @@ services:
       - mqtt
       - mariadb
       - influxdb
-    healthcheck:
-      test: ["CMD", "curl", "--fail", "--silent", "-H", "Authorization: Bearer ${HASS_ACCESS_TOKEN}", "http://127.0.0.1:8123/api/"]
-      interval: 30s
-      timeout: 1s
-      retries: 10
+    #healthcheck:
+    #  test: ["CMD", "curl", "--fail", "--silent", "-H", "Authorization: Bearer ${HASS_ACCESS_TOKEN}", "http://127.0.0.1:8123/api/"]
+    #  interval: 30s
+    #  timeout: 1s
+    #  retries: 10
 
   mqtt:
     image: eclipse-mosquitto:1.6.3
@@ -92,11 +92,11 @@ services:
     ports:
       - "8086:8086"
     env_file: influxdb.env
-    healthcheck:
-      test: ["CMD", "wget", "-q", "--spider", "http://127.0.0.1:8086/ping"]
-      interval: 30s
-      timeout: 1s
-      retries: 10
+    #healthcheck:
+    #  test: ["CMD", "wget", "-q", "--spider", "http://127.0.0.1:8086/ping"]
+    #  interval: 30s
+    #  timeout: 1s
+    #  retries: 10
 
   mqtt-influxdb:
     build: ./mqtt-influxdb
@@ -122,7 +122,7 @@ services:
       - influxdb
 
   letsencrypt:
-    image: adferrand/letsencrypt-dns:2.5.2
+    image: adferrand/letsencrypt-dns:2.17.0
     networks:
       - public
     volumes:
@@ -131,21 +131,22 @@ services:
     env_file: ./letsencrypt.env
 
   nginx:
-    image: nginx:1.16-alpine
+    image: nginx:1.17-alpine
     networks:
       - public
+      - hass
     volumes:
       - ./nginx/conf.d:/etc/nginx/conf.d:ro
-      - ./nginx/dhparam.pem:/etc/ssl/dhparam.pem:ro
+      - ./nginx/dhparams.pem:/etc/ssl/dhparams.pem:ro
       - ./letsencrypt/data:/etc/letsencrypt:ro
     ports:
-      - "80:80"
+      #- "80:80"
       - "443:443"
     depends_on:
       - letsencrypt
 
   unifi-video:
-    image: pducharme/unifi-video-controller:3.10.4
+    image: pducharme/unifi-video-controller:3.10.8
     ports:
       - 1935:1935
       - 6666:6666
@@ -167,6 +168,8 @@ services:
     cap_add:
       - SYS_ADMIN
       - DAC_READ_SEARCH
+    security_opt:
+      - apparmor:unconfined
     networks:
       - hass
 
@@ -190,11 +193,11 @@ services:
       - ./mariadb/conf.d:/etc/mysql/conf.d
     ports:
       - "3306:3306"
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "--silent"]
-      interval: 30s
-      timeout: 1s
-      retries: 10
+    #healthcheck:
+    #  test: ["CMD", "mysqladmin", "ping", "--silent"]
+    #  interval: 30s
+    #  timeout: 1s
+    #  retries: 10
 
   oss-scrape:
     build: ./oss-scrape
