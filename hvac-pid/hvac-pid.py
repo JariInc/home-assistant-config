@@ -28,6 +28,18 @@ class HVACPIDController(object):
     control_enable = False
     hvac_state = {}
 
+    occupancy_state = 'home'
+    occupancy_state_temps = {
+      'home': None,
+      'away': 19,
+      'sleep': 19,
+    }
+    occupancy_state_compensate = {
+      'home': False,
+      'away': True,
+      'sleep': True,
+    }
+
     def __init__(self):
         self.logger = logging.getLogger('hvac-pid')
         self.logger.info('Starting hvac-pid')
@@ -44,7 +56,7 @@ class HVACPIDController(object):
 
         # Fan
         self.fan = Fan()
-        
+
         # Power
         self.power = Power()
 
@@ -60,6 +72,7 @@ class HVACPIDController(object):
         self.mqtt.subscribe(self.topic_prefix + '/mode/set', 0, self.set_mode)
         self.mqtt.subscribe(self.topic_prefix + '/temperature/set', 0, self.set_temp)
         self.mqtt.subscribe(self.topic_prefix + '/fan/set', 0, self.set_fan)
+        self.mqtt.subscribe(os.getenv('MQTT_HVAC_OCCUPANCY_STATE_TOPIC'), 0, self.set_occupancy_state)
 
         self.logger.info('MQTT connected')
 
@@ -252,6 +265,10 @@ class HVACPIDController(object):
             'pid_output': float(self.temp.pid.output)
         })
         self.mqtt.publish(topic, message, 1)
+
+    def set_occupancy_state(self, client, userdata, message):
+        state = message.payload.decode('utf-8')
+        self.logger.info('Setting occupancy state to %s', state)
 
 if __name__ == '__main__':
     logger = logging.getLogger('hvac-pid')
