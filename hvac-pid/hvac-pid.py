@@ -29,16 +29,6 @@ class HVACPIDController(object):
     hvac_state = {}
 
     occupancy_state = 'home'
-    occupancy_state_temps = {
-      'home': None,
-      'away': 19,
-      'sleep': 19,
-    }
-    occupancy_state_compensate = {
-      'home': False,
-      'away': True,
-      'sleep': True,
-    }
 
     def __init__(self):
         self.logger = logging.getLogger('hvac-pid')
@@ -268,7 +258,8 @@ class HVACPIDController(object):
 
     def set_occupancy_state(self, client, userdata, message):
         state = message.payload.decode('utf-8')
-        self.logger.info('Setting occupancy state to %s', state)
+        self.occupancy_state = state
+        self.logger.info('Setting occupancy state to %s', self.occupancy_state)
 
 if __name__ == '__main__':
     logger = logging.getLogger('hvac-pid')

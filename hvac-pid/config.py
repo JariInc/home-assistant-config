@@ -29,3 +29,9 @@ class Config(object):
 
     def getWaitTime(self, mode):
         return float(os.getenv(f"{mode.upper()}_PID_INTERVAL", 600))
+
+    def getStateOptions(self):
+        return {
+            'upper_limit': float(os.getenv("STATE_UPPER_LIMIT", 0)),
+            'lower_limit': float(os.getenv("STATE_LOWER_LIMIT", -20)),
+        }
