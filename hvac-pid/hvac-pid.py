@@ -89,7 +89,8 @@ class HVACPIDController(object):
             else:
                 self.temp.setLimits(self.config.getSetTempMin(), self.config.getSetTempMax())
 
-            self.temp.iteratePID()
+            compensated_request_temp = self.state.compensateRequestTemp(self.temp.temp_request, self.temp_outdoors)
+            self.temp.iteratePID(compensated_request_temp)
             self.fan.calculate(self.temp.pid_offset, self.mode)
             self.power.calculate(self.temp.temp_request, self.temp.temp_measure, self.mode, self.temp_outdoors)
             if not self.power.state:
