@@ -10,6 +10,7 @@ from math import floor
 from util import Util
 from config import Config
 from dotenv import load_dotenv
+from state import State
 
 load_dotenv()
 
@@ -20,6 +21,7 @@ class HVACPIDController(object):
     fan = None
     power = None
     config = None
+    state = None
 
     temp_outdoors = 0
 
@@ -27,8 +29,6 @@ class HVACPIDController(object):
     manual = False
     control_enable = False
     hvac_state = {}
-
-    occupancy_state = 'home'
 
     def __init__(self):
         self.logger = logging.getLogger('hvac-pid')
@@ -49,6 +49,9 @@ class HVACPIDController(object):
 
         # Power
         self.power = Power()
+
+        # Occupancy state
+        self.state = State(**self.config.getStateOptions())
 
         # MQTT
         self.topic_prefix = os.getenv('MQTT_PID_TOPIC_PREFIX')
@@ -225,7 +228,7 @@ class HVACPIDController(object):
             return
 
         topic = self.topic_prefix + '/fan/state'
-        
+
         if self.manual:
             fan = self.fan.speed
         else:
@@ -258,8 +261,8 @@ class HVACPIDController(object):
 
     def set_occupancy_state(self, client, userdata, message):
         state = message.payload.decode('utf-8')
-        self.occupancy_state = state
-        self.logger.info('Setting occupancy state to %s', self.occupancy_state)
+        self.state.setState(state)
+        self.logger.info('Setting occupancy state to %s', self.state.state)
 
 if __name__ == '__main__':
     logger = logging.getLogger('hvac-pid')
