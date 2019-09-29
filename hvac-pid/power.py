@@ -12,7 +12,7 @@ class Power(object):
         self.threshold = threshold
         self.hysteresis = hysteresis
 
-    def calculate(self, temp_request, temp_measure, temp_set, mode, temp_outdoors = 0):
+    def calculate(self, temp_request, temp_measure, mode, temp_outdoors = 0):
         is_heat = mode == 'heat'
 
         if is_heat:
