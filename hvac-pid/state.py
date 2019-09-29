@@ -24,7 +24,8 @@ class State(object):
         self.compensation_lower_limit = lower_limit
 
     def setState(self, state):
-        self.state = state
+        if state in self.compensate.keys():
+            self.state = state
 
     def compensateRequestTemp(self, request_temp, outside_temp):
         compensate = self.compensate[self.state]

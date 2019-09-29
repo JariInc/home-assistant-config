@@ -49,3 +49,13 @@ def test_compensateRequestTempDummy():
 
     temp = state.compensateRequestTemp(21, -25)
     assert temp == 21
+
+def test_setState():
+    state = State(0, 0)
+    assert state.state == 'home'
+
+    state.setState('sleep')
+    assert state.state == 'sleep'
+
+    state.setState('non existing state')
+    assert state.state != 'non existing state'
