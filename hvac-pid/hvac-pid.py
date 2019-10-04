@@ -96,7 +96,7 @@ class HVACPIDController(object):
             if not self.power.state:
                 self.temp.pid.reset()
             self.publish_state()
-        
+
     def temp_update_callback(self, client, userdata, message):
         payload_json = json.loads(message.payload.decode('utf-8'))
 
@@ -175,10 +175,10 @@ class HVACPIDController(object):
 
     def publish_mode(self):
         if not self.control_enable:
-            return 
+            return
 
         topic = self.topic_prefix + '/mode/state'
-        
+
         if self.manual:
             if self.power.state == False:
                 mode = 'off'
@@ -197,7 +197,7 @@ class HVACPIDController(object):
         if temp >= float(os.getenv('REQUEST_MIN_TEMP', 0)) and temp <= float(os.getenv('REQUEST_MAX_TEMP', 100)):
             self.temp.setRequest(temp)
 
-            if self.manual:  
+            if self.manual:
                 self.temp.temp_set = self.temp.temp_request
             else:
                 self.temp.pid.reset()
@@ -214,7 +214,7 @@ class HVACPIDController(object):
 
     def set_fan(self, client, userdata, message):
         fan = message.payload.decode('utf-8')
-        
+
         if fan != "auto":
             fan_int = int(fan)
 

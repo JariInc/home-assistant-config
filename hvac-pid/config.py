@@ -9,8 +9,8 @@ class Config(object):
         prefix = mode.upper()
 
         return  {
-            'Kp': float(os.getenv(f"{prefix}_PID_KP", 2)), 
-            'Ki': float(os.getenv(f"{prefix}_PID_KI", 0.01)), 
+            'Kp': float(os.getenv(f"{prefix}_PID_KP", 2)),
+            'Ki': float(os.getenv(f"{prefix}_PID_KI", 0.01)),
             'Kd': float(os.getenv(f"{prefix}_PID_KD", 0)),
         }
 
@@ -22,7 +22,7 @@ class Config(object):
         }
 
     def getSetTempMin(self):
-        return float(os.getenv('SET_TEMP_MIN', 7))
+        return float(os.getenv('SET_TEMP_MIN', 17))
 
     def getSetTempMax(self):
         return float(os.getenv('SET_TEMP_MAX', 30))
