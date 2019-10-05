@@ -38,16 +38,18 @@ class Temp(object):
         self.temp_request = temp_request
         self.logger.info('Requested temperature is %s', self.temp_request)
 
-    def iteratePID(self):
+    def iteratePID(self, temp_request_override = None):
+        effective_temp_request = temp_request_override if temp_request_override != None else self.temp_request
+
         self.pid.setLimits(self.temp_min, self.temp_max)
-        self.pid_offset = self.pid.iterate(self.temp_request, self.temp_measure)
+        self.pid_offset = self.pid.iterate(effective_temp_request, self.temp_measure)
 
         if self.mode == 'cool':
             self.logger.debug('Set temperature %s + %s = %s', self.temp_absolute, self.pid_offset, (self.temp_absolute + self.pid_offset))
             self.setTemperature(self.temp_absolute + self.pid_offset)
         else:
-            self.logger.debug('Set temperature %s + %s = %s', self.temp_request, self.pid_offset, (self.temp_request + self.pid_offset))
-            self.setTemperature(self.temp_request + self.pid_offset)
+            self.logger.debug('Set temperature %s + %s = %s', effective_temp_request, self.pid_offset, (effective_temp_request + self.pid_offset))
+            self.setTemperature(effective_temp_request + self.pid_offset)
 
     def setTemperature(self, temp):
         # allow only +-1 degree change at once

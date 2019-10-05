@@ -7,9 +7,10 @@ def test_upperLimit():
         'Kd': 1,
         'temp_min': 17,
         'temp_max': 30,
+        'mode': 'heat',
     })
     temp.temp_set = 40
-    temp.setMeasurement(40)
+    temp.setMeasurement(40, 40)
     temp.setRequest(40)
     temp.iteratePID()
 
@@ -22,9 +23,10 @@ def test_lowerLimit():
         'Kd': 1,
         'temp_min': 17,
         'temp_max': 30,
+        'mode': 'heat',
     })
     temp.temp_set = -1
-    temp.setMeasurement(-1)
+    temp.setMeasurement(-1, -1)
     temp.setRequest(-1)
     temp.iteratePID()
 

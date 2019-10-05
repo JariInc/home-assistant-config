@@ -162,10 +162,15 @@
     entity_id: input_select.occupancy_state
     to: 'home'
   action:
-    service: system_log.write
-    data_template:
-      message: 'State is home'
-      level: info
+    - service: system_log.write
+      data_template:
+        message: 'State is home'
+        level: info
+    - service: mqtt.publish
+      data_template:
+        topic: 'hvac/toshiba-63200289/occupancy_state'
+        retain: true
+        payload: "{{ states('input_select.occupancy_state') }}"
 
 - id: occupancy_away
   alias: Away
@@ -174,10 +179,15 @@
     entity_id: input_select.occupancy_state
     to: 'away'
   action:
-    service: system_log.write
-    data_template:
-      message: 'State is away'
-      level: info
+    - service: system_log.write
+      data_template:
+        message: 'State is away'
+        level: info
+    - service: mqtt.publish
+      data_template:
+        topic: 'hvac/toshiba-63200289/occupancy_state'
+        retain: true
+        payload: "{{ states('input_select.occupancy_state') }}"
 
 - id: occupancy_sleep
   alias: Sleeping
@@ -186,10 +196,15 @@
     entity_id: input_select.occupancy_state
     to: 'sleep'
   action:
-    service: system_log.write
-    data_template:
-      message: 'State is sleep'
-      level: info
+    - service: system_log.write
+      data_template:
+        message: 'State is sleep'
+        level: info
+    - service: mqtt.publish
+      data_template:
+        topic: 'hvac/toshiba-63200289/occupancy_state'
+        retain: true
+        payload: "{{ states('input_select.occupancy_state') }}"
 
 - id: occupancy_button_home
   alias: "Set occupancy to home"

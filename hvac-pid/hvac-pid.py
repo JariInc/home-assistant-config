@@ -10,6 +10,7 @@ from math import floor
 from util import Util
 from config import Config
 from dotenv import load_dotenv
+from state import State
 
 load_dotenv()
 
@@ -20,6 +21,7 @@ class HVACPIDController(object):
     fan = None
     power = None
     config = None
+    state = None
 
     temp_outdoors = 0
 
@@ -44,9 +46,12 @@ class HVACPIDController(object):
 
         # Fan
         self.fan = Fan()
-        
+
         # Power
         self.power = Power()
+
+        # Occupancy state
+        self.state = State(**self.config.getStateOptions())
 
         # MQTT
         self.topic_prefix = os.getenv('MQTT_PID_TOPIC_PREFIX')
@@ -60,6 +65,7 @@ class HVACPIDController(object):
         self.mqtt.subscribe(self.topic_prefix + '/mode/set', 0, self.set_mode)
         self.mqtt.subscribe(self.topic_prefix + '/temperature/set', 0, self.set_temp)
         self.mqtt.subscribe(self.topic_prefix + '/fan/set', 0, self.set_fan)
+        self.mqtt.subscribe(os.getenv('MQTT_HVAC_OCCUPANCY_STATE_TOPIC'), 0, self.set_occupancy_state)
 
         self.logger.info('MQTT connected')
 
@@ -83,13 +89,14 @@ class HVACPIDController(object):
             else:
                 self.temp.setLimits(self.config.getSetTempMin(), self.config.getSetTempMax())
 
-            self.temp.iteratePID()
+            compensated_request_temp = self.state.compensateRequestTemp(self.temp.temp_request, self.temp_outdoors)
+            self.temp.iteratePID(compensated_request_temp)
             self.fan.calculate(self.temp.pid_offset, self.mode)
-            self.power.calculate(self.temp.temp_request, self.temp.temp_measure, self.temp.temp_set, self.mode, self.temp_outdoors)
+            self.power.calculate(self.temp.temp_request, self.temp.temp_measure, self.mode, self.temp_outdoors)
             if not self.power.state:
                 self.temp.pid.reset()
             self.publish_state()
-        
+
     def temp_update_callback(self, client, userdata, message):
         payload_json = json.loads(message.payload.decode('utf-8'))
 
@@ -168,10 +175,10 @@ class HVACPIDController(object):
 
     def publish_mode(self):
         if not self.control_enable:
-            return 
+            return
 
         topic = self.topic_prefix + '/mode/state'
-        
+
         if self.manual:
             if self.power.state == False:
                 mode = 'off'
@@ -190,7 +197,7 @@ class HVACPIDController(object):
         if temp >= float(os.getenv('REQUEST_MIN_TEMP', 0)) and temp <= float(os.getenv('REQUEST_MAX_TEMP', 100)):
             self.temp.setRequest(temp)
 
-            if self.manual:  
+            if self.manual:
                 self.temp.temp_set = self.temp.temp_request
             else:
                 self.temp.pid.reset()
@@ -207,7 +214,7 @@ class HVACPIDController(object):
 
     def set_fan(self, client, userdata, message):
         fan = message.payload.decode('utf-8')
-        
+
         if fan != "auto":
             fan_int = int(fan)
 
@@ -222,7 +229,7 @@ class HVACPIDController(object):
             return
 
         topic = self.topic_prefix + '/fan/state'
-        
+
         if self.manual:
             fan = self.fan.speed
         else:
@@ -252,6 +259,11 @@ class HVACPIDController(object):
             'pid_output': float(self.temp.pid.output)
         })
         self.mqtt.publish(topic, message, 1)
+
+    def set_occupancy_state(self, client, userdata, message):
+        state = message.payload.decode('utf-8')
+        self.state.setState(state)
+        self.logger.info('Setting occupancy state to %s', self.state.state)
 
 if __name__ == '__main__':
     logger = logging.getLogger('hvac-pid')
