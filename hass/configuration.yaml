@@ -69,12 +69,6 @@ octoprint:
 
 webhook:
 
-panel_iframe:
- networkmap:
-   title: 'Zigbee Map'
-   url: '/local/zigbee2mqtt_networkmap/map.html'
-   icon: 'mdi:graphql'
-
 google:
   client_id: !env_var GOOGLE_CLIENT_ID
   client_secret: !env_var GOOGLE_CLIENT_SECRET

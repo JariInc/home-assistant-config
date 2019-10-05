@@ -32,6 +32,8 @@ views:
         title: Lämmitys
         show_header_toggle: false
         entities:
+          - entity: input_select.occupancy_state
+            name: Tila
           - climate.toshiba_arctic_25
           - climate.thermofloor_as_heatit_thermostat_tf_033_heating
       - id: f354c9aed2b94f1884cda099bbec4a5f  # Automatically created id
@@ -81,11 +83,9 @@ views:
           - entity: sensor.ruuvitag_indoor_dewpoint
             name: Sisäilman kastepiste
             icon: mdi:water
-      - id: 47bee9e503b74553b1307101c129ddaf  # Automatically created id
-        type: media-control
+      - type: media-control
         entity: media_player.lg_webos_smart_tv
-      - id: 5b260acfb42141d0aaa3d81f98c811d9  # Automatically created id
-        type: media-control
+      - type: media-control
         entity: media_player.televisio
 
   - id: 2  # Automatically created id
