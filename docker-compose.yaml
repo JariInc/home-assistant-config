@@ -1,7 +1,7 @@
 version: '3'
 services:
   hass:
-    image: homeassistant/home-assistant:0.96.4
+    image: homeassistant/home-assistant:0.99.3
     env_file: hass.env
     volumes:
       - ./hass:/config
@@ -24,7 +24,7 @@ services:
     #  retries: 10
 
   mqtt:
-    image: eclipse-mosquitto:1.6.3
+    image: eclipse-mosquitto:1.6.7
     restart: always
     volumes:
       - ./mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
@@ -83,7 +83,7 @@ services:
       - hass
 
   influxdb:
-    image: influxdb:1.7.7-alpine
+    image: influxdb:1.7.8-alpine
     volumes:
       - ./influxdb/data:/var/lib/influxdb
     networks:
@@ -109,7 +109,7 @@ services:
       - influxdb
 
   grafana:
-    image: grafana/grafana:6.2.5
+    image: grafana/grafana:6.4.1
     env_file: ./grafana.env
     ports:
       - "3000:3000"
@@ -186,7 +186,7 @@ services:
     image: mariadb:10.4
     env_file: ./mariadb.env
     restart: always
-    networks: 
+    networks:
       - hass
     volumes:
       - mariadb-data:/var/lib/mysql
@@ -209,19 +209,19 @@ services:
       - influxdb
 
   zigbee2mqtt:
-    image: koenkk/zigbee2mqtt:1.5.1
+    image: koenkk/zigbee2mqtt:1.6.0
     restart: always
-    networks: 
+    networks:
       - hass
     depends_on:
       - mqtt
     volumes:
-      - ./zigbee2mqtt/data:/app/data 
+      - ./zigbee2mqtt/data:/app/data
     devices:
       - /dev/zigbee:/dev/ttyACM0
 
   sparsnas:
-    build: 
+    build:
       context: github.com/tubalainen/sparsnas_decoder.git
       args:
         SENSORS: "667076 10000"
@@ -234,7 +234,7 @@ services:
     devices:
       - /dev/bus/usb:/dev/bus/usb
     volumes:
-      - sparsnas-tmp:/tmp 
+      - sparsnas-tmp:/tmp
 
 volumes:
   mariadb-data:
