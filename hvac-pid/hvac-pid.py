@@ -264,6 +264,7 @@ class HVACPIDController(object):
         state = message.payload.decode('utf-8')
         self.state.setState(state)
         self.logger.info('Setting occupancy state to %s', self.state.state)
+        self.temp.pid.scaleIntegral()
 
 if __name__ == '__main__':
     logger = logging.getLogger('hvac-pid')

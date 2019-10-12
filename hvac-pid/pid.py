@@ -27,12 +27,16 @@ class PID(object):
         self.logger.info("Output limits [%g, %g]", self.min_output, self.max_output)
 
         self.iteration_ts = monotonic()
-        
+
     def reset(self):
         self.previous_error = 0
         self.integral = 0
         self.iteration_ts = monotonic()
         self.logger.info("PID reseted")
+
+    def scaleIntegral(self, scale=0.25):
+        self.logger.debug("Scaling integral from %g to %g", self.integral, (self.integral * scale))
+        self.integral = self.integral * scale
 
     def iterate(self, set_point, measurement, ts=None):
         if not ts:
@@ -40,20 +44,20 @@ class PID(object):
 
         dt = (ts - self.iteration_ts) / 60
         self.logger.debug("dt: %g min", dt)
-        
+
         error = set_point - measurement
         self.logger.debug("error: %g - %g = %g", set_point, measurement, error)
-        
+
         new_integral = self.integral + (error * dt)
         self.logger.debug("integral: %g + (%g * %g) = %g", self.integral, error, dt, new_integral)
-        
+
         derivative = (error - self.previous_error) / dt
-        self.logger.debug("derivative: (%g - %g) / %g = %g", error, self.previous_error, dt, derivative)        
+        self.logger.debug("derivative: (%g - %g) / %g = %g", error, self.previous_error, dt, derivative)
 
         # clamp intergral to max
         max_integral = self.max_integral(set_point, error, derivative)
         new_integral = max_integral if new_integral > max_integral else new_integral
-        
+
         # clamp integral to min
         min_integral = self.min_integral(set_point, error, derivative)
         new_integral = min_integral if new_integral < min_integral else new_integral
@@ -61,7 +65,7 @@ class PID(object):
         self.logger.debug("integral limits: [%g, %g]", min_integral, max_integral)
 
         output = self.Kp * error + self.Ki * new_integral + self.Kd * derivative
-        self.logger.debug("output: %g * %g + %g * %g + %g * %g = %g", self.Kp, error, self.Ki, new_integral, self.Kd, derivative, output)       
+        self.logger.debug("output: %g * %g + %g * %g + %g * %g = %g", self.Kp, error, self.Ki, new_integral, self.Kd, derivative, output)
 
         self.integral = new_integral
         self.iteration_ts = ts

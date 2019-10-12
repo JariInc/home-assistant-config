@@ -36,7 +36,8 @@ class Temp(object):
 
     def setRequest(self, temp_request):
         self.temp_request = temp_request
-        self.logger.info('Requested temperature is %s', self.temp_request)
+        self.logger.info('Set requested temperature to %s', self.temp_request)
+        self.pid.scaleIntegral()
 
     def iteratePID(self, temp_request_override = None):
         effective_temp_request = temp_request_override if temp_request_override != None else self.temp_request
