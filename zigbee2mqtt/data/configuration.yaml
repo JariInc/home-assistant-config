@@ -46,19 +46,19 @@ devices:
   '0x000d6ffffedaafbf':
     friendly_name: ikea_tradfri_outlet_1
     retain: false
-  '0x00124b001d43d764':
-    friendly_name: '0x00124b001d43d764'
-    retain: false
   '0x00158d0003208915':
     friendly_name: xiaomi_agara_double_button_1
     retain: false
   '0x086bd7fffe1e10cd':
-    friendly_name: 'ikea_tradfri_bulb_4'
+    friendly_name: ikea_tradfri_bulb_4
+    retain: false
+  '0x000d6ffffee3cb28':
+    friendly_name: 'ikea_tradfri_outlet_2'
     retain: false
 groups:
   '1':
     friendly_name: shower_room_downlight
     devices:
+      - '0x086bd7fffe1e10cd'
       - '0xd0cf5efffe1e8eb9'
       - '0xd0cf5efffe1e963f'
-      - '0x086bd7fffe1e10cd'
