@@ -23,5 +23,3 @@
   color_temp: true
   brightness: true
   rgb: false
-  qos: 1
-  retain: false

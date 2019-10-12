@@ -127,11 +127,11 @@ views:
       #   type: thermostat
       #   entity: climate.toshiba_arctic_25
       - type: entities
-        title: Bokashi
+        title: Kahvinkeitin
         show_header_toggle: false
         entities:
-          - entity: sensor.bokashi_temperature
-            name: Sankon lämpötila
+          - entity: switch.0x000d6ffffee3cb28_switch
+            name: Virtapistoke
   - id: 3  # Automatically created id
     title: Kodinhoitohuone
     type: vertical-stack
