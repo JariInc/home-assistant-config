@@ -18,13 +18,12 @@ views:
       - type: glance
         name: Lämpötila
         entities:
-          - sensor.ruuvitag_indoor_temperature
-          - sensor.sauna_temperature
           - sensor.ruuvitag_outdoor_temperature
-          - sensor.thermofloor_as_heatit_thermostat_tf_033_external_sensor
+          - sensor.ruuvitag_indoor_temperature
           - sensor.0x00158d000346b688_temperature
-          - sensor.0x00158d00036b1ad1_temperature
           - sensor.0x00158d000346b7aa_temperature
+          - sensor.thermofloor_as_heatit_thermostat_tf_033_external_sensor
+          - sensor.0x00158d00036b1ad1_temperature
       - id: 98b65816120241278d23ab4da355fba6  # Automatically created id
         type: entities
         title: Lämmitys
@@ -154,7 +153,6 @@ views:
     cards:
       - type: history-graph
         title: Lämpötila
-        refresh_interval: 60
         entities:
           - entity: sensor.0x00158d00036b1ad1_temperature
             name: Ilma
@@ -170,7 +168,16 @@ views:
             name: Pesuhuoneen lattian lämpötila
           - entity: sensor.0x00158d00036b1ad1_humidity
             name: Pesuhuone ilmankosteus
-
+      - type: gauge
+        name: Pesuhuoneen kosteustaso
+        unit: '%'
+        entity: sensor.shower_room_moisture
+        min: 0
+        max: 50
+        severity:
+          green: 10
+          yellow: 20
+          red: 30
       - type: entities
         title: Lämmitys
         show_header_toggle: false
@@ -179,8 +186,8 @@ views:
           - name: Teho
             icon: mdi:flash
             entity: sensor.thermofloor_as_heatit_thermostat_tf_033_power
-          - name: Lämmitä 60 min
-            entity: input_boolean.bathroom_force_heat
+          #- name: Lämmitä 60 min
+          #  entity: input_boolean.bathroom_force_heat
       - type: entities
         title: Alasvalot
         show_header_toggle: false

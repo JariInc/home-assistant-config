@@ -11,42 +11,42 @@
       thermostat: climate.thermofloor_as_heatit_thermostat_tf_033_heating
       sensor: sensor.thermofloor_as_heatit_thermostat_tf_033_external_sensor
 
-- id: bathroom_force_heat_on
-  alias: Enable bathroom forced heating
-  initial_state: true
-  trigger:
-  - platform: state
-    entity_id: input_boolean.bathroom_force_heat
-    to: 'on'
-  action:
-  - service: climate.set_temperature
-    data:
-      entity_id: climate.thermofloor_as_heatit_thermostat_tf_033_heating
-      temperature: 25
-      operation_mode: heat
+# - id: bathroom_force_heat_on
+#   alias: Enable bathroom forced heating
+#   initial_state: true
+#   trigger:
+#   - platform: state
+#     entity_id: input_boolean.bathroom_force_heat
+#     to: 'on'
+#   action:
+#   - service: climate.set_temperature
+#     data:
+#       entity_id: climate.thermofloor_as_heatit_thermostat_tf_033_heating
+#       temperature: 25
+#       operation_mode: heat
 
-- id: bathroom_force_heat_off
-  alias: Disable bathroom forced heating
-  initial_state: true
-  trigger:
-  - platform: state
-    entity_id: input_boolean.bathroom_force_heat
-    to: 'on'
-    for:
-      minutes: 60
-  action:
-  - service: climate.set_temperature
-    data:
-      entity_id: climate.thermofloor_as_heatit_thermostat_tf_033_heating
-      temperature: 20
-      operation_mode: heat
-  - service: input_boolean.turn_off
-    data:
-      entity_id: input_boolean.bathroom_force_heat
-  - service: notify.push_notify
-    data:
-      title: "Pesuhuone lattialämmitys"
-      message: "Lämpötila asetettu 20 asteeseen"
+# - id: bathroom_force_heat_off
+#   alias: Disable bathroom forced heating
+#   initial_state: true
+#   trigger:
+#   - platform: state
+#     entity_id: input_boolean.bathroom_force_heat
+#     to: 'on'
+#     for:
+#       minutes: 60
+#   action:
+#   - service: climate.set_temperature
+#     data:
+#       entity_id: climate.thermofloor_as_heatit_thermostat_tf_033_heating
+#       temperature: 20
+#       operation_mode: heat
+#   - service: input_boolean.turn_off
+#     data:
+#       entity_id: input_boolean.bathroom_force_heat
+#   - service: notify.push_notify
+#     data:
+#       title: "Pesuhuone lattialämmitys"
+#       message: "Lämpötila asetettu 20 asteeseen"
 
 - id: disable_car_heater_side
   alias: Disable side car heater
@@ -288,3 +288,29 @@
     data:
       entity_id: input_select.occupancy_state
       option: 'home'
+
+- id: shower_room_drying_on
+  alias: "Dry shower room"
+  trigger:
+    platform: numeric_state
+    entity_id: sensor.shower_room_moisture
+    above: 25
+  action:
+  - service: climate.set_temperature
+    data:
+      entity_id: climate.thermofloor_as_heatit_thermostat_tf_033_heating
+      temperature: 25
+      operation_mode: heat
+
+- id: shower_room_drying_off
+  alias: "Don't dry shower room"
+  trigger:
+    platform: numeric_state
+    entity_id: sensor.shower_room_moisture
+    below: 25
+  action:
+  - service: climate.set_temperature
+    data:
+      entity_id: climate.thermofloor_as_heatit_thermostat_tf_033_heating
+      temperature: 20
+      operation_mode: heat

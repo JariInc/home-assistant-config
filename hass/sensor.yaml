@@ -160,3 +160,37 @@
   unit_of_measurement: "kWh"
   value_template: '{{ value_json.kWh | round(3) }}'
   icon: mdi:flash-circle
+
+# abs humidity
+- platform: influxdb
+  host: influxdb
+  username: !env_var INFLUXDB_USERNAME
+  password : !env_var INFLUXDB_PASSWORD
+  queries:
+    - name: shower_room_absolute_humidity
+      unit_of_measurement: g/m³
+      value_template: '{{ value | round(2) }}'
+      group_function: last
+      where: '"sensor" = ''xiaomi_agara_temp_2'''
+      measurement: environment
+      field: absolute_humidity
+      database: agara
+- platform: influxdb
+  host: influxdb
+  username: !env_var INFLUXDB_USERNAME
+  password : !env_var INFLUXDB_PASSWORD
+  queries:
+    - name: indoor_absolute_humidity
+      unit_of_measurement: g/m³
+      value_template: '{{ value | round(2) }}'
+      group_function: last
+      where: '"sensor" = ''C316F66C57EB'''
+      measurement: environment
+      field: absolute_humidity
+      database: ruuvitag
+- platform: template
+  sensors:
+    shower_room_moisture:
+      friendly_name: "Shower room moisture"
+      unit_of_measurement: '%'
+      value_template: "{{ ((( states('sensor.shower_room_absolute_humidity')|float - states('sensor.indoor_absolute_humidity')|float) / states('sensor.shower_room_absolute_humidity')|float) * 100) | round(1) }}"
