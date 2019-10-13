@@ -15,8 +15,6 @@ views:
             name: Sisällä
           - entity: sensor.ruuvitag_outdoor_temperature
             name: Ulkona
-          - entity: sensor.sauna_temperature
-            name: Sauna
       - type: glance
         name: Lämpötila
         entities:
@@ -154,14 +152,27 @@ views:
   - title: Pesuhuone/sauna
     type: vertical-stack
     cards:
+      - type: history-graph
+        title: Lämpötila
+        refresh_interval: 60
+        entities:
+          - entity: sensor.0x00158d00036b1ad1_temperature
+            name: Ilma
+          - entity: sensor.thermofloor_as_heatit_thermostat_tf_033_external_sensor
+            name: Lattia
       - type: entities
+        title: Mittaus
         show_header_toggle: false
         entities:
-          - entity: sensor.sauna_temperature
-            name: Sauna lämpötila
-          - entity: sensor.sauna_humidity
-            name: Sauna ilmankosteus
+          - entity: sensor.0x00158d00036b1ad1_temperature
+            name: Pesuhuone lämpötila
+          - entity: sensor.thermofloor_as_heatit_thermostat_tf_033_external_sensor
+            name: Pesuhuoneen lattian lämpötila
+          - entity: sensor.0x00158d00036b1ad1_humidity
+            name: Pesuhuone ilmankosteus
+
       - type: entities
+        title: Lämmitys
         show_header_toggle: false
         entities:
           - entity: climate.thermofloor_as_heatit_thermostat_tf_033_heating
@@ -170,12 +181,22 @@ views:
             entity: sensor.thermofloor_as_heatit_thermostat_tf_033_power
           - name: Lämmitä 60 min
             entity: input_boolean.bathroom_force_heat
-      - type: light
-        entity: light.shower_room_downlight
-        name: Pesuhuone alasvalot
-      - type: light
-        entity: light.shower_room_led_strip
-        name: Pesuhuone LED lista
+      - type: entities
+        title: Alasvalot
+        show_header_toggle: false
+        entities:
+        - entity: light.shower_room_downlight
+          name: Valot
+        - entity: binary_sensor.shelly1_25a447
+          name: Painike
+      - type: entities
+        title: LED lista
+        show_header_toggle: false
+        entities:
+        - entity: light.shower_room_led_strip
+          name: Valot
+        - entity: binary_sensor.shelly1_25abb7
+          name: Painike
 
   - title: Toimisto
     type: vertical-stack
