@@ -14,6 +14,8 @@ sun:
 config:
 python_script:
 system_health:
+circadian_lighting:
+
 system_log:
   max_entries: 1000
   fire_event: true

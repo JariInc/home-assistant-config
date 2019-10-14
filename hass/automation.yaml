@@ -300,7 +300,6 @@
     data:
       entity_id: climate.thermofloor_as_heatit_thermostat_tf_033_heating
       temperature: 25
-      operation_mode: heat
 
 - id: shower_room_drying_off
   alias: "Don't dry shower room"
@@ -313,4 +312,3 @@
     data:
       entity_id: climate.thermofloor_as_heatit_thermostat_tf_033_heating
       temperature: 20
-      operation_mode: heat
