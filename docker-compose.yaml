@@ -236,6 +236,17 @@ services:
     volumes:
       - sparsnas-tmp:/tmp
 
+  ruuvitag:
+    build: ./ruuvitag
+    env_file: ./ruuvitag.env
+    restart: always
+    network_mode: host
+    depends_on:
+      - mqtt
+    privileged: true
+    devices:
+      - /dev/bus/usb
+
 volumes:
   mariadb-data:
   sparsnas-tmp:
