@@ -34,6 +34,7 @@
 - platform: circadian_lighting
   lights_xy:
     - light.shower_room_downlight
+    - light.0x90fd9ffffef1731a_light
   lights_brightness:
     - light.shower_room_led_strip
     - light.0x90fd9ffffeff2e13_light
