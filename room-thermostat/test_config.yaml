@@ -1,0 +1,22 @@
+---
+interval: 10
+mqtt:
+  host: mqtt.foobar.com
+  port: 12345
+  prefix: topic_prefix
+  client_id: mqtt_client_id
+rooms:
+  - name: first room with long name
+    temperatures:
+      home: 21
+      away: 15
+      sleep: 18
+    measurement_topic: some_sensor/xyz01
+    control_topic: some_controller/abc01
+  - name: second_room
+    temperatures:
+      home: 21
+      away: 21
+      sleep: 21
+    measurement_topic: some_sensor/xyz02
+    control_topic: some_controller/abc02
