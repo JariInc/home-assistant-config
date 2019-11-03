@@ -1,6 +1,5 @@
 - platform: mqtt
   name: Toshiba Arctic 25
-  initial: 21
   min_temp: 7
   max_temp: 30
   temp_step: 0.25

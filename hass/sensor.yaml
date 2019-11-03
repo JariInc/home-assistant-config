@@ -194,3 +194,11 @@
       friendly_name: "Shower room moisture"
       unit_of_measurement: '%'
       value_template: "{{ ((( states('sensor.shower_room_absolute_humidity')|float - states('sensor.indoor_absolute_humidity')|float) / states('sensor.shower_room_absolute_humidity')|float) * 100) | round(1) }}"
+
+# heatit
+- platform: template
+  sensors:
+    shower_room_floot_set_temperature:
+      friendly_name: "Pesuhuoneen lattialämmityksen asetuslämpötila"
+      unit_of_measurement: °C
+      value_template: "{{ state_attr('climate.thermofloor_as_heatit_thermostat_tf_033_heating', 'temperature')|float }}"

@@ -33,6 +33,8 @@ views:
             name: Tila
           - climate.toshiba_arctic_25
           - climate.thermofloor_as_heatit_thermostat_tf_033_heating
+          - climate.guestroom
+          - climate.bedroom
       - id: f354c9aed2b94f1884cda099bbec4a5f  # Automatically created id
         type: entities
         title: Autojen lämmitys
@@ -83,7 +85,7 @@ views:
       - type: media-control
         entity: media_player.lg_webos_smart_tv
       - type: media-control
-        entity: media_player.televisio
+        entity: media_player.living_room_tv
 
   - id: 2  # Automatically created id
     title: Keittiö
@@ -173,7 +175,7 @@ views:
         unit: '%'
         entity: sensor.shower_room_moisture
         min: 0
-        max: 50
+        max: 100
         severity:
           green: 10
           yellow: 20
@@ -183,11 +185,11 @@ views:
         show_header_toggle: false
         entities:
           - entity: climate.thermofloor_as_heatit_thermostat_tf_033_heating
+          - name: Lattialämmityksen asetuslämpötila
+            entity: sensor.shower_room_floot_set_temperature 
           - name: Teho
             icon: mdi:flash
             entity: sensor.thermofloor_as_heatit_thermostat_tf_033_power
-          #- name: Lämmitä 60 min
-          #  entity: input_boolean.bathroom_force_heat
       - type: entities
         title: Alasvalot
         show_header_toggle: false
