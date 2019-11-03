@@ -10,7 +10,7 @@ class Hass(object):
 		self.base_url = base_url
 		self.api_key = api_key
 
-		self.base_headers['x-ha-access'] = api_key
+		self.base_headers['Authorization'] = 'Bearer ' + api_key
 		self.logger = logging.getLogger('car-heater-timer.hass')
 
 	def getState(self, entity_id):
