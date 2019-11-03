@@ -144,80 +144,95 @@
       data:
         entity_id: light.shower_room_downlight
 
+- id: occupancy_change
+  alias: Occupancy changed
+  trigger:
+    - platform: state
+      entity_id: input_select.occupancy_state
+  action:
+    - service: mqtt.publish
+      data_template:
+        topic: 'hvac/toshiba-63200289/occupancy_state'
+        retain: true
+        payload: "{{ states('input_select.occupancy_state') }}"
+
 - id: occupancy_home
-  alias: At home
+  alias: Occupancy at home
   trigger:
     platform: state
     entity_id: input_select.occupancy_state
     to: 'home'
   action:
-    - service: mqtt.publish
-      data_template:
-        topic: 'hvac/toshiba-63200289/occupancy_state'
-        retain: true
-        payload: "{{ states('input_select.occupancy_state') }}"
     - service: switch.turn_on
       entity_id: switch.0x000d6ffffee3cb28_switch
 
 - id: occupancy_away
-  alias: Away
+  alias: Occupancy away
   trigger:
     platform: state
     entity_id: input_select.occupancy_state
     to: 'away'
   action:
-    - service: mqtt.publish
-      data_template:
-        topic: 'hvac/toshiba-63200289/occupancy_state'
-        retain: true
-        payload: "{{ states('input_select.occupancy_state') }}"
     - service: switch.turn_off
       entity_id: switch.0x000d6ffffee3cb28_switch
 
-- id: occupancy_sleep
-  alias: Sleeping
-  trigger:
-    platform: state
-    entity_id: input_select.occupancy_state
-    to: 'sleep'
-  action:
-    - service: system_log.write
-      data_template:
-        message: 'State is sleep'
-        level: info
-    - service: mqtt.publish
-      data_template:
-        topic: 'hvac/toshiba-63200289/occupancy_state'
-        retain: true
-        payload: "{{ states('input_select.occupancy_state') }}"
+# - id: occupancy_sleep
+#   alias: Occupancy sleeping
+#   trigger:
+#     platform: state
+#     entity_id: input_select.occupancy_state
+#     to: 'sleep'
+#   action:
 
-- id: occupancy_button_home
-  alias: "Set occupancy to home"
+- id: occupancy_button
+  alias: Occupancy button
   trigger:
     platform: mqtt
     topic: zigbee2mqtt/xiaomi_agara_double_button_1
-  condition:
-    condition: template
-    value_template: "{{ 'left' == trigger.payload_json.click }}"
+  # condition:
+  #   condition: template
+  #   value_template: "{{ 'left' == trigger.payload_json.click }}"
   action:
-    service: input_select.select_option
-    data:
-      entity_id: input_select.occupancy_state
-      option: 'home'
+    - service: input_select.select_option
+      # data:
+      #   entity_id: input_select.occupancy_state
+      #   option: 'home'
+      data_template:
+        entity_id: input_select.occupancy_state
+        option: >
+          {% if 'left' == trigger.payload_json.click %}
+            home
+          {% elif 'right' == trigger.payload_json.click %}
+            away
+          {% endif %}
 
-- id: occupancy_button_away
-  alias: "Set occupancy to away"
-  trigger:
-    platform: mqtt
-    topic: zigbee2mqtt/xiaomi_agara_double_button_1
-  condition:
-    condition: template
-    value_template: "{{ 'right' == trigger.payload_json.click }}"
-  action:
-    service: input_select.select_option
-    data:
-      entity_id: input_select.occupancy_state
-      option: 'away'
+# - id: occupancy_button_home
+#   alias: "Set occupancy to home"
+#   trigger:
+#     platform: mqtt
+#     topic: zigbee2mqtt/xiaomi_agara_double_button_1
+#   condition:
+#     condition: template
+#     value_template: "{{ 'left' == trigger.payload_json.click }}"
+#   action:
+#     service: input_select.select_option
+#     data:
+#       entity_id: input_select.occupancy_state
+#       option: 'home'
+
+# - id: occupancy_button_away
+#   alias: "Set occupancy to away"
+#   trigger:
+#     platform: mqtt
+#     topic: zigbee2mqtt/xiaomi_agara_double_button_1
+#   condition:
+#     condition: template
+#     value_template: "{{ 'right' == trigger.payload_json.click }}"
+#   action:
+#     service: input_select.select_option
+#     data:
+#       entity_id: input_select.occupancy_state
+#       option: 'away'
 
 - id: occupancy_timed_sleep
   alias: "Set occupancy to sleep"
@@ -254,7 +269,7 @@
   trigger:
     - platform: numeric_state
       entity_id: sensor.shower_room_moisture
-      above: 15
+      above: 25
   action:
     - service: climate.set_temperature
       data:
@@ -266,10 +281,15 @@
   trigger:
     - platform: state
       entity_id: input_select.occupancy_state
+    - platform: numeric_state
+      entity_id: sensor.shower_room_moisture
+      below: 25
+      for:
+        minutes: 15
   condition:
     - condition: numeric_state
       entity_id: sensor.shower_room_moisture
-      below: 10
+      below: 25
   action:
     - service: climate.set_temperature
       data_template:

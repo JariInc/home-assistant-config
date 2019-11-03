@@ -81,15 +81,16 @@ class HVACPIDController(object):
         if self.manual:
             self.logger.info('Manual mode, skipping PID iteration')
         else:
+            compensated_request_temp = self.state.compensateRequestTemp(self.temp.temp_request, self.temp_outdoors)
+
             # temp hax
             # limit min temp when outdoors is < -10
             if self.temp_outdoors < -10:
-                self.temp.setLimits(floor(self.temp.temp_request), self.config.getSetTempMax())
+                self.temp.setLimits(floor(compensated_request_temp), self.config.getSetTempMax())
                 self.logger.debug('Limiting min temp to %g when outdoor temp is %g', self.temp.temp_min, self.temp_outdoors)
             else:
                 self.temp.setLimits(self.config.getSetTempMin(), self.config.getSetTempMax())
 
-            compensated_request_temp = self.state.compensateRequestTemp(self.temp.temp_request, self.temp_outdoors)
             self.temp.iteratePID(compensated_request_temp)
             self.fan.calculate(self.temp.pid_offset, self.mode)
             self.power.calculate(self.temp.temp_request, self.temp.temp_measure, self.mode, self.temp_outdoors)

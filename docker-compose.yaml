@@ -1,7 +1,7 @@
 version: '3'
 services:
   hass:
-    image: homeassistant/home-assistant:0.100.1
+    image: homeassistant/home-assistant:0.101.2
     env_file: hass.env
     volumes:
       - ./hass:/config
@@ -246,6 +246,14 @@ services:
     privileged: true
     devices:
       - /dev/bus/usb
+
+  room-thermostat:
+    build: ./room-thermostat
+    restart: always
+    depends_on:
+      - mqtt
+    networks:
+      - hass
 
 volumes:
   mariadb-data:

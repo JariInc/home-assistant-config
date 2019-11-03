@@ -2,17 +2,17 @@
 query_cache_limit = 0
 query_cache_size = 0
 
-innodb_buffer_pool_size = 6GB
+innodb_buffer_pool_size = 512M
 ; 25% of innodb_buffer_pool_size
-innodb_log_file_size=2G
-innodb_io_capacity = 200
+innodb_log_file_size=128M
+innodb_io_capacity = 100
 innodb_flush_log_at_trx_commit=0
 innodb_flush_method=O_DIRECT
 innodb_file_per_table=1
 
 skip-name-resolve
 
-tmp_table_size=512M
-max_heap_table_size=512M
+tmp_table_size=64M
+max_heap_table_size=64M
 
 max_connections=16

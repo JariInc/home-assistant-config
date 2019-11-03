@@ -1,0 +1,29 @@
+---
+interval: 60
+mqtt:
+  host: mqtt
+  port: 1883
+  prefix: room-thermostat
+  client_id: room-thermostat
+rooms:
+  - name: guestroom
+    temperatures:
+      home: 18
+      away: 18
+      sleep: 17
+    measurement_topic: zigbee2mqtt/xiaomi_agara_temp_3
+    control_topic: shellies/shelly1-2C6914/relay/0/command
+  # - name: office
+  #   temperatures:
+  #     home: 18
+  #     away: 18
+  #     sleep: 17
+  #   measurement_topic: zigbee2mqtt/xiaomi_agara_temp_x
+  #   control_topic: shellies/shelly1-000001/relay/0/command
+  - name: bedroom
+    temperatures:
+      home: 18
+      away: 18
+      sleep: 18
+    measurement_topic: zigbee2mqtt/xiaomi_agara_temp_1
+    control_topic: shellies/shelly1-000002/relay/0/command
