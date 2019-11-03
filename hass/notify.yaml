@@ -1,5 +1,5 @@
 - platform: html5
-  name: push_notify
+  name: html5
   vapid_pub_key: !env_var VAPID_PUB_KEY
   vapid_prv_key: !env_var VAPID_PRIV_KEY
   vapid_email: !env_var VAPID_EMAIL

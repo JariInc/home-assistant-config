@@ -51,7 +51,7 @@
     entity_id: sensor.heatpump_set_temperature
     above: 25
   action:
-  - service: notify.push_notify
+  - service: notify.html5
     data:
       title: "Ilmalämpöpumppuhälytys"
       message: "Asetuslämpötila yli 25 astetta"
@@ -176,27 +176,13 @@
     - service: switch.turn_off
       entity_id: switch.0x000d6ffffee3cb28_switch
 
-# - id: occupancy_sleep
-#   alias: Occupancy sleeping
-#   trigger:
-#     platform: state
-#     entity_id: input_select.occupancy_state
-#     to: 'sleep'
-#   action:
-
 - id: occupancy_button
   alias: Occupancy button
   trigger:
     platform: mqtt
     topic: zigbee2mqtt/xiaomi_agara_double_button_1
-  # condition:
-  #   condition: template
-  #   value_template: "{{ 'left' == trigger.payload_json.click }}"
   action:
     - service: input_select.select_option
-      # data:
-      #   entity_id: input_select.occupancy_state
-      #   option: 'home'
       data_template:
         entity_id: input_select.occupancy_state
         option: >
@@ -205,34 +191,6 @@
           {% elif 'right' == trigger.payload_json.click %}
             away
           {% endif %}
-
-# - id: occupancy_button_home
-#   alias: "Set occupancy to home"
-#   trigger:
-#     platform: mqtt
-#     topic: zigbee2mqtt/xiaomi_agara_double_button_1
-#   condition:
-#     condition: template
-#     value_template: "{{ 'left' == trigger.payload_json.click }}"
-#   action:
-#     service: input_select.select_option
-#     data:
-#       entity_id: input_select.occupancy_state
-#       option: 'home'
-
-# - id: occupancy_button_away
-#   alias: "Set occupancy to away"
-#   trigger:
-#     platform: mqtt
-#     topic: zigbee2mqtt/xiaomi_agara_double_button_1
-#   condition:
-#     condition: template
-#     value_template: "{{ 'right' == trigger.payload_json.click }}"
-#   action:
-#     service: input_select.select_option
-#     data:
-#       entity_id: input_select.occupancy_state
-#       option: 'away'
 
 - id: occupancy_timed_sleep
   alias: "Set occupancy to sleep"
@@ -299,4 +257,82 @@
             20
           {% else %}
             17
+          {% endif %}
+
+- id: dt_active_devices
+  alias: "Device arrives to home"
+  trigger:
+    - platform: state
+      entity_id: device_tracker.g7_thinq
+      to: home
+  condition:
+    - condition: state
+      entity_id: input_select.occupancy_state
+      state: away
+    #- condition: state
+    #  entity_id: device_tracker.g7_thinq
+    #  state: home
+    #- condition: state
+    #  entity_id: device_tracker.eppu
+    #  state: home
+  action:
+    - service: notify.html5
+      data:
+        message: Asetetaanko kotona-tilaan?
+        data:
+          tag: occupancy-notify
+          actions:
+            - action: occupancy_home
+              title: Kyllä
+            - action: skip
+              title: Ei
+
+- id: dt_no_active_devices
+  alias: "Devices leave from home"
+  trigger:
+    - platform: state
+      entity_id: device_tracker.g7_thinq
+      to: away
+  condition:
+    - condition: state
+      entity_id: input_select.occupancy_state
+      state: home
+    #- condition: state
+    #  entity_id: device_tracker.g7_thinq
+    #  state: away
+    #- condition: state
+    #  entity_id: device_tracker.eppu
+    #  state: away
+  action:
+    - service: notify.html5
+      data:
+        message: Asetetaanko poissa-tilaan?
+        data:
+          tag: occupancy-notify
+          actions:
+            - action: occupancy_away
+              title: Kyllä
+            - action: skip
+              title: Ei
+
+- id: notify_occupancy_state
+  alias: "Set occupancy state from notification"
+  trigger:
+    - platform: event
+      event_type: html5_notification.clicked
+      event_data:
+        action: occupancy_home
+    - platform: event
+      event_type: html5_notification.clicked
+      event_data:
+        action: occupancy_away
+  action:
+    - service: input_select.select_option
+      data_template:
+        entity_id: input_select.occupancy_state
+        option: >
+          {% if 'occupancy_home' == trigger.event.data.action %}
+            home
+          {% elif 'occupancy_away' == trigger.event.data.action %}
+            away
           {% endif %}

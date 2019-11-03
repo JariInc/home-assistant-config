@@ -57,11 +57,9 @@ mqtt:
 
 cast:
   media_player:
-  - host: !env_var CHROMECAST_IP
 
 media_player:
   - platform: webostv
-    host: !env_var LG_TV_IP
 
 influxdb:
   host: influxdb
@@ -95,3 +93,4 @@ binary_sensor: !include binary_sensor.yaml
 light: !include light.yaml
 # scene: !include scene.yaml
 input_select: !include input_select.yaml
+device_tracker: !include device_tracker.yaml

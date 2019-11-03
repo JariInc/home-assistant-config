@@ -12,3 +12,4 @@ home-assistant_v2.*
 google_calendars.yaml
 .google.token
 www
+known_devices.yaml
