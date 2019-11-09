@@ -2,7 +2,7 @@
   host: !env_var UNIFI_AP_IP
   username: !env_var UNIFI_AP_USER
   password: !env_var UNIFI_AP_PASS
-  interval_seconds: 20
-  #new_device_defaults:
-  #  track_new_devices: false
-  #  hide_if_away: false
+  interval_seconds: 10
+  new_device_defaults:
+    track_new_devices: false
+    hide_if_away: false

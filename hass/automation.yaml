@@ -191,6 +191,10 @@
           {% elif 'right' == trigger.payload_json.click %}
             away
           {% endif %}
+    - service: notify.html5_dismiss
+      data_template:
+        data:
+          tag: occupancy-notify
 
 - id: occupancy_timed_sleep
   alias: "Set occupancy to sleep"
@@ -269,12 +273,12 @@
     - condition: state
       entity_id: input_select.occupancy_state
       state: away
-    #- condition: state
-    #  entity_id: device_tracker.g7_thinq
-    #  state: home
-    #- condition: state
-    #  entity_id: device_tracker.eppu
-    #  state: home
+    - condition: state
+      entity_id: device_tracker.g7_thinq
+      state: home
+    - condition: state
+      entity_id: device_tracker.huawei_p9
+      state: home
   action:
     - service: notify.html5
       data:
@@ -297,12 +301,12 @@
     - condition: state
       entity_id: input_select.occupancy_state
       state: home
-    #- condition: state
-    #  entity_id: device_tracker.g7_thinq
-    #  state: away
-    #- condition: state
-    #  entity_id: device_tracker.eppu
-    #  state: away
+    - condition: state
+      entity_id: device_tracker.g7_thinq
+      state: away
+    - condition: state
+      entity_id: device_tracker.huawei_p9
+      state: away
   action:
     - service: notify.html5
       data:
