@@ -22,21 +22,27 @@ views:
           - sensor.ruuvitag_indoor_temperature
           - sensor.0x00158d000346b688_temperature
           - sensor.0x00158d000346b7aa_temperature
-          - sensor.thermofloor_as_heatit_thermostat_tf_033_external_sensor
+          # - sensor.thermofloor_as_heatit_thermostat_tf_033_external_sensor
           - sensor.0x00158d00036b1ad1_temperature
-      - id: 98b65816120241278d23ab4da355fba6  # Automatically created id
-        type: entities
-        title: Lämmitys
+      - type: entities
+        title: Paikalla
         show_header_toggle: false
         entities:
           - entity: input_select.occupancy_state
             name: Tila
+          - entity: device_tracker.g7_thinq
+            name: Jari
+          - entity: device_tracker.huawei_p9
+            name: Eppu
+      - type: entities
+        title: Lämmitys
+        show_header_toggle: false
+        entities:
           - climate.toshiba_arctic_25
           - climate.thermofloor_as_heatit_thermostat_tf_033_heating
           - climate.guestroom
           - climate.bedroom
-      - id: f354c9aed2b94f1884cda099bbec4a5f  # Automatically created id
-        type: entities
+      - type: entities
         title: Autojen lämmitys
         show_header_toggle: false
         entities:

@@ -57,9 +57,11 @@ mqtt:
 
 cast:
   media_player:
+  - host: !env_var CHROMECAST_IP
 
 media_player:
   - platform: webostv
+    host: !env_var LG_TV_IP
 
 influxdb:
   host: influxdb

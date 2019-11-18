@@ -270,15 +270,19 @@
       entity_id: device_tracker.g7_thinq
       to: home
   condition:
-    - condition: state
-      entity_id: input_select.occupancy_state
-      state: away
-    - condition: state
-      entity_id: device_tracker.g7_thinq
-      state: home
-    - condition: state
-      entity_id: device_tracker.huawei_p9
-      state: home
+    - condition: and
+      conditions:
+      - condition: state
+        entity_id: input_select.occupancy_state
+        state: away
+      - condition: or
+        conditions:
+          - condition: state
+            entity_id: device_tracker.g7_thinq
+            state: home
+          - condition: state
+            entity_id: device_tracker.huawei_p9
+            state: home
   action:
     - service: notify.html5
       data:
