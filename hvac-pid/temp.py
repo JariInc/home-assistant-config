@@ -11,6 +11,7 @@ class Temp(object):
     temp_set = 21
     temp_absolute = 21
     pid_offset = 0
+    pid_result = None
 
     temp_min = -100
     temp_max = 100
@@ -40,23 +41,27 @@ class Temp(object):
         self.pid.scaleIntegral()
 
     def iteratePID(self, temp_request_override = None):
+        if not self.pid_result:
+            self.pid_result = self.temp_absolute
+
         effective_temp_request = temp_request_override if temp_request_override != None else self.temp_request
 
         self.pid.setLimits(self.temp_min, self.temp_max)
         self.pid_offset = self.pid.iterate(effective_temp_request, self.temp_measure)
+        self.pid_result += self.pid_offset
 
-        if self.mode == 'cool':
-            self.logger.debug('Set temperature %s + %s = %s', self.temp_absolute, self.pid_offset, (self.temp_absolute + self.pid_offset))
-            self.setTemperature(self.temp_absolute + self.pid_offset)
-        else:
-            self.logger.debug('Set temperature %s + %s = %s', effective_temp_request, self.pid_offset, (effective_temp_request + self.pid_offset))
-            self.setTemperature(effective_temp_request + self.pid_offset)
+        if self.pid_result < self.temp_min:
+            self.pid_result = self.temp_min
+        elif self.pid_result > self.temp_max:
+            self.pid_result = self.temp_max
+
+        self.setTemperature(self.pid_result)
 
     def setTemperature(self, temp):
-        # allow only +-1 degree change at once
-        old_value = self.temp_set
-        set_value = int(round(min(old_value + 1, max(old_value - 1, temp))))
-        self.temp_set = int(round(min(self.temp_max, max(self.temp_min, set_value))))
+        # # allow only +-1 degree change at once
+        # old_value = self.temp_set
+        # set_value = int(round(min(old_value + 1, max(old_value - 1, temp))))
+        self.temp_set = int(round(min(self.temp_absolute + 3.0, max(self.temp_min, temp))))
         self.logger.info('Set temperature is %s', self.temp_set)
 
     def setLimits(self, temp_min, temp_max):

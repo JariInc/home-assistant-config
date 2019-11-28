@@ -6,7 +6,7 @@ from mqtt import MQTTClient
 from temp import Temp
 from fan import Fan
 from power import Power
-from math import floor
+from math import floor, ceil
 from util import Util
 from config import Config
 from dotenv import load_dotenv
@@ -82,14 +82,15 @@ class HVACPIDController(object):
             self.logger.info('Manual mode, skipping PID iteration')
         else:
             compensated_request_temp = self.state.compensateRequestTemp(self.temp.temp_request, self.temp_outdoors)
+            max_set_temp = ceil(self.temp.temp_measure) + 3
 
             # temp hax
             # limit min temp when outdoors is < -10
             if self.temp_outdoors < -10:
-                self.temp.setLimits(floor(compensated_request_temp) - 1, self.config.getSetTempMax())
+                self.temp.setLimits(floor(compensated_request_temp) - 1, max_set_temp)
                 self.logger.debug('Limiting min temp to %g when outdoor temp is %g', self.temp.temp_min, self.temp_outdoors)
             else:
-                self.temp.setLimits(self.config.getSetTempMin(), self.config.getSetTempMax())
+                self.temp.setLimits(self.config.getSetTempMin(), max_set_temp)
 
             self.temp.iteratePID(compensated_request_temp)
             self.fan.calculate(self.temp.pid_offset, self.mode)
@@ -250,6 +251,8 @@ class HVACPIDController(object):
             'temperature_set': float(self.temp.temp_set),
             'temperature_measure': float(self.temp.temp_measure),
             'temperature_error': float(self.temp.pid.previous_error),
+            'set_temperature_lower_limit': float(self.temp.temp_min),
+            'set_temperature_upper_limit': float(self.temp.temp_max),
             'fan': int(self.fan.speed if self.power.state else 0),
             'power': self.power.state,
             'Kp': float(self.temp.pid.Kp),
@@ -257,7 +260,9 @@ class HVACPIDController(object):
             'Kd': float(self.temp.pid.Kd),
             'integral': float(self.temp.pid.integral),
             'integral_max': float(self.temp.pid.integral_max),
-            'pid_output': float(self.temp.pid.output)
+            'pid_offset': float(self.temp.pid_offset),
+            'pid_result': float(self.temp.pid_result),
+
         })
         self.mqtt.publish(topic, message, 1)
 
