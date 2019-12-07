@@ -8,3 +8,6 @@
   state_topic: "shellies/shelly1-25A447/input/0"
   payload_on: "1"
   payload_off: "0"
+- platform: workday
+  name: workday
+  country: FI

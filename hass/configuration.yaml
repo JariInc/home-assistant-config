@@ -36,11 +36,10 @@ recorder:
 lovelace:
   mode: yaml
 
-#http:
-  #api_password: !env_var HA_PASSWORD
-  #base_url: !env_var HA_BASE_URL
-  #use_x_forwarded_for: true
-  #trusted_proxies: "172.0.0.0/8"
+http:
+  base_url: !env_var HA_BASE_URL
+  use_x_forwarded_for: true
+  trusted_proxies: "172.0.0.0/8"
 
 mqtt:
   broker: mqtt

@@ -119,6 +119,7 @@ views:
             icon: mdi:power-plug
       - type: history-graph
         title: 'Ilmalämpöpumppu teho'
+        refresh_interval: 60
         entities:
           - entity: sensor.philio_technology_corporation_pan11_smart_energy_plug_in_switch_power
             name: Teho
@@ -128,9 +129,6 @@ views:
         show_header_toggle: false
         entities:
           - sensor.ruuvitag_oven_temperature
-      # - id: 2e8e396edcb14e66a440608fc74a9087  # Automatically created id
-      #   type: thermostat
-      #   entity: climate.toshiba_arctic_25
       - type: entities
         title: Kahvinkeitin
         show_header_toggle: false

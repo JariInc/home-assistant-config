@@ -191,10 +191,10 @@
           {% elif 'right' == trigger.payload_json.click %}
             away
           {% endif %}
-    - service: notify.html5_dismiss
-      data_template:
-        data:
-          tag: occupancy-notify
+    # - service: notify.html5_dismiss
+    #   data_template:
+    #     data:
+    #       tag: occupancy-notify
 
 - id: occupancy_timed_sleep
   alias: "Set occupancy to sleep"
@@ -211,15 +211,36 @@
       entity_id: input_select.occupancy_state
       option: 'sleep'
 
-- id: occupancy_timed_home
-  alias: "Set occupancy to home if in sleep"
+- id: occupancy_timed_home_workday
+  alias: "Set occupancy to home if in sleep on workday"
   trigger:
     platform: time
-    at: "06:00:00"
+    at: "06:30:00"
   condition:
-    condition: state
-    entity_id: input_select.occupancy_state
-    state: 'sleep'
+    - condition: state
+      entity_id: input_select.occupancy_state
+      state: 'sleep'
+    - condition: state
+      entity_id: binary_sensor.workday
+      state: 'on'
+  action:
+    service: input_select.select_option
+    data:
+      entity_id: input_select.occupancy_state
+      option: 'home'
+
+- id: occupancy_timed_home_holiday
+  alias: "Set occupancy to home if in sleep on holiday"
+  trigger:
+    platform: time
+    at: "08:00:00"
+  condition:
+    - condition: state
+      entity_id: input_select.occupancy_state
+      state: 'sleep'
+    - condition: state
+      entity_id: binary_sensor.workday
+      state: 'off'
   action:
     service: input_select.select_option
     data:
@@ -344,3 +365,16 @@
           {% elif 'occupancy_away' == trigger.event.data.action %}
             away
           {% endif %}
+
+- id: octoprint_shutdown
+  alias: "Power off 3D printer"
+  trigger:
+    - platform: state
+      entity_id: sensor.octoprint_current_state
+      from: Operational
+      to: unknown
+      for:
+        minutes: 2
+  action:
+    - service: switch.turn_off
+      entity_id: switch.0x000d6ffffedaafbf_switch
