@@ -1,13 +1,26 @@
+# pesuhuone led-nauha
 - platform: mqtt
   name: "shelly1-25ABB7"
   state_topic: "shellies/shelly1-25ABB7/input/0"
   payload_on: "1"
   payload_off: "0"
+# pesuhuone alasvalot
 - platform: mqtt
   name: "shelly1-25A447"
   state_topic: "shellies/shelly1-25A447/input/0"
   payload_on: "1"
   payload_off: "0"
+# khh katto
+- platform: mqtt
+  name: "shelly1-2C6915"
+  state_topic: "shellies/shelly1-2C6915/input/0"
+  payload_on: "1"
+  payload_off: "0"
 - platform: workday
   name: workday
   country: FI
+- platform: mqtt
+  name: "office_heating_overtemp"
+  state_topic: "shellies/shelly1pm-76E20A/overtemperature"
+  payload_on: "1"
+  payload_off: "0"

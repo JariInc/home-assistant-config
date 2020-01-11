@@ -201,4 +201,14 @@
     shower_room_floot_set_temperature:
       friendly_name: "Pesuhuoneen lattialämmityksen asetuslämpötila"
       unit_of_measurement: °C
-      value_template: "{{ state_attr('climate.thermofloor_as_heatit_thermostat_tf_033_heating', 'temperature')|float }}"
+      value_template: "{{ state_attr('climate.thermofloor_as_heatit_thermostat_tf_056_mode', 'temperature')|float }}"
+
+# shelly
+- platform: mqtt
+  name: "office_heating_power"
+  state_topic: "shellies/shelly1pm-76E20A/relay/0/power"
+  unit_of_measurement: "W"
+- platform: mqtt
+  name: "office_heating_temp"
+  state_topic: "shellies/shelly1pm-76E20A/temperature"
+  unit_of_measurement: "°C"

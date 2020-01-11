@@ -22,7 +22,6 @@ views:
           - sensor.ruuvitag_indoor_temperature
           - sensor.0x00158d000346b688_temperature
           - sensor.0x00158d000346b7aa_temperature
-          # - sensor.thermofloor_as_heatit_thermostat_tf_033_external_sensor
           - sensor.0x00158d00036b1ad1_temperature
       - type: entities
         title: Paikalla
@@ -39,7 +38,7 @@ views:
         show_header_toggle: false
         entities:
           - climate.toshiba_arctic_25
-          - climate.thermofloor_as_heatit_thermostat_tf_033_heating
+          - climate.thermofloor_as_heatit_thermostat_tf_056_mode
           - climate.guestroom
           - climate.bedroom
       - type: entities
@@ -123,12 +122,19 @@ views:
         entities:
           - entity: sensor.philio_technology_corporation_pan11_smart_energy_plug_in_switch_power
             name: Teho
-      - id: fcb460d001534433b44e076429b8d81a  # Automatically created id
-        type: entities
+      - type: entities
         title: Uuni
         show_header_toggle: false
         entities:
           - sensor.ruuvitag_oven_temperature
+      - type: history-graph
+        title: Lämpötila
+        refresh_interval: 60
+        entities:
+          - entity: sensor.ruuvitag_oven_temperature
+            name: Uuni
+          - entity: sensor.ruuvitag_indoor_temperature
+            name: Ilma
       - type: entities
         title: Kahvinkeitin
         show_header_toggle: false
@@ -141,6 +147,16 @@ views:
     cards:
       - type: light
         entity: light.0x90fd9ffffef1731a_light
+        name: Kattovalaisin
+      - type: light
+        entity: light.0x00124b001d43d764_light
+        name: LED-nauha
+      - type: entities
+        entities:
+          - entity: binary_sensor.shelly1_2c6915
+            name: Valokatkaisija
+          - entity: binary_sensor.0x00158d00034ce398_occupancy
+            name: Liiketunnistin
 
   - title: Eteinen
     type: vertical-stack
@@ -188,7 +204,7 @@ views:
         title: Lämmitys
         show_header_toggle: false
         entities:
-          - entity: climate.thermofloor_as_heatit_thermostat_tf_033_heating
+          - entity: climate.thermofloor_as_heatit_thermostat_tf_056_mode
           - name: Lattialämmityksen asetuslämpötila
             entity: sensor.shower_room_floot_set_temperature 
           - name: Teho
@@ -214,6 +230,14 @@ views:
   - title: Toimisto
     type: vertical-stack
     cards:
+      - type: entities
+        title: Lämmitys
+        show_header_toggle: false
+        entities:
+          - entity: switch.office_heating
+            name: Lämmitys päällä
+          - entity: sensor.office_heating_power
+            name: Teho
       - type: picture-entity
         entity: camera.octoprint
         camera_image: camera.octoprint
