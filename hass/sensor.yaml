@@ -212,3 +212,13 @@
   name: "office_heating_temp"
   state_topic: "shellies/shelly1pm-76E20A/temperature"
   unit_of_measurement: "°C"
+
+# zigbee2mqtt map
+- platform: mqtt
+  name: Zigbee2mqtt Networkmap
+  # if you change base_topic of Zigbee2mqtt, change state_topic accordingly
+  state_topic: zigbee2mqtt/bridge/networkmap/raw
+  value_template: >-
+    {{ now().strftime('%Y-%m-%d %H:%M:%S') }}
+  # again, if you change base_topic of Zigbee2mqtt, change json_attributes_topic accordingly
+  json_attributes_topic: zigbee2mqtt/bridge/networkmap/raw
