@@ -2,6 +2,7 @@ import logging
 import time
 import os
 import json
+from datetime import datetime, timedelta
 from mqtt import MQTTClient
 from temp import Temp
 from fan import Fan
@@ -29,6 +30,7 @@ class HVACPIDController(object):
     manual = False
     control_enable = False
     hvac_state = {}
+    next_iteration = None
 
     def __init__(self):
         self.logger = logging.getLogger('hvac-pid')
@@ -73,8 +75,10 @@ class HVACPIDController(object):
         self.publish_mode()
         self.publish_fan()
 
+        self.next_iteration = datetime.now() + timedelta(minutes=2)
+
         # wait a bit before enabling control
-        time.sleep(3)
+        time.sleep(5)
         self.control_enable = True
 
     def iterate(self):
@@ -96,7 +100,7 @@ class HVACPIDController(object):
             self.fan.calculate(self.temp.pid_offset, self.mode)
             self.power.calculate(self.temp.temp_request, self.temp.temp_measure, self.mode, self.temp_outdoors)
             if not self.power.state:
-                self.temp.pid.reset()
+                self.temp.reset()
             self.publish_state()
 
     def temp_update_callback(self, client, userdata, message):
@@ -174,6 +178,7 @@ class HVACPIDController(object):
 
         self.publish_mode()
         self.setHVAC()
+        self.set_next_iteration(2)
 
     def publish_mode(self):
         if not self.control_enable:
@@ -202,7 +207,7 @@ class HVACPIDController(object):
             if self.manual:
                 self.temp.temp_set = self.temp.temp_request
             else:
-                self.temp.pid.reset()
+                self.temp.reset()
 
             self.publish_temp()
             self.setHVAC()
@@ -270,7 +275,12 @@ class HVACPIDController(object):
         state = message.payload.decode('utf-8')
         self.state.setState(state)
         self.logger.info('Setting occupancy state to %s', self.state.state)
-        self.temp.pid.scaleIntegral()
+        self.temp.reset()
+        self.set_next_iteration(2)
+
+    def set_next_iteration(self, interval):
+        self.next_iteration = datetime.now() + timedelta(minutes=interval)
+        self.logger.info('Next iteration at %s', self.next_iteration)
 
 if __name__ == '__main__':
     logger = logging.getLogger('hvac-pid')
@@ -288,12 +298,15 @@ if __name__ == '__main__':
     ctrl = HVACPIDController()
 
     while True:
-        time.sleep(ctrl.config.getWaitTime(ctrl.mode))
+        time.sleep(1)
 
-        if not ctrl.manual:
-            ctrl.iterate()
-            ctrl.setHVAC()
-            ctrl.publish_mode()
-            ctrl.publish_fan()
+        if datetime.now() > ctrl.next_iteration:
+            ctrl.set_next_iteration(ctrl.config.getWaitTime(ctrl.mode))
 
-        ctrl.publish_temp()
+            if not ctrl.manual:
+                ctrl.iterate()
+                ctrl.setHVAC()
+                ctrl.publish_mode()
+                ctrl.publish_fan()
+
+            ctrl.publish_temp()

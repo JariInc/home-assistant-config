@@ -38,7 +38,6 @@ class Temp(object):
     def setRequest(self, temp_request):
         self.temp_request = temp_request
         self.logger.info('Set requested temperature to %s', self.temp_request)
-        self.pid.scaleIntegral()
 
     def iteratePID(self, temp_request_override = None):
         if not self.pid_result:
@@ -58,12 +57,18 @@ class Temp(object):
         self.setTemperature(self.pid_result)
 
     def setTemperature(self, temp):
-        # # allow only +-1 degree change at once
-        # old_value = self.temp_set
-        # set_value = int(round(min(old_value + 1, max(old_value - 1, temp))))
-        self.temp_set = int(round(min(self.temp_absolute + 3.0, max(self.temp_min, temp))))
+        max_temp = self.temp_absolute + 3.0
+        min_temp = self.temp_min 
+        self.logger.debug('Set temperature limits [%g, %g] input %g', max_temp, min_temp, temp)
+
+        self.temp_set = int(round(min(max_temp, max(min_temp, temp))))
         self.logger.info('Set temperature is %s', self.temp_set)
 
     def setLimits(self, temp_min, temp_max):
         self.temp_min = temp_min
         self.temp_max = temp_max
+
+    def reset(self):
+        self.logger.info('Reset temps')
+        self.pid.reset()
+        self.pid_result = self.temp_absolute
