@@ -53,7 +53,13 @@ devices:
     friendly_name: ikea_tradfri_bulb_4
     retain: false
   '0x000d6ffffee3cb28':
-    friendly_name: 'ikea_tradfri_outlet_2'
+    friendly_name: ikea_tradfri_outlet_2
+    retain: false
+  '0x00124b001d43d764':
+    friendly_name: gledopto_wwcw_1
+    retain: false
+  '0x00158d00034ce398':
+    friendly_name: 'xiaomi_aqara_motion_1'
     retain: false
 groups:
   '1':
