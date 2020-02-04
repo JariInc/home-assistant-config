@@ -19,6 +19,7 @@ config:
 python_script:
 system_health:
 circadian_lighting:
+mobile_app:
 
 system_log:
   max_entries: 1000
