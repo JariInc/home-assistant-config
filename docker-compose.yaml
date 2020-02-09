@@ -1,7 +1,7 @@
 version: '3'
 services:
   hass:
-    image: homeassistant/home-assistant:0.104.3
+    image: homeassistant/home-assistant:0.105.2
     env_file: hass.env
     volumes:
       - ./hass:/config
@@ -109,7 +109,7 @@ services:
       - influxdb
 
   grafana:
-    image: grafana/grafana:6.6.0
+    image: grafana/grafana:6.6.1
     env_file: ./grafana.env
     ports:
       - "3000:3000"
@@ -209,7 +209,7 @@ services:
       - influxdb
 
   zigbee2mqtt:
-    image: koenkk/zigbee2mqtt:1.9.0
+    image: koenkk/zigbee2mqtt:1.10.0
     restart: always
     networks:
       - hass
