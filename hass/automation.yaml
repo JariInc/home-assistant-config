@@ -230,8 +230,6 @@
       data:
         entity_id: light.shower_room_downlight
 
-
-
 - id: occupancy_change
   alias: Occupancy changed
   trigger:
@@ -341,6 +339,10 @@
     - platform: numeric_state
       entity_id: sensor.shower_room_moisture
       above: 25
+  condition:
+    - platform: numeric_state
+      entity_id: sensor.0x00158d00036b1ad1_temperature
+      below: 25
   action:
     - service: climate.set_temperature
       data:
