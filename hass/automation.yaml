@@ -43,19 +43,6 @@
     - service: input_boolean.turn_off
       entity_id: input_boolean.car_heater_front_armed
 
-- id: alert_heatpump
-  alias: Heat pump cold draft prevention function alert
-  initial_state: true
-  trigger:
-  - platform: numeric_state
-    entity_id: sensor.heatpump_set_temperature
-    above: 25
-  action:
-  - service: notify.html5
-    data:
-      title: "Ilmalämpöpumppuhälytys"
-      message: "Asetuslämpötila yli 25 astetta"
-
 - id: front_door_light_on
   alias: Front door light on
   initial_state: true
@@ -266,7 +253,7 @@
   alias: Occupancy button
   trigger:
     platform: mqtt
-    topic: zigbee2mqtt/xiaomi_agara_double_button_1
+    topic: zigbee2mqtt/vestibule_button
   action:
     - service: input_select.select_option
       data_template:
