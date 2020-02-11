@@ -135,9 +135,15 @@
     from: 'on'
     to: 'off'
   action:
-    service: light.turn_off
-    data:
-      entity_id: light.shower_room_led_strip
+    - service: light.turn_on
+      data:
+        entity_id: light.shower_room_led_strip
+        brightness: 1
+    - delay:
+        seconds: 1
+    - service: light.turn_off
+      data:
+        entity_id: light.shower_room_led_strip
 
 - id: shower_room_downlight_on
   alias: Shower room downlight on
