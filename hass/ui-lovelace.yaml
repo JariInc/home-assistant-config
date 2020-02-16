@@ -31,9 +31,9 @@ views:
         entities:
           - entity: input_select.occupancy_state
             name: Tila
-          - entity: device_tracker.g7_thinq
+          - entity: person.jari
             name: Jari
-          - entity: device_tracker.huawei_p9
+          - entity: person.eppu
             name: Eppu
       - type: entities
         title: Lämmitys

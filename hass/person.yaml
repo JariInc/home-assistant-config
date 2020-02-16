@@ -1,0 +1,10 @@
+- name: Jari
+  id: jari
+  device_trackers:
+    - device_tracker.g7_thinq
+    - device_tracker.lm_g710
+- name: Eppu
+  id: eppu
+  device_trackers:
+    - device_tracker.huawei_p9
+    - device_tracker.eva_l09  

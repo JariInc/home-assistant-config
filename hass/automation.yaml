@@ -368,74 +368,56 @@
           {% endif %}
 
 - id: dt_active_devices
-  alias: "Device arrives to home"
+  alias: "Person arrives to home"
   trigger:
     - platform: state
-      entity_id: device_tracker.g7_thinq
+      entity_id: group.any_person
       to: home
   condition:
-    - condition: and
-      conditions:
-      - condition: state
-        entity_id: input_select.occupancy_state
-        state: away
-      - condition: or
-        conditions:
-          - condition: state
-            entity_id: device_tracker.g7_thinq
-            state: home
-          - condition: state
-            entity_id: device_tracker.huawei_p9
-            state: home
+    - condition: state
+      entity_id: input_select.occupancy_state
+      state: away
   action:
-    - service: notify.html5
+    - service: notify.notify
       data:
         message: Asetetaanko kotona-tilaan?
         data:
           tag: occupancy-notify
+          sticky: 'true'
           actions:
             - action: occupancy_home
               title: Kyllä
-            - action: skip
-              title: Ei
-
+        
 - id: dt_no_active_devices
-  alias: "Devices leave from home"
+  alias: "All persons left home"
   trigger:
     - platform: state
-      entity_id: device_tracker.g7_thinq
+      entity_id: group.all_persons
       to: away
   condition:
     - condition: state
       entity_id: input_select.occupancy_state
       state: home
-    - condition: state
-      entity_id: device_tracker.g7_thinq
-      state: away
-    - condition: state
-      entity_id: device_tracker.huawei_p9
-      state: away
   action:
-    - service: notify.html5
+    - service: notify.notify
       data:
         message: Asetetaanko poissa-tilaan?
         data:
           tag: occupancy-notify
+          sticky: 'true'
           actions:
             - action: occupancy_away
               title: Kyllä
-            - action: skip
-              title: Ei
-
+        
 - id: notify_occupancy_state
   alias: "Set occupancy state from notification"
   trigger:
     - platform: event
-      event_type: html5_notification.clicked
+      event_type: mobile_app_notification_action
       event_data:
         action: occupancy_home
     - platform: event
-      event_type: html5_notification.clicked
+      event_type: mobile_app_notification_action
       event_data:
         action: occupancy_away
   action:
@@ -448,6 +430,11 @@
           {% elif 'occupancy_away' == trigger.event.data.action %}
             away
           {% endif %}
+    - service: notify.notify
+      data:
+        message: clear_notification
+        data:
+          tag: occupancy-notify
 
 - id: octoprint_shutdown
   alias: "Power off 3D printer"

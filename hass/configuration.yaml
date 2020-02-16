@@ -20,10 +20,10 @@ python_script:
 system_health:
 circadian_lighting:
 mobile_app:
+webhook:
 
 system_log:
   max_entries: 1000
-  fire_event: true
 
 logbook:
   exclude:
@@ -73,8 +73,6 @@ octoprint:
   host: !env_var OCTOPRINT_HOST
   api_key: !env_var OCTOPRINT_KEY
 
-webhook:
-
 google:
   client_id: !env_var GOOGLE_CLIENT_ID
   client_secret: !env_var GOOGLE_CLIENT_SECRET
@@ -87,7 +85,6 @@ camera: !include camera.yaml
 input_datetime: !include input_datetime.yaml
 input_boolean: !include input_boolean.yaml
 weather: !include weather.yaml
-notify: !include notify.yaml
 automation: !include automation.yaml
 # timer: !include timer.yaml
 utility_meter: !include utility_meter.yaml
@@ -96,3 +93,5 @@ light: !include light.yaml
 # scene: !include scene.yaml
 input_select: !include input_select.yaml
 device_tracker: !include device_tracker.yaml
+person: !include person.yaml
+group: !include group.yaml

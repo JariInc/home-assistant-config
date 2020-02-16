@@ -1,0 +1,12 @@
+all_persons:
+  name: All persons
+  all: true
+  entities:
+    - person.jari
+    - person.eppu
+any_persons:
+  name: Any person
+  all: false
+  entities:
+    - person.jari
+    - person.eppu
