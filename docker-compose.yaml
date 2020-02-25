@@ -1,7 +1,7 @@
 version: '3'
 services:
   hass:
-    image: homeassistant/home-assistant:0.105.2
+    image: homeassistant/home-assistant:0.105.5
     env_file: hass.env
     volumes:
       - ./hass:/config
@@ -83,7 +83,7 @@ services:
       - hass
 
   influxdb:
-    image: influxdb:1.7.9-alpine
+    image: influxdb:1.7.10-alpine
     volumes:
       - ./influxdb/data:/var/lib/influxdb
     networks:
@@ -109,7 +109,7 @@ services:
       - influxdb
 
   grafana:
-    image: grafana/grafana:6.6.1
+    image: grafana/grafana:6.6.2
     env_file: ./grafana.env
     ports:
       - "3000:3000"
@@ -247,14 +247,23 @@ services:
     devices:
       - /dev/bus/usb
 
-  room-thermostat:
-    build: ./room-thermostat
-    restart: always
-    depends_on:
-      - mqtt
-    networks:
-      - hass
+  # room-thermostat:
+  #   build: ./room-thermostat
+  #   restart: always
+  #   depends_on:
+  #     - mqtt
+  #   networks:
+  #     - hass
 
+  # ble2mqtt:
+  #   build: ./ble2mqtt
+  #   network_mode: host
+  #   depends_on:
+  #     - mqtt
+  #   privileged: true
+  #   devices:
+  #     - /dev/bus/usb
+  
 volumes:
   mariadb-data:
   sparsnas-tmp:
