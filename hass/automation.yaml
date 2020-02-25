@@ -266,14 +266,16 @@
         entity_id: input_select.occupancy_state
         option: >
           {% if 'left' == trigger.payload_json.click %}
-            home
+            'home'
           {% elif 'right' == trigger.payload_json.click %}
-            away
+            'away'
           {% endif %}
-    # - service: notify.html5_dismiss
-    #   data_template:
-    #     data:
-    #       tag: occupancy-notify
+    - service: notify.notify
+      data:
+        message: clear_notification
+        data:
+          tag: occupancy-notify
+        
 
 - id: occupancy_timed_sleep
   alias: "Set occupancy to sleep"
@@ -327,7 +329,6 @@
       option: 'home'
 
 - id: shower_room_drying_on
-  alias: "Dry shower room"
   trigger:
     - platform: numeric_state
       entity_id: sensor.shower_room_moisture
@@ -343,7 +344,6 @@
         temperature: 25
 
 - id: shower_room_drying_off
-  alias: "Don't dry shower room"
   trigger:
     - platform: state
       entity_id: input_select.occupancy_state
@@ -352,10 +352,6 @@
       below: 25
       for:
         minutes: 15
-  condition:
-    - condition: numeric_state
-      entity_id: sensor.shower_room_moisture
-      below: 25
   action:
     - service: climate.set_temperature
       data_template:
@@ -372,11 +368,11 @@
   trigger:
     - platform: state
       entity_id: group.any_person
-      to: home
+      to: 'home'
   condition:
     - condition: state
       entity_id: input_select.occupancy_state
-      state: away
+      state: 'away'
   action:
     - service: notify.notify
       data:
@@ -393,11 +389,11 @@
   trigger:
     - platform: state
       entity_id: group.all_persons
-      to: away
+      to: 'not_home'
   condition:
     - condition: state
       entity_id: input_select.occupancy_state
-      state: home
+      state: 'home'
   action:
     - service: notify.notify
       data:

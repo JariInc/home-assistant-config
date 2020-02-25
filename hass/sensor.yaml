@@ -171,7 +171,7 @@
       unit_of_measurement: g/m³
       value_template: '{{ value | round(2) }}'
       group_function: last
-      where: '"sensor" = ''xiaomi_agara_temp_2'''
+      where: '"sensor" = ''shower_room_temp'''
       measurement: environment
       field: absolute_humidity
       database: agara

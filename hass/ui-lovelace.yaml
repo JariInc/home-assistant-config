@@ -14,17 +14,22 @@ views:
         refresh_interval: 60
         entities:
           - entity: sensor.ruuvitag_indoor_temperature
-            name: Sisällä
+            name: Sisälämpötila
           - entity: sensor.ruuvitag_outdoor_temperature
-            name: Ulkona
+            name: Ulkolämpötila
       - type: glance
         name: Lämpötila
         entities:
-          - sensor.ruuvitag_outdoor_temperature
-          - sensor.ruuvitag_indoor_temperature
-          - sensor.0x00158d000346b688_temperature
-          - sensor.0x00158d000346b7aa_temperature
-          - sensor.0x00158d00036b1ad1_temperature
+          - entity: sensor.ruuvitag_outdoor_temperature
+            name: Ulko
+          - entity: sensor.ruuvitag_indoor_temperature
+            name: Sisä
+          - entity: sensor.0x00158d000346b688_temperature
+            name: Makuuhuone
+          - entity: sensor.0x00158d000346b7aa_temperature
+            name: Vierashuone
+          - entity: sensor.0x00158d00036b1ad1_temperature
+            name: Pesuhuone
       - type: entities
         title: Paikalla
         show_header_toggle: false
@@ -39,10 +44,10 @@ views:
         title: Lämmitys
         show_header_toggle: false
         entities:
-          - climate.toshiba_arctic_25
-          - climate.thermofloor_as_heatit_thermostat_tf_056_mode
-          - climate.guestroom
-          - climate.bedroom
+          - entity: climate.toshiba_arctic_25
+            name: Ilmalämpöpumppu
+          - entity: climate.thermofloor_as_heatit_thermostat_tf_056_mode
+            name: Pesuhuoneen lattialämmitys
       - type: entities
         title: Autojen lämmitys
         show_header_toggle: false
