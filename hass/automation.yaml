@@ -1,5 +1,4 @@
-- id: heating_update_thermostats
-  alias: Heating Update Thermostats
+- alias: Heating Update Thermostats
   initial_state: true
   trigger:
     platform: state
@@ -11,8 +10,7 @@
       thermostat: climate.thermofloor_as_heatit_thermostat_tf_056_mode
       sensor: sensor.thermofloor_as_heatit_thermostat_tf_033_external_sensor
 
-- id: disable_car_heater_side
-  alias: Disable side car heater
+- alias: Disable side car heater
   initial_state: true
   trigger:
     platform: numeric_state
@@ -27,8 +25,7 @@
     - service: input_boolean.turn_off
       entity_id: input_boolean.car_heater_side_armed
 
-- id: disable_car_heater_front
-  alias: Disable front cat heater
+- alias: Disable front cat heater
   initial_state: true
   trigger:
     platform: numeric_state
@@ -43,8 +40,7 @@
     - service: input_boolean.turn_off
       entity_id: input_boolean.car_heater_front_armed
 
-- id: front_door_light_on
-  alias: Front door light on
+- alias: Front door light on
   initial_state: true
   trigger:
     platform: state
@@ -64,8 +60,7 @@
       entity_id:
         - light.0x90fd9ffffeff2e13_light
 
-- id: front_door_light_off
-  alias: Front door light off
+- alias: Front door light off
   initial_state: true
   trigger:
     platform: state
@@ -78,8 +73,7 @@
       entity_id:
         - light.0x90fd9ffffeff2e13_light
 
-- id: utility_room_led_strip_on
-  alias: Turn on utility room LED strip
+- alias: Utility room LED strip on
   initial_state: true
   trigger:
     platform: state
@@ -99,8 +93,7 @@
       entity_id:
         - light.0x00124b001d43d764_light
 
-- id: utility_room_led_strip_off
-  alias: Turn off utility room LED strip
+- alias: Utility room LED strip off
   initial_state: true
   trigger:
     platform: state
@@ -113,8 +106,7 @@
       entity_id:
         - light.0x00124b001d43d764_light
 
-- id: shower_room_ledstript_on
-  alias: Shower room LED strip on
+- alias: Shower room LED strip on
   initial_state: true
   trigger:
     platform: state
@@ -126,8 +118,7 @@
     data:
       entity_id: light.shower_room_led_strip
 
-- id: shower_room_ledstrip_off
-  alias: Shower room LED strip off
+- alias: Shower room LED strip off
   initial_state: true
   trigger:
     platform: state
@@ -145,8 +136,7 @@
       data:
         entity_id: light.shower_room_led_strip
 
-- id: shower_room_downlight_on
-  alias: Shower room downlight on
+- alias: Shower room downlight on
   initial_state: true
   trigger:
     platform: state
@@ -171,8 +161,7 @@
       data:
         entity_id: light.shower_room_downlight
 
-- id: utility_room_ceiling_light_on
-  alias: Utility room ceiling light on
+- alias: Utility room ceiling light on
   initial_state: true
   trigger:
     platform: state
@@ -184,8 +173,7 @@
       data:
         entity_id: light.0x90fd9ffffef1731a_light
 
-- id: utility_room_ceiling_light_off
-  alias: Utility room ceiling light off
+- alias: Utility room ceiling light off
   initial_state: true
   trigger:
     platform: state
@@ -197,34 +185,7 @@
       data:
         entity_id: light.0x90fd9ffffef1731a_light
 
-- id: shower_room_downlight_on
-  alias: Shower room downlight on
-  initial_state: true
-  trigger:
-    platform: state
-    entity_id: binary_sensor.shelly1_25a447
-    from: 'off'
-    to: 'on'
-  action:
-    - service: light.turn_on
-      data:
-        entity_id: light.shower_room_downlight
-
-- id: shower_room_downlight_off
-  alias: Shower room downlight off
-  initial_state: true
-  trigger:
-    platform: state
-    entity_id: binary_sensor.shelly1_25a447
-    from: 'on'
-    to: 'off'
-  action:
-    - service: light.turn_off
-      data:
-        entity_id: light.shower_room_downlight
-
-- id: occupancy_change
-  alias: Occupancy changed
+- alias: Occupancy changed
   trigger:
     - platform: state
       entity_id: input_select.occupancy_state
@@ -235,28 +196,25 @@
         retain: true
         payload: "{{ states('input_select.occupancy_state') }}"
 
-- id: occupancy_home
-  alias: Occupancy at home
+- alias: Occupancy change to home
   trigger:
     platform: state
     entity_id: input_select.occupancy_state
-    to: 'home'
+    to: home
   action:
     - service: switch.turn_on
       entity_id: switch.0x000d6ffffee3cb28_switch
 
-- id: occupancy_away
-  alias: Occupancy away
+- alias: Occupancy change to away
   trigger:
     platform: state
     entity_id: input_select.occupancy_state
-    to: 'away'
+    to: away
   action:
     - service: switch.turn_off
       entity_id: switch.0x000d6ffffee3cb28_switch
 
-- id: occupancy_button
-  alias: Occupancy button
+- alias: Occupancy button
   trigger:
     platform: mqtt
     topic: zigbee2mqtt/vestibule_button
@@ -266,9 +224,9 @@
         entity_id: input_select.occupancy_state
         option: >
           {% if 'left' == trigger.payload_json.click %}
-            'home'
+            home
           {% elif 'right' == trigger.payload_json.click %}
-            'away'
+            away
           {% endif %}
     - service: notify.notify
       data:
@@ -276,31 +234,28 @@
         data:
           tag: occupancy-notify
         
-
-- id: occupancy_timed_sleep
-  alias: "Set occupancy to sleep"
+- alias: Occupancy to sleep in the evening
   trigger:
     platform: time
     at: "22:00:00"
   condition:
     condition: state
     entity_id: input_select.occupancy_state
-    state: 'home'
+    state: home
   action:
     service: input_select.select_option
     data:
       entity_id: input_select.occupancy_state
-      option: 'sleep'
+      option: sleep
 
-- id: occupancy_timed_home_workday
-  alias: "Set occupancy to home if in sleep on workday"
+- alias: Occupancy to home on workday mornings
   trigger:
     platform: time
     at: "06:30:00"
   condition:
     - condition: state
       entity_id: input_select.occupancy_state
-      state: 'sleep'
+      state: sleep
     - condition: state
       entity_id: binary_sensor.workday
       state: 'on'
@@ -308,17 +263,16 @@
     service: input_select.select_option
     data:
       entity_id: input_select.occupancy_state
-      option: 'home'
+      option: home
 
-- id: occupancy_timed_home_holiday
-  alias: "Set occupancy to home if in sleep on holiday"
+- alias: Occupancy to home on holiday mornings
   trigger:
     platform: time
     at: "08:00:00"
   condition:
     - condition: state
       entity_id: input_select.occupancy_state
-      state: 'sleep'
+      state: sleep
     - condition: state
       entity_id: binary_sensor.workday
       state: 'off'
@@ -326,27 +280,10 @@
     service: input_select.select_option
     data:
       entity_id: input_select.occupancy_state
-      option: 'home'
+      option: home
 
-- id: shower_room_drying_on
+- alias: Shower room stop drying
   trigger:
-    - platform: numeric_state
-      entity_id: sensor.shower_room_moisture
-      above: 25
-  condition:
-    - platform: numeric_state
-      entity_id: sensor.0x00158d00036b1ad1_temperature
-      below: 25
-  action:
-    - service: climate.set_temperature
-      data:
-        entity_id: climate.thermofloor_as_heatit_thermostat_tf_056_mode
-        temperature: 25
-
-- id: shower_room_drying_off
-  trigger:
-    - platform: state
-      entity_id: input_select.occupancy_state
     - platform: numeric_state
       entity_id: sensor.shower_room_moisture
       below: 25
@@ -363,8 +300,23 @@
             17
           {% endif %}
 
-- id: dt_active_devices
-  alias: "Person arrives to home"
+- alias: Shower room start drying
+  trigger:
+    - platform: numeric_state
+      entity_id: sensor.shower_room_moisture
+      above: 25
+  condition:
+    - condition: numeric_state
+      entity_id: sensor.0x00158d00036b1ad1_temperature
+      below: 25
+  action:
+    - service: climate.set_temperature
+      data:
+        entity_id: climate.thermofloor_as_heatit_thermostat_tf_056_mode
+        temperature: 25
+        hvac_mode: heat
+
+- alias: A person arrives to home
   trigger:
     - platform: state
       entity_id: group.any_person
@@ -384,8 +336,7 @@
             - action: occupancy_home
               title: Kyllä
         
-- id: dt_no_active_devices
-  alias: "All persons left home"
+- alias: All persons left home
   trigger:
     - platform: state
       entity_id: group.all_persons
@@ -393,7 +344,7 @@
   condition:
     - condition: state
       entity_id: input_select.occupancy_state
-      state: 'home'
+      state: home
   action:
     - service: notify.notify
       data:
@@ -405,8 +356,7 @@
             - action: occupancy_away
               title: Kyllä
         
-- id: notify_occupancy_state
-  alias: "Set occupancy state from notification"
+- alias: Set occupancy from mobile app
   trigger:
     - platform: event
       event_type: mobile_app_notification_action
@@ -432,8 +382,7 @@
         data:
           tag: occupancy-notify
 
-- id: octoprint_shutdown
-  alias: "Power off 3D printer"
+- alias: "Office turn off 3D printer"
   trigger:
     - platform: state
       entity_id: sensor.octoprint_current_state
@@ -444,3 +393,4 @@
   action:
     - service: switch.turn_off
       entity_id: switch.0x000d6ffffedaafbf_switch
+
