@@ -284,6 +284,8 @@
 
 - alias: Shower room stop drying
   trigger:
+    - platform: state
+      entity_id: input_select.occupancy_state
     - platform: numeric_state
       entity_id: sensor.shower_room_moisture
       below: 25
@@ -319,9 +321,13 @@
 - alias: A person arrives to home
   trigger:
     - platform: state
-      entity_id: group.any_person
+      entity_id: group.any_persons
+      from: 'not_home'
       to: 'home'
   condition:
+    - condition: state
+      entity_id: group.all_persons
+      state: 'not_home' 
     - condition: state
       entity_id: input_select.occupancy_state
       state: 'away'
@@ -340,8 +346,12 @@
   trigger:
     - platform: state
       entity_id: group.all_persons
+      from: 'home'
       to: 'not_home'
   condition:
+    - condition: state
+      entity_id: group.any_persons
+      state: 'not_home'
     - condition: state
       entity_id: input_select.occupancy_state
       state: home
@@ -386,7 +396,6 @@
   trigger:
     - platform: state
       entity_id: sensor.octoprint_current_state
-      from: Operational
       to: unknown
       for:
         minutes: 2
