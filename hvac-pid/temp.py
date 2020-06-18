@@ -45,7 +45,11 @@ class Temp(object):
 
         effective_temp_request = temp_request_override if temp_request_override != None else self.temp_request
 
-        self.pid.setLimits(self.temp_min, self.temp_max)
+        if self.mode == 'cool':
+            self.pid.setLimits(0, 30)
+        else:
+            self.pid.setLimits(self.temp_min, self.temp_max)
+
         self.pid_offset = self.pid.iterate(effective_temp_request, self.temp_measure)
         self.pid_result += self.pid_offset
 
