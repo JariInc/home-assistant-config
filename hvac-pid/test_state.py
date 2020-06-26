@@ -2,6 +2,7 @@ from state import State
 
 def test_scalingFactor():
     state = State(0, -20)
+    state.setMode('heat')
 
     factor = state.getScalingFactor(5)
     assert factor == 0
@@ -20,6 +21,7 @@ def test_scalingFactor():
 
 def test_compensateRequestTemp():
     state = State(0, -20)
+    state.setMode('heat')
     state.setState('away')
 
     temp = state.compensateRequestTemp(21, 5)
@@ -39,6 +41,7 @@ def test_compensateRequestTemp():
 
 def test_compensateRequestTempDummy():
     state = State(0, -20)
+    state.setMode('heat')
     state.setState('home')
 
     temp = state.compensateRequestTemp(21, 5)
@@ -52,6 +55,8 @@ def test_compensateRequestTempDummy():
 
 def test_setState():
     state = State(0, 0)
+    state.setMode('heat')
+    
     assert state.state == 'home'
 
     state.setState('sleep')

@@ -176,6 +176,7 @@ class HVACPIDController(object):
             self.mode = mode
             self.logger.info('Set mode to %s', self.mode)
 
+        self.state.setMode(mode)
         self.publish_mode()
         self.setHVAC()
         self.set_next_iteration(2)

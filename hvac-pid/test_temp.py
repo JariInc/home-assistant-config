@@ -25,9 +25,9 @@ def test_lowerLimit():
         'temp_max': 30,
         'mode': 'heat',
     })
-    temp.temp_set = -1
-    temp.setMeasurement(-1, -1)
-    temp.setRequest(-1)
+    temp.temp_set = 17
+    temp.setMeasurement(17, 17)
+    temp.setRequest(17)
     temp.iteratePID()
 
     assert temp.temp_set == 17
