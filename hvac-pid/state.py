@@ -5,22 +5,22 @@ class State(object):
     mode = None
 
     temps = {
-      'heat': {
-        'home': None,
-        'away': 19,
-        'sleep': 19,
-      },
-      'cool': {
-        'home': None,
-        'away': 15,
-        'sleep': None,
-      }
+        'heat': {
+            'home': None,
+            'away': 19,
+            'sleep': 19,
+        },
+        'cool': {
+            'home': None,
+            'away': 15,
+            'sleep': None,
+        }
     }
 
     compensate = {
-      'home': False,
-      'away': True,
-      'sleep': True,
+        'home': False,
+        'away': True,
+        'sleep': True,
     }
 
     compensation_lower_limit = 0
@@ -41,7 +41,7 @@ class State(object):
     def compensateRequestTemp(self, request_temp, outside_temp):
         compensate = self.compensate[self.state]
 
-        if compensate and self.mode in self.temps and self.state in self.temps[self.mode]:
+        if compensate and self.mode in self.temps and self.state in self.temps[self.mode] and self.temps[self.mode][self.state]:
             compensatedValue = ((request_temp - self.temps[self.mode][self.state]) * self.getScalingFactor(outside_temp)) + self.temps[self.mode][self.state]
             self.logger.info('compensate request temp from %g to %g', request_temp, compensatedValue)
             return compensatedValue
