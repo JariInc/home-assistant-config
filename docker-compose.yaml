@@ -1,7 +1,7 @@
 version: '3'
 services:
   hass:
-    image: homeassistant/home-assistant:0.110.7
+    image: homeassistant/home-assistant:0.112.4
     env_file: hass.env
     volumes:
       - ./hass:/config
@@ -109,7 +109,7 @@ services:
       - influxdb
 
   grafana:
-    image: grafana/grafana:7.0.3
+    image: grafana/grafana:7.0.6
     env_file: ./grafana.env
     ports:
       - "3000:3000"
@@ -209,7 +209,7 @@ services:
       - influxdb
 
   zigbee2mqtt:
-    image: koenkk/zigbee2mqtt:1.13.1
+    image: koenkk/zigbee2mqtt:1.14.1
     restart: always
     networks:
       - hass
@@ -220,6 +220,16 @@ services:
     devices:
       - /dev/zigbee:/dev/ttyACM0
 
+  zigbee2mqttAssistant:
+    image: carldebilly/zigbee2mqttassistant
+    environment:
+      - Z2MA_SETTINGS__MQTTSERVER=mqtt
+      - TZ=Europe/Helsinki
+    networks:
+      - hass
+    depends_on:
+      - mqtt
+  
   sparsnas:
     build:
       context: github.com/tubalainen/sparsnas_decoder.git
