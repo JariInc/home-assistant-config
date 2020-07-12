@@ -6,5 +6,5 @@
 - name: Eppu
   id: eppu
   device_trackers:
-    - device_tracker.huawei_p9
-    - device_tracker.eva_l09  
+    - device_tracker.oneplus7t
+    - device_tracker.hd1903

@@ -2,10 +2,8 @@ title: Älytönkoti
 resources:
   - url: /local/calendar-card.js?track=true
     type: js
-  - url: /local/zigbee2mqtt-networkmap.js?v=0.6.0
-    type: module
 views:
-  - id: 0  # Automatically created id
+  - id: 0
     title: Yleisnäkymä
     type: horizontal-stack
     cards:
@@ -80,11 +78,11 @@ views:
         entities:
         - calendar.yhteinen
 
-  - id: 1  # Automatically created id
+  - id: 1
     title: Olohuone
     type: vertical-stack
     cards:
-      - id: 42a847cb69ef4a2faf15942309522c0f  # Automatically created id
+      - id: 42a847cb69ef4a2faf15942309522c0f
         type: entities
         title: Sisäilma
         show_header_toggle: false
@@ -99,11 +97,11 @@ views:
       - type: media-control
         entity: media_player.living_room_tv
 
-  - id: 2  # Automatically created id
+  - id: 2
     title: Keittiö
     type: vertical-stack
     cards:
-      - id: 0101005e8a7c412b83b1b00e4736a8a9  # Automatically created id
+      - id: 0101005e8a7c412b83b1b00e4736a8a9
         type: entities
         title: Ilmalämpöpumppu
         show_header_toggle: false
@@ -148,7 +146,7 @@ views:
         entities:
           - entity: switch.0x000d6ffffee3cb28_switch
             name: Virtapistoke
-  - id: 3  # Automatically created id
+  - id: 3
     title: Kodinhoitohuone
     type: vertical-stack
     cards:
@@ -181,6 +179,7 @@ views:
     type: vertical-stack
     cards:
       - type: history-graph
+        refresh_interval: 60
         title: Lämpötila
         entities:
           - entity: sensor.0x00158d00036b1ad1_temperature
@@ -265,28 +264,28 @@ views:
           - sensor.octoprint_actual_bed_temp
           - sensor.octoprint_actual_tool0_temp
 
-  - id: 4  # Automatically created id
+  - id: 4
     title: Piha
     type: vertical-stack
     cards:
-      - id: 43406de7cd1f4f129ad6a89ab083cdb3  # Automatically created id
+      - id: 43406de7cd1f4f129ad6a89ab083cdb3
         type: picture-entity
         entity: camera.parkki
         camera_image: camera.parkki
         show_state: false
-      - id: f24d163ee0d245ce90b4c9d40a52582c  # Automatically created id
+      - id: f24d163ee0d245ce90b4c9d40a52582c
         type: picture-entity
         entity: camera.talo
         camera_image: camera.talo
         show_state: false
-      - id: fddc994c5f7a4924aca65a3f076ebb27  # Automatically created id
+      - id: fddc994c5f7a4924aca65a3f076ebb27
         type: entities
         title: Mittaus
         show_header_toggle: false
         entities:
           - sensor.ruuvitag_outdoor_temperature
           - sensor.ruuvitag_outdoor_humidity
-      - id: 2feb1de222484885b495af3e49a7af41  # Automatically created id
+      - id: 2feb1de222484885b495af3e49a7af41
         type: entities
         title: Katos
         show_header_toggle: false
@@ -296,7 +295,7 @@ views:
           - sensor.garage_side_socket_power
           - input_boolean.car_heater_side_armed
           - input_datetime.car_heater_side_departure
-      - id: 343308fb27034491aa6db427c9bd2b80  # Automatically created id
+      - id: 343308fb27034491aa6db427c9bd2b80
         type: entities
         title: Talli
         show_header_toggle: false
@@ -306,33 +305,6 @@ views:
           - sensor.garage_front_socket_power
           - input_boolean.car_heater_front_armed
           - input_datetime.car_heater_front_departure
-      - id: 0c3c88a2880a4715a132600ac0d4d274  # Automatically created id
+      - id: 0c3c88a2880a4715a132600ac0d4d274
         type: weather-forecast
         entity: weather.darksky
-  - title: Zigbee Network
-    panel: true # this renders the first card on full width, other cards in this view will not be rendered
-    cards:
-      - type: custom:zigbee2mqtt-networkmap
-        entity: sensor.zigbee2mqtt_networkmap
-        # the following are optional:
-        mqtt_base_topic: zigbee2mqtt # if you change base_topic of Zigbee2mqtt, change it accordingly
-        force: 3000 # decrease it to get smaller map if you have many devices
-        node_size: 16
-        font_size: 12
-        link_width: 2
-        height: 800 # height of the card
-        # use this css config or use whatever css tech to change look and feel,
-        # the same variable can also be used in Home Assistant themes, see https://www.home-assistant.io/components/frontend/#defining-themes
-        css: |
-          :host {
-            --zigbee2mqtt-networkmap-node-color: rgba(18, 120, 98, .7);
-            --zigbee2mqtt-networkmap-node-fill-color: #dcfaf3;
-            --zigbee2mqtt-networkmap-node-pinned-color: rgba(190, 56, 93, .6);
-            --zigbee2mqtt-networkmap-link-color: rgba(18, 120, 98, .5);
-            --zigbee2mqtt-networkmap-hover-color: #be385d;
-            --zigbee2mqtt-networkmap-link-selected-color: rgba(202, 164, 85, .6);
-            --zigbee2mqtt-networkmap-label-color: #127862;
-            --zigbee2mqtt-networkmap-arrow-color: rgba(18, 120, 98, 0.7);
-            --zigbee2mqtt-networkmap-node-coordinator-color: rgba(224, 78, 93, .7);
-            --zigbee2mqtt-networkmap-node-router-color: rgba(0, 165, 255, .7);
-          }

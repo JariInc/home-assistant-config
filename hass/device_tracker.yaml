@@ -2,6 +2,6 @@
   host: !env_var UNIFI_AP_IP
   username: !env_var UNIFI_AP_USER
   password: !env_var UNIFI_AP_PASS
-  interval_seconds: 10
+  interval_seconds: 30
   new_device_defaults:
     track_new_devices: false
