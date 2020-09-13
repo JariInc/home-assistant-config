@@ -288,7 +288,7 @@
       entity_id: input_select.occupancy_state
     - platform: numeric_state
       entity_id: sensor.shower_room_moisture
-      below: 25
+      below: 20
       for:
         minutes: 15
   action:
@@ -349,9 +349,6 @@
       from: 'home'
       to: 'not_home'
   condition:
-    - condition: state
-      entity_id: group.any_persons
-      state: 'not_home'
     - condition: state
       entity_id: input_select.occupancy_state
       state: home
