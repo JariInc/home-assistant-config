@@ -213,12 +213,20 @@
   state_topic: "shellies/shelly1pm-76E20A/temperature"
   unit_of_measurement: "°C"
 
-# zigbee2mqtt map
+# ups
 - platform: mqtt
-  name: Zigbee2mqtt Networkmap
-  # if you change base_topic of Zigbee2mqtt, change state_topic accordingly
-  state_topic: zigbee2mqtt/bridge/networkmap/raw
-  value_template: >-
-    {{ now().strftime('%Y-%m-%d %H:%M:%S') }}
-  # again, if you change base_topic of Zigbee2mqtt, change json_attributes_topic accordingly
-  json_attributes_topic: zigbee2mqtt/bridge/networkmap/raw
+  state_topic: "v1/ups/ups/ups.load"
+  name: ups_load
+  unit_of_measurement: "%"
+- platform: mqtt
+  state_topic: "v1/ups/ups/battery.charge"
+  name: ups_battery_charge
+  unit_of_measurement: "%"
+- platform: mqtt
+  state_topic: "v1/ups/ups/ups.status"
+  name: ups_status
+- platform: template
+  sensors:
+    ups_power:
+      unit_of_measurement: W
+      value_template: "{{ states('sensor.ups_load')|float * 450 / 100  }}"
