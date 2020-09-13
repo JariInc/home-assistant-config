@@ -278,8 +278,6 @@ services:
     build:
       context: github.com/upshift-docker/nut-upsd.git
     restart: always
-    ports:
-      - 3493:3493
     devices:
       - /dev/ups:/dev/bus/usb/002/013
     env_file: ./nut.env
@@ -289,13 +287,13 @@ services:
   nut2mqtt:
     image: jnovack/nut-to-mutt:latest
     restart: always
+    env_file: ./nut2mqtt.env
     depends_on:
       - mqtt
       - nut
     networks:
       - hass
       - nut
-  
 
 volumes:
   mariadb-data:
