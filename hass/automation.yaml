@@ -322,15 +322,14 @@
   trigger:
     - platform: state
       entity_id: group.any_persons
-      from: 'not_home'
-      to: 'home'
+      from: not_home
+      to: home
+      for: 
+        seconds: 60
   condition:
     - condition: state
-      entity_id: group.all_persons
-      state: 'not_home' 
-    - condition: state
       entity_id: input_select.occupancy_state
-      state: 'away'
+      state: away
   action:
     - service: notify.notify
       data:
@@ -345,9 +344,11 @@
 - alias: All persons left home
   trigger:
     - platform: state
-      entity_id: group.all_persons
-      from: 'home'
-      to: 'not_home'
+      entity_id: group.any_persons
+      from: home
+      to: not_home
+      for: 
+        seconds: 60
   condition:
     - condition: state
       entity_id: input_select.occupancy_state
