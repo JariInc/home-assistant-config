@@ -401,3 +401,15 @@
     - service: switch.turn_off
       entity_id: switch.0x000d6ffffedaafbf_switch
 
+- alias: 3D print finished
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.octoprint_printing
+      from: 'on'
+      to: 'off'
+  action:
+    - service: notify.notify
+      data:
+        message: 3D tulostus valmis
+        data:
+          tag: 3d-print-done
