@@ -24,7 +24,7 @@ class Temp(object):
             **pid_options,
             'max_output': temp_max,
             'min_output': temp_min,
-        });
+        })
 
         self.temp_max = temp_max
         self.temp_min = temp_min

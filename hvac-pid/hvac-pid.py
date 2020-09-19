@@ -154,7 +154,6 @@ class HVACPIDController(object):
             pid_options = self.config.getPIDOptions(mode)
             temp_options = self.config.getTempOptions(mode)
             self.temp = Temp(**{**temp_options, **pid_options})
-            self.temp.temp_set = self.temp.temp_absolute
 
         if mode == 'off':
             self.manual = True
@@ -174,6 +173,7 @@ class HVACPIDController(object):
         elif mode == 'cool':
             self.manual = False
             self.mode = mode
+            self.temp.temp_set = self.temp.temp_absolute
             self.logger.info('Set mode to %s', self.mode)
 
         self.state.setMode(mode)
