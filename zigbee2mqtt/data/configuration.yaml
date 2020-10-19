@@ -53,6 +53,12 @@ devices:
   '0x00158d00034ce398':
     friendly_name: utility_presense
     retain: false
+  '0x00124b001b6ae725':
+    friendly_name: '0x00124b001b6ae725'
+  '0x00158d000280807c':
+    friendly_name: '0x00158d000280807c'
+  '0x00124b001ba6bef4':
+    friendly_name: '0x00124b001ba6bef4'
 groups:
   '1':
     friendly_name: shower_room_downlight
@@ -60,3 +66,7 @@ groups:
       - '0x086bd7fffe1e10cd'
       - '0xd0cf5efffe1e8eb9'
       - '0xd0cf5efffe1e963f'
+frontend:
+  port: 80
+experimental:
+  new_api: true
