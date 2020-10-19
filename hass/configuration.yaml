@@ -95,3 +95,4 @@ input_select: !include input_select.yaml
 device_tracker: !include device_tracker.yaml
 person: !include person.yaml
 group: !include group.yaml
+logger: !include logger.yaml

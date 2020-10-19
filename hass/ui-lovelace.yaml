@@ -5,7 +5,7 @@ resources:
 views:
   - id: 0
     title: Yleisnäkymä
-    type: horizontal-stack
+    #type: horizontal-stack
     cards:
       - type: history-graph
         title: Lämpötila
@@ -80,7 +80,7 @@ views:
 
   - id: 1
     title: Olohuone
-    type: vertical-stack
+    #type: vertical-stack
     cards:
       - id: 42a847cb69ef4a2faf15942309522c0f
         type: entities
@@ -99,7 +99,7 @@ views:
 
   - id: 2
     title: Keittiö
-    type: vertical-stack
+    #type: vertical-stack
     cards:
       - id: 0101005e8a7c412b83b1b00e4736a8a9
         type: entities
@@ -148,7 +148,7 @@ views:
             name: Virtapistoke
   - id: 3
     title: Kodinhoitohuone
-    type: vertical-stack
+    #type: vertical-stack
     cards:
       - type: light
         entity: light.0x90fd9ffffef1731a_light
@@ -164,7 +164,7 @@ views:
             name: Liiketunnistin
 
   - title: Eteinen
-    type: vertical-stack
+    #type: vertical-stack
     cards:
       - type: light
         entity: light.0x90fd9ffffeff2e13_light
@@ -176,7 +176,7 @@ views:
           - sensor.0xd0cf5efffe124b79_battery
 
   - title: Pesuhuone/sauna
-    type: vertical-stack
+    #type: vertical-stack
     cards:
       - type: history-graph
         refresh_interval: 60
@@ -234,7 +234,7 @@ views:
           name: Painike
 
   - title: Toimisto
-    type: vertical-stack
+    #type: vertical-stack
     cards:
       - type: entities
         title: Lämmitys
@@ -244,12 +244,12 @@ views:
             name: Lämmitys päällä
           - entity: sensor.office_heating_power
             name: Teho
-      - type: picture-entity
-        entity: camera.octoprint
-        camera_image: camera.octoprint
-        show_state: false
-        show_name: false
-        aspect_ratio: 4x3
+      # - type: picture-entity
+      #   entity: camera.octoprint
+      #   camera_image: camera.octoprint
+      #   show_state: false
+      #   show_name: false
+      #   aspect_ratio: 4x3
       - type: entities
         title: 3D tulostin
         show_header_toggle: false
@@ -266,7 +266,7 @@ views:
 
   - id: 4
     title: Piha
-    type: vertical-stack
+    #type: vertical-stack
     cards:
       - id: 43406de7cd1f4f129ad6a89ab083cdb3
         type: picture-entity
