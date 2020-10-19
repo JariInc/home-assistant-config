@@ -279,7 +279,7 @@ services:
       context: github.com/upshift-docker/nut-upsd.git
     restart: always
     devices:
-      - /dev/ups:/dev/bus/usb/002/013
+      - /dev/bus:/dev/bus
     env_file: ./nut.env
     networks:
       - nut
