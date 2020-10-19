@@ -1,7 +1,7 @@
 version: '3'
 services:
   hass:
-    image: homeassistant/home-assistant:0.115.1
+    image: homeassistant/home-assistant:0.116.4
     env_file: hass.env
     volumes:
       - ./hass:/config
@@ -209,7 +209,7 @@ services:
       - influxdb
 
   zigbee2mqtt:
-    image: koenkk/zigbee2mqtt:1.14.4
+    image: koenkk/zigbee2mqtt:1.15.0
     restart: always
     networks:
       - hass
@@ -220,15 +220,15 @@ services:
     devices:
       - /dev/zigbee:/dev/ttyACM0
 
-  zigbee2mqttAssistant:
-    image: carldebilly/zigbee2mqttassistant:latest
-    environment:
-      - Z2MA_SETTINGS__MQTTSERVER=mqtt
-      - TZ=Europe/Helsinki
-    networks:
-      - hass
-    depends_on:
-      - mqtt
+  #zigbee2mqttAssistant:
+  #  image: carldebilly/zigbee2mqttassistant:latest
+  #  environment:
+  #    - Z2MA_SETTINGS__MQTTSERVER=mqtt
+  #    - TZ=Europe/Helsinki
+  #  networks:
+  #    - hass
+  #  depends_on:
+  #    - mqtt
   
   sparsnas:
     build:
