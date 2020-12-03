@@ -1,0 +1,3 @@
+default: warning
+logs:
+  homeassistant.components.input_select: debug
