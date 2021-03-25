@@ -1,4 +1,4 @@
 paho-mqtt==1.4.0
 pytest==5.2.1
-PyYAML==5.1.2
+PyYAML==5.4
 stringcase==1.2.0
