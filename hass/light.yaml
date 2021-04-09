@@ -17,3 +17,11 @@
   color_temp: true
   brightness: true
   rgb: false
+
+- platform: template
+  lights:
+    dummy:
+      friendly_name: "Dummy light"
+      turn_on:
+      turn_off:
+      set_level:

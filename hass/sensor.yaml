@@ -230,3 +230,35 @@
     ups_power:
       unit_of_measurement: W
       value_template: "{{ states('sensor.ups_load')|float * 450 / 100  }}"
+
+# opemqttgateway
+- platform: mqtt
+  state_topic: 'home/OpenMQTTGateway_ESP32_BLE/BTtoMQTT/A4C13870B0B6'
+  name: "mijia_temp_1"
+  unit_of_measurement: '°C'
+  value_template: '{{ value_json.tem | is_defined }}'
+  expire_after: 21600
+- platform: mqtt
+  state_topic: 'home/OpenMQTTGateway_ESP32_BLE/BTtoMQTT/A4C138BD15EB'
+  name: "mijia_temp_2"
+  unit_of_measurement: '°C'
+  value_template: '{{ value_json.tem | is_defined }}'
+  expire_after: 21600
+- platform: mqtt
+  state_topic: 'home/OpenMQTTGateway_ESP32_BLE/BTtoMQTT/A4C138F8FE1A'
+  name: "mijia_temp_3"
+  unit_of_measurement: '°C'
+  value_template: '{{ value_json.tem | is_defined }}'
+  expire_after: 21600
+
+- platform: min_max
+  name: indoor_avg
+  type: mean
+  entity_ids:
+    - sensor.ruuvitag_indoor_temperature
+    - sensor.0x00158d000346b688_temperature
+    - sensor.0x00158d000346b7aa_temperature
+    - sensor.0x00158d00036b1ad1_temperature
+    - sensor.mijia_temp_1
+    - sensor.mijia_temp_2
+    - sensor.mijia_temp_3

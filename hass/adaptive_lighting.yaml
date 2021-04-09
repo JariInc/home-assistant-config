@@ -1,0 +1,31 @@
+- name: "vestibule"
+  initial_transition: 10
+  lights:
+    - light.0x90fd9ffffeff2e13_light
+
+- name: "utility_room_floor"
+  initial_transition: 10
+  lights:
+    - light.0x90fd9ffffef1731a
+
+- name: "utility_room_ceiling"
+  lights:
+    - light.0x00124b001d43d764
+  min_color_temp: 3500
+
+# - name: "shower_room_led_strip"
+#   min_color_temp: 1000
+#   max_color_temp: 1000
+#   lights:
+#     - light.0x00124b001ba6bef4_light
+
+- name: "shower_room_downlight"
+  lights:
+    - light.shower_room_downlight
+  min_color_temp: 3000
+
+# - name: "bedroom"
+#   lights:
+#     - light.0x000d6ffffe69acee
+#   min_color_temp: 3000
+#   take_over_control: false

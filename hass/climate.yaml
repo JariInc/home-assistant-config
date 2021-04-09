@@ -24,3 +24,14 @@
   temperature_state_topic: "hvac/toshiba-63200289/pid/temperature/state"
   fan_mode_command_topic: "hvac/toshiba-63200289/pid/fan/set"
   fan_mode_state_topic: "hvac/toshiba-63200289/pid/fan/state"
+
+- platform: generic_thermostat
+  name: Office
+  heater: switch.office_heating
+  target_sensor: sensor.lywsd03mmc_tempc_2
+  min_temp: 15
+  max_temp: 25
+  precision: 0.1
+  cold_tolerance: 0.1
+  hot_tolerance: 0.1
+  min_cycle_duration: 00:01:00

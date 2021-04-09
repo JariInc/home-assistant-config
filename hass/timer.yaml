@@ -1,3 +1,5 @@
 # zigbee_permit_join:
 #   name: Zigbee join timer remaining
 #   duration: 300
+shower_room_manual_heating:
+  duration: "01:00:00"

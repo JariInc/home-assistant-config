@@ -1,0 +1,10 @@
+start_shower_room_manual_heating:
+  sequence:
+    - service: timer.start
+      target:
+        entity_id: timer.shower_room_manual_heating
+cancel_shower_room_manual_heating:
+  sequence:
+    - service: timer.cancel
+      target:
+        entity_id: timer.shower_room_manual_heating

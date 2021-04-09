@@ -5,29 +5,36 @@ resources:
 views:
   - id: 0
     title: Yleisnäkymä
-    #type: horizontal-stack
     cards:
-      - type: history-graph
-        title: Lämpötila
-        refresh_interval: 60
-        entities:
-          - entity: sensor.ruuvitag_indoor_temperature
-            name: Sisälämpötila
-          - entity: sensor.ruuvitag_outdoor_temperature
-            name: Ulkolämpötila
+      - type: sensor
+        entity: sensor.indoor_avg
+        name: Sisälämpötila
+        graph: line
+        detail: 2
+      - type: sensor
+        entity: sensor.ruuvitag_outdoor_temperature
+        name: Ulkolämpötila
+        graph: line
+        detail: 2
       - type: glance
         name: Lämpötila
         entities:
           - entity: sensor.ruuvitag_outdoor_temperature
             name: Ulko
           - entity: sensor.ruuvitag_indoor_temperature
-            name: Sisä
+            name: Olohuone
           - entity: sensor.0x00158d000346b688_temperature
             name: Makuuhuone
           - entity: sensor.0x00158d000346b7aa_temperature
             name: Vierashuone
+          - entity: sensor.lywsd03mmc_tempc_2
+            name: Toimisto
           - entity: sensor.0x00158d00036b1ad1_temperature
             name: Pesuhuone
+          - entity: sensor.lywsd03mmc_tempc
+            name: eteinen
+          - entity: sensor.lywsd03mmc_tempc_3
+            name: Kodinhoitohuone
       - type: entities
         title: Paikalla
         show_header_toggle: false
@@ -80,7 +87,6 @@ views:
 
   - id: 1
     title: Olohuone
-    #type: vertical-stack
     cards:
       - id: 42a847cb69ef4a2faf15942309522c0f
         type: entities
@@ -93,13 +99,10 @@ views:
             name: Sisäilman kastepiste
             icon: mdi:water
       - type: media-control
-        entity: media_player.lg_webos_smart_tv
-      - type: media-control
         entity: media_player.living_room_tv
 
   - id: 2
     title: Keittiö
-    #type: vertical-stack
     cards:
       - id: 0101005e8a7c412b83b1b00e4736a8a9
         type: entities
@@ -144,17 +147,21 @@ views:
         title: Kahvinkeitin
         show_header_toggle: false
         entities:
-          - entity: switch.0x000d6ffffee3cb28_switch
+          - entity: switch.0x000d6ffffee3cb28
             name: Virtapistoke
   - id: 3
     title: Kodinhoitohuone
-    #type: vertical-stack
     cards:
+      - type: sensor
+        entity: sensor.lywsd03mmc_tempc_3
+        name: Lämpötila
+        graph: line
+        detail: 2
       - type: light
-        entity: light.0x90fd9ffffef1731a_light
+        entity: light.0x90fd9ffffef1731a
         name: Kattovalaisin
       - type: light
-        entity: light.0x00124b001d43d764_light
+        entity: light.0x00124b001d43d764
         name: LED-nauha
       - type: entities
         entities:
@@ -164,19 +171,24 @@ views:
             name: Liiketunnistin
 
   - title: Eteinen
-    #type: vertical-stack
     cards:
+      - type: sensor
+        entity: sensor.lywsd03mmc_tempc
+        name: Lämpötila
+        graph: line
+        detail: 2
       - type: light
         entity: light.0x90fd9ffffeff2e13_light
       - type: entities
         title: Valaistus
         show_header_toggle: false
         entities:
-          - binary_sensor.0xd0cf5efffe124b79_occupancy
-          - sensor.0xd0cf5efffe124b79_battery
+          - entity: binary_sensor.0xd0cf5efffe124b79_occupancy
+            secondary_info: last-updated
+          - entity: sensor.0xd0cf5efffe124b79_battery
+            secondary_info: last-updated
 
   - title: Pesuhuone/sauna
-    #type: vertical-stack
     cards:
       - type: history-graph
         refresh_interval: 60
@@ -210,12 +222,38 @@ views:
         title: Lämmitys
         show_header_toggle: false
         entities:
+          - type: conditional
+            conditions:
+              - entity: timer.shower_room_manual_heating
+                state: active
+            row:
+              entity: timer.shower_room_manual_heating
+              name: Automatiikan ohitusta jäljellä
+          - type: conditional
+            conditions:
+              - entity: timer.shower_room_manual_heating
+                state: active
+            row:
+              entity: script.cancel_shower_room_manual_heating
+              name: Automatiikan ohitus
+              icon: mdi:alarm-off
+              action_name: Peruuta
+          - type: conditional
+            conditions:
+              - entity: timer.shower_room_manual_heating
+                state_not: active
+            row:
+              entity: script.start_shower_room_manual_heating
+              name: Automatiikan ohitus
+              icon: mdi:alarm
+              action_name: Aloita
           - entity: climate.thermofloor_as_heatit_thermostat_tf_056_mode
           - name: Lattialämmityksen asetuslämpötila
-            entity: sensor.shower_room_floot_set_temperature 
+            entity: sensor.shower_room_floot_set_temperature
           - name: Teho
             icon: mdi:flash
             entity: sensor.thermofloor_as_heatit_thermostat_tf_033_power
+
       - type: entities
         title: Alasvalot
         show_header_toggle: false
@@ -228,33 +266,31 @@ views:
         title: LED lista
         show_header_toggle: false
         entities:
-        - entity: light.shower_room_led_strip
+        - entity: light.0x00124b001ba6bef4_light
           name: Valot
         - entity: binary_sensor.shelly1_25abb7
           name: Painike
 
   - title: Toimisto
-    #type: vertical-stack
     cards:
+      - type: sensor
+        entity: sensor.lywsd03mmc_tempc_2
+        name: Lämpötila
+        graph: line
+        detail: 2
+      - type: thermostat
+        entity: climate.office_2
       - type: entities
         title: Lämmitys
         show_header_toggle: false
         entities:
-          - entity: switch.office_heating
-            name: Lämmitys päällä
           - entity: sensor.office_heating_power
             name: Teho
-      # - type: picture-entity
-      #   entity: camera.octoprint
-      #   camera_image: camera.octoprint
-      #   show_state: false
-      #   show_name: false
-      #   aspect_ratio: 4x3
       - type: entities
         title: 3D tulostin
         show_header_toggle: false
         entities:
-          - entity: switch.0x000d6ffffedaafbf_switch
+          - entity: switch.0x000d6ffffedaafbf
             name: Virtakytkin
           - sensor.octoprint_current_state
           - sensor.octoprint_job_percentage
@@ -305,6 +341,3 @@ views:
           - sensor.garage_front_socket_power
           - input_boolean.car_heater_front_armed
           - input_datetime.car_heater_front_departure
-      - id: 0c3c88a2880a4715a132600ac0d4d274
-        type: weather-forecast
-        entity: weather.darksky

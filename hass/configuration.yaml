@@ -18,9 +18,9 @@ sun:
 config:
 python_script:
 system_health:
-circadian_lighting:
 mobile_app:
 webhook:
+aurora:
 
 system_log:
   max_entries: 1000
@@ -55,14 +55,6 @@ mqtt:
     topic: 'hass/status'
     payload: 'offline'
 
-cast:
-  media_player:
-  - host: !env_var CHROMECAST_IP
-
-media_player:
-  - platform: webostv
-    host: !env_var LG_TV_IP
-
 influxdb:
   host: influxdb
   username: !env_var INFLUXDB_USERNAME
@@ -84,15 +76,25 @@ zwave: !include zwave.yaml
 camera: !include camera.yaml
 input_datetime: !include input_datetime.yaml
 input_boolean: !include input_boolean.yaml
-weather: !include weather.yaml
+# weather: !include weather.yaml
 automation: !include automation.yaml
-# timer: !include timer.yaml
+timer: !include timer.yaml
 utility_meter: !include utility_meter.yaml
 binary_sensor: !include binary_sensor.yaml
 light: !include light.yaml
 # scene: !include scene.yaml
 input_select: !include input_select.yaml
-device_tracker: !include device_tracker.yaml
+# device_tracker: !include device_tracker.yaml
 person: !include person.yaml
 group: !include group.yaml
 logger: !include logger.yaml
+adaptive_lighting: !include adaptive_lighting.yaml
+script: !include script.yaml
+# ble_monitor:
+#   discovery: false
+#   hci_interface:
+#     - 2
+#     - 3
+#   devices:
+#     - mac: 'A4:C1:38:70:B0:B6'
+#       encryption_key: '516ac6d54db9ac10c9e8ff6efe6cf7b6'

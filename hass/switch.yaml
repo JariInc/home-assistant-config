@@ -24,15 +24,6 @@
   payload_not_available: "Offline"
   retain: false
 
-- platform: circadian_lighting
-  lights_xy:
-    - light.shower_room_downlight
-    - light.0x90fd9ffffef1731a_light
-    - light.0x00124b001d43d764_light
-  lights_brightness:
-    - light.shower_room_led_strip
-    - light.0x90fd9ffffeff2e13_light
-
 - platform: mqtt
   name: "office_heating"
   state_topic: "shellies/shelly1pm-76E20A/relay/0"

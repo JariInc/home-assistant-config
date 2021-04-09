@@ -1,10 +1,8 @@
 - name: Jari
   id: jari
   device_trackers:
-    - device_tracker.g7_thinq
-    - device_tracker.lm_g710
+    - device_tracker.lm_g710_2
 - name: Eppu
   id: eppu
   device_trackers:
-    - device_tracker.oneplus7t
     - device_tracker.hd1903

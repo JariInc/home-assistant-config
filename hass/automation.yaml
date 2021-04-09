@@ -1,6 +1,6 @@
 - alias: Heating Update Thermostats
-  initial_state: true
   mode: restart
+  initial_state: true
   trigger:
     platform: state
     entity_id:
@@ -39,154 +39,118 @@
     - service: input_boolean.turn_off
       entity_id: input_boolean.car_heater_front_armed
 
-- alias: Front door light on
-  initial_state: true
-  trigger:
-    platform: state
-    entity_id: binary_sensor.0xd0cf5efffe124b79_occupancy
-    from: 'off'
-    to: 'on'
-  condition:
-    condition: or
-    conditions:
-      - condition: sun
-        after: sunset
-      - condition: sun
-        before: sunrise
-  action:
-    service: light.turn_on
-    data:
-      entity_id:
-        - light.0x90fd9ffffeff2e13_light
-
-- alias: Front door light off
-  initial_state: true
-  trigger:
-    platform: state
-    entity_id: binary_sensor.0xd0cf5efffe124b79_occupancy
-    from: 'on'
-    to: 'off'
-  action:
-    service: light.turn_off
-    data:
-      entity_id:
-        - light.0x90fd9ffffeff2e13_light
-
-- alias: Utility room LED strip on
-  initial_state: true
-  trigger:
-    platform: state
-    entity_id: binary_sensor.0x00158d00034ce398_occupancy
-    from: 'off'
-    to: 'on'
-  condition:
-    condition: or
-    conditions:
-      - condition: sun
-        after: sunset
-      - condition: sun
-        before: sunrise
-  action:
-    service: light.turn_on
-    data:
-      entity_id:
-        - light.0x00124b001d43d764_light
-
-- alias: Utility room LED strip off
-  initial_state: true
-  trigger:
-    platform: state
-    entity_id: binary_sensor.0x00158d00034ce398_occupancy
-    from: 'on'
-    to: 'off'
-  action:
-    service: light.turn_off
-    data:
-      entity_id:
-        - light.0x00124b001d43d764_light
-
-- alias: Shower room LED strip on
-  initial_state: true
+- alias: Vestibule ceiling light
   mode: restart
-  trigger:
-    platform: state
-    entity_id: binary_sensor.shelly1_25abb7
-    from: 'off'
-    to: 'on'
-  action:
-    service: light.turn_on
-    data:
-      entity_id: light.shower_room_led_strip
-
-- alias: Shower room LED strip off
   initial_state: true
-  mode: restart
   trigger:
-    platform: state
-    entity_id: binary_sensor.shelly1_25abb7
-    from: 'on'
-    to: 'off'
+    - platform: state
+      entity_id: binary_sensor.0xd0cf5efffe124b79_occupancy
+    - platform: homeassistant
+      event: start
+    - platform: time_pattern
+      minutes: 1
+  action:
+    - service: >
+        {% if is_state('binary_sensor.0xd0cf5efffe124b79_occupancy', 'on') and is_state('sun.sun', 'below_horizon') %}
+          light.turn_on
+        {% else %}
+          light.turn_off
+        {% endif %}
+      data:
+        entity_id:
+          - light.0x90fd9ffffeff2e13_light
+
+- alias: Utility room LED strip
+  mode: restart
+  initial_state: true
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.0x00158d00034ce398_occupancy
+    - platform: homeassistant
+      event: start
+    - platform: time_pattern
+      minutes: 1
+  action:
+    - service: >
+        {% if is_state('binary_sensor.0x00158d00034ce398_occupancy', 'on') and is_state('sun.sun', 'below_horizon') %}
+          light.turn_on
+        {% else %}
+          light.turn_off
+        {% endif %}
+      data:
+        entity_id: light.0x00124b001d43d764
+
+- alias: Utility room ceiling
+  mode: restart
+  initial_state: true
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.shelly1_2c6915
+    - platform: homeassistant
+      event: start
+    - platform: time_pattern
+      minutes: 1
+  action:
+    - service: >
+        {% if is_state('binary_sensor.shelly1_2c6915', 'on') %}
+          light.turn_on
+        {% else %}
+          light.turn_off
+        {% endif %}
+      data:
+        entity_id: light.0x90fd9ffffef1731a
+
+- alias: Shower room LED strip
+  mode: restart
+  initial_state: true
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.shelly1_25abb7
+    - platform: homeassistant
+      event: start
+    - platform: time_pattern
+      minutes: 1
   action:
     - service: light.turn_on
-      data:
-        entity_id: light.shower_room_led_strip
-        brightness: 1
-    - delay:
-        seconds: 1
-    - service: light.turn_off
-      data:
-        entity_id: light.shower_room_led_strip
+      data_template:
+        entity_id: light.0x00124b001ba6bef4_light
+        color_name: >
+          {% if is_state('binary_sensor.shelly1_25abb7', 'on') %}
+            red
+          {% else %}
+            blue
+          {% endif %}
+        brightness_pct: "{{ state_attr('switch.adaptive_lighting_shower_room_downlight', 'brightness_pct') | int }}"
+    #- delay:
+    #    seconds: 1
+    #- service: light.turn_off
+    #  data_template:
+    #    entity_id: >
+    #      {% if is_state('binary_sensor.shelly1_25abb7', 'off') %}
+    #        light.0x00124b001ba6bef4_light
+    #      {% else %}
+    #        light.dummy
+    #      {% endif %}
 
-- alias: Shower room downlight on
-  initial_state: true
+- alias: Shower room downlight
   mode: restart
+  initial_state: true
   trigger:
-    platform: state
-    entity_id: binary_sensor.shelly1_25a447
-    from: 'off'
-    to: 'on'
+    - platform: state
+      entity_id: binary_sensor.shelly1_25a447
+    - platform: homeassistant
+      event: start
+    - platform: time_pattern
+      minutes: 1
   action:
-    - service: light.turn_on
+    - service: >
+        {% if is_state('binary_sensor.shelly1_25a447', 'on') %}
+          light.turn_on
+        {% else %}
+          light.turn_off
+        {% endif %}
       data:
         entity_id: light.shower_room_downlight
-
-- id: shower_room_downlight_off
-  alias: Shower room downlight off
-  initial_state: true
-  mode: restart
-  trigger:
-    platform: state
-    entity_id: binary_sensor.shelly1_25a447
-    from: 'on'
-    to: 'off'
-  action:
-    - service: light.turn_off
-      data:
-        entity_id: light.shower_room_downlight
-
-- alias: Utility room ceiling light on
-  initial_state: true
-  trigger:
-    platform: state
-    entity_id: binary_sensor.shelly1_2c6915
-    from: 'off'
-    to: 'on'
-  action:
-    - service: light.turn_on
-      data:
-        entity_id: light.0x90fd9ffffef1731a_light
-
-- alias: Utility room ceiling light off
-  initial_state: true
-  trigger:
-    platform: state
-    entity_id: binary_sensor.shelly1_2c6915
-    from: 'on'
-    to: 'off'
-  action:
-    - service: light.turn_off
-      data:
-        entity_id: light.0x90fd9ffffef1731a_light
 
 - alias: Occupancy changed
   trigger:
@@ -199,43 +163,52 @@
         retain: true
         payload: "{{ states('input_select.occupancy_state') }}"
 
-- alias: Occupancy change to home
+- alias: Occupancy changed to home
   trigger:
     platform: state
     entity_id: input_select.occupancy_state
     to: home
   action:
     - service: switch.turn_on
-      entity_id: switch.0x000d6ffffee3cb28_switch
+      entity_id: switch.0x000d6ffffee3cb28
 
-- alias: Occupancy change to away
+- alias: Occupancy changed to away
   trigger:
     platform: state
     entity_id: input_select.occupancy_state
     to: away
   action:
     - service: switch.turn_off
-      entity_id: switch.0x000d6ffffee3cb28_switch
+      entity_id: switch.0x000d6ffffee3cb28
+
+- alias: Occupancy changed to sleep
+  trigger:
+    platform: state
+    entity_id: input_select.occupancy_state
+    to: sleep
+  action:
+    - service: climate.set_temperature
+      data:
+        entity_id: climate.office_2
+        temperature: 16
 
 - alias: Occupancy button
+  mode: restart
   trigger:
-    platform: mqtt
-    topic: zigbee2mqtt/vestibule_button
-  condition:
-    condition: or
-    conditions:
-      - condition: template
-        value_template: "{{ 'left' == trigger.payload_json.click }}"
-      - condition: template
-        value_template: "{{ 'right' == trigger.payload_json.click }}"
+    - platform: state
+      entity_id: sensor.0x00158d0003208915_click
+      to: 'left'
+    - platform: state
+      entity_id: sensor.0x00158d0003208915_click
+      to: 'right'
   action:
     - service: input_select.select_option
       data_template:
         entity_id: input_select.occupancy_state
         option: >
-          {% if 'left' == trigger.payload_json.click %}
+          {% if 'left' == trigger.to_state.state %}
             home
-          {% elif 'right' == trigger.payload_json.click %}
+          {% elif 'right' == trigger.to_state.state %}
             away
           {% endif %}
     - service: notify.notify
@@ -243,7 +216,7 @@
         message: clear_notification
         data:
           tag: occupancy-notify
-        
+
 - alias: Occupancy to sleep in the evening
   trigger:
     platform: time
@@ -292,7 +265,7 @@
       entity_id: input_select.occupancy_state
       option: home
 
-- alias: Shower room stop drying
+- alias: Shower room drying
   trigger:
     - platform: state
       entity_id: input_select.occupancy_state
@@ -301,32 +274,38 @@
       below: 20
       for:
         minutes: 15
+    - platform: numeric_state
+      entity_id: sensor.shower_room_moisture
+      above: 25
+    - platform: event
+      event_type:
+        - timer.cancelled
+        - timer.finished
+        - timer.started
+      event_data:
+        entity_id: timer.shower_room_manual_heating
   action:
     - service: climate.set_temperature
       data_template:
         entity_id: climate.thermofloor_as_heatit_thermostat_tf_056_mode
         temperature: >
-          {% if is_state('input_select.occupancy_state', 'home') %}
-            20
+          {% if is_state('timer.shower_room_manual_heating', 'active') %}
+            25
           {% else %}
-            17
+            {% if states('sensor.shower_room_moisture') | float > 25 %}
+              {% if states('sensor.0x00158d00036b1ad1_temperature') | float > 25 %}
+                20
+              {% else %}
+                25
+              {% endif %}
+            {% else %}
+              {% if is_state('input_select.occupancy_state', 'home') %}
+                20
+              {% else %}
+                17
+              {% endif %}
+            {% endif %}
           {% endif %}
-
-- alias: Shower room start drying
-  trigger:
-    - platform: numeric_state
-      entity_id: sensor.shower_room_moisture
-      above: 25
-  condition:
-    - condition: numeric_state
-      entity_id: sensor.0x00158d00036b1ad1_temperature
-      below: 25
-  action:
-    - service: climate.set_temperature
-      data:
-        entity_id: climate.thermofloor_as_heatit_thermostat_tf_056_mode
-        temperature: 25
-        hvac_mode: heat
 
 - alias: A person arrives to home
   trigger:
@@ -348,7 +327,7 @@
           actions:
             - action: occupancy_home
               title: Kyllä
-        
+
 - alias: All persons left home
   trigger:
     - platform: state
@@ -369,7 +348,7 @@
           actions:
             - action: occupancy_away
               title: Kyllä
-        
+
 - alias: Set occupancy from mobile app
   trigger:
     - platform: event
@@ -412,7 +391,7 @@
         minutes: 2
   action:
     - service: switch.turn_off
-      entity_id: switch.0x000d6ffffedaafbf_switch
+      entity_id: switch.0x000d6ffffedaafbf
 
 - alias: 3D print finished
   trigger:
@@ -426,3 +405,25 @@
         message: 3D tulostus valmis
         data:
           tag: 3d-print-done
+
+# - alias: "Adaptive lighting: toggle 'sleep mode'"
+#   trigger:
+#     - platform: state
+#       entity_id: input_select.occupancy_state
+#     - platform: homeassistant
+#       event: start  # in case the states aren't properly restored
+#   variables:
+#     sleep_mode: >
+#       {% if is_state('input_select.occupancy_state', 'sleep') %}
+#         on
+#       {% else %}
+#         off
+#       {% endif %}
+#   action:
+#     service: "switch.turn_{{ sleep_mode }}"
+#     entity_id:
+#       - switch.adaptive_lighting_sleep_mode_vestibule
+#       - switch.adaptive_lighting_sleep_mode_utility_room_floor
+#       - switch.adaptive_lighting_sleep_mode_utility_room_ceiling
+#       - switch.adaptive_lighting_sleep_mode_shower_room_led_strip
+#       - switch.adaptive_lighting_sleep_mode_shower_room_downlight
